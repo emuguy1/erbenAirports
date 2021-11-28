@@ -8,7 +8,7 @@
 </head>
 <body>
 <div th:insert="components/navbar.html"></div>
-<h1>Welcome to my awesome Shipping-companys website</h1>
+<h1 class="text-center">Welcome to Erben Airports</h1>
 
 <div class="d-flex justify-content-center" sec:authorize="isAnonymous()">
     <div class="card text-right" style="width: 18rem; margin: 1rem;">
@@ -43,18 +43,6 @@
             <h5 class="card-title">Order a shipment</h5>
             <p class="card-text">Need a custom delivery. Request it now.</p>
             <a th:href="@{/order/shipment}" role="button"  class="btn  btn-primary" style="color: white">Order Shipment</a>
-        </div>
-    </div>
-
-    <div class="card text-right" style="width: 18rem; margin: 1rem;" sec:authorize="isAnonymous()">
-        <div class="card-body">
-            <h5 class="card-title">Track order</h5>
-            <p class="card-text">Got a Tracking-Number? - enter it to track your order </p>
-            <form th:action="@{/track}" method="post" th:object="${trackingCrumb}" class="">
-                <label for="Tracking-Id-Input">From</label>
-                <input class="form-control" type="text"  th:field="*{trackingId}" id="Tracking-Id-Input"/>
-                <button type="submit" class="btn btn-primary" style="margin-top:5px">Track</button>
-            </form>
         </div>
     </div>
 

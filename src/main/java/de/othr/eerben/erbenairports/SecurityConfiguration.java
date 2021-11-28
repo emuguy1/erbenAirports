@@ -8,11 +8,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-/*
+
 
 @Configuration
-//@EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
    // @Autowired
@@ -50,10 +50,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/employee/**"
     };
 
-    */
-/*@Override
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+        http.authorizeRequests()
+                .anyRequest()
+                .permitAll()
+                .and().csrf().disable();
+
+
+        /*http
                 .authorizeRequests()
                 .antMatchers(ALLOW_ACCESS_WITHOUT_AUTHENTICATION)
                 .permitAll()
@@ -77,9 +82,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .rememberMe();
 
-        http.cors().and().csrf().ignoringAntMatchers("/restapi/order/**");
-    }*//*
+        http.cors().and().csrf().ignoringAntMatchers("/restapi/order/**");*/
+    }
 
 
 }
-*/
