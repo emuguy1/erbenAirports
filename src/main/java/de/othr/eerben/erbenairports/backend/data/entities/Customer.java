@@ -37,6 +37,9 @@ public class Customer {
     @Column(nullable = false)
     private String company_name;
 
+    @Column(nullable = false)
+    private UserData login;
+
     public Customer(){}
 
 
