@@ -37,7 +37,7 @@ public class Customer {
     @Column(nullable = false)
     private String company_name;
 
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private UserData login;
 
     public Customer(){}

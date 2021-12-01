@@ -19,15 +19,15 @@ public class Employee {
     private String surname;
 
     @Column(nullable = false,unique = true)
-    private String userName;
+    private UserData login;
 
 
     public Employee(){}
 
-    public Employee(String name,String surname,String userName){
+    public Employee(String name,String surname,UserData login){
         this.name=name;
         this.surname=surname;
-        this.userName=userName;
+        this.login=login;
     }
 
 }
