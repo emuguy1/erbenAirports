@@ -1,7 +1,6 @@
 package de.othr.eerben.erbenairports.backend.data.entities;
 
 import com.sun.istack.NotNull;
-
 import javax.persistence.*;
 import java.util.Objects;
 

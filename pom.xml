@@ -155,7 +155,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>de.oth.erben.shippingcompany.ShippingCompanyApplication</mainClass>
+					<mainClass>de.othr.eerben.erbenairports.ErbenairportsApplication</mainClass>
 					<executable>true</executable>
 				</configuration>
 				<executions>

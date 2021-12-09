@@ -13,15 +13,15 @@ public class DateConverter  implements Converter<String, Date> {
 
     @Override
     public Date convert(String s) {
-        Date pickUpTime;
+        Date time;
         try {
-            pickUpTime = new SimpleDateFormat("yyyy-MM-dd").parse(s);
+            time = new SimpleDateFormat("yyyy-MM-dd").parse(s);
         } catch (ParseException e) {
             System.out.println("Date could not be parsed");
-            pickUpTime = null;
+            time = null;
         }
 
-        return pickUpTime;
+        return time;
     }
 
     @Override
