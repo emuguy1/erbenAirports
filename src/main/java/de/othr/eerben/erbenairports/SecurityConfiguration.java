@@ -1,6 +1,6 @@
 package de.othr.eerben.erbenairports;
 
-//import de.othr.eerben.erbenairports.backend.security.AuthProvider;
+import de.othr.eerben.erbenairports.backend.security.util.AirportSecurityUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -8,38 +8,28 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-   // @Autowired
-   // private AuthProvider authProvider;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception{
-        //auth.authenticationProvider(authProvider);
+    @Autowired
+    private AirportSecurityUtilities securityUtilities;
+
+    private BCryptPasswordEncoder passwordEncoder() {
+        return securityUtilities.passwordEncoder();
     }
-
     private static final String[] ALLOW_ACCESS_WITHOUT_AUTHENTICATION = {
-            "/css/**",
-            "/js/**",
-            "/icons/**",
-            "/images/**",
-            "/index",
-            "/login",
-            "/",
-            "/home",
-            "/restapi/**",
-            "/restapi/order/**",
-            "/letter",
-            "/order/letter",
-            "/order/letter/confirmation/**",
-            "/track/**",
-            "/sign/up"
-    };
+            "/css/**", "/image/**", "/fonts/**", "/", "/login", "/forgotPassword", "/register" };
+
 
     private static final String[] ALLOW_ACCESS_AS_CUSTOMER = {
             "/order/**",
@@ -56,34 +46,28 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .permitAll()
                 .and().csrf().disable();
-
-
         /*http
                 .authorizeRequests()
                 .antMatchers(ALLOW_ACCESS_WITHOUT_AUTHENTICATION)
-                .permitAll()
-                .antMatchers(ALLOW_ACCESS_AS_EMPLOYEE)
-                .hasRole("EMPLOYEE")
-                .antMatchers(ALLOW_ACCESS_AS_CUSTOMER)
-                .hasRole("CUSTOMER")
-                .anyRequest().authenticated();
+                .permitAll().anyRequest().authenticated();
         http
                 .formLogin()
-                .loginPage("/login")
-                .permitAll()
-                .defaultSuccessUrl("/")
-                .failureUrl("/login?error=true")
+                .loginPage("/login").permitAll()
+                .defaultSuccessUrl("/index")
+                .failureUrl("/login?error")
                 .and()
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/")
+                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/?logout")
                 .deleteCookies("remember-me")
                 .permitAll()
                 .and()
-                .rememberMe();
-
-        http.cors().and().csrf().ignoringAntMatchers("/restapi/order/**");*/
+                .rememberMe();*/
+    }
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
     }
 
-
 }
+

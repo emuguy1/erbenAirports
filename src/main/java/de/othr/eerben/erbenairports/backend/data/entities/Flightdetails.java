@@ -39,10 +39,10 @@ public class Flightdetails {
     @ManyToOne
     private Employee createdBy;
 
-    @OneToOne(mappedBy = "calendarId")
+    @OneToOne//(mappedBy = "calendarId")
     private Calendarslot departureTime;
 
-    @OneToOne(mappedBy = "calendarId")
+    @OneToOne//(mappedBy = "calendarId")
     private Calendarslot arrivalTime;
 
     public Flightdetails(){}
