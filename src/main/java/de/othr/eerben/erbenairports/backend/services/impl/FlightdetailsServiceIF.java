@@ -22,6 +22,7 @@ public class FlightdetailsServiceIF implements FlightdetailsService {
 
     @Override
     public Collection<Flightdetails> getDepartures(String airportcode){
+        //TODO: get departures sorted and after a specific time
         Airport airport=airportService.getAirportByAirportcode(airportcode);
         return flightdetailsRepo.findByDepartureOrderByDepartureTime(airport);
     }
