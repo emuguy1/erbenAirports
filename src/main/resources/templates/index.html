@@ -3,60 +3,69 @@
 <head th:replace="components/common :: header"/>
 <body>
 <div th:replace="components/common :: navigation"/>
+<div class="mx-4">
+    <h1 class="text-center">Welcome to Erben Airports</h1>
 
-<h1 class="text-center">Welcome to Erben Airports</h1>
+    <div class="d-flex justify-content-center" sec:authorize="isAnonymous()">
+        <div class="card text-right" style="width: 18rem; margin: 1rem;">
+            <div class="card-body">
+                <h5 class="card-title">Sign up</h5>
+                <p class="card-text">Not yet signed up as a partner? Create your account to start shipping with our
+                    services.</p>
+                <a th:href="@{/sign/up}" role="button" class="btn  btn-primary " style="color: white">Sign up</a>
+            </div>
+        </div>
 
-<div class="d-flex justify-content-center" sec:authorize="isAnonymous()">
-    <div class="card text-right" style="width: 18rem; margin: 1rem;">
-        <div class="card-body">
-            <h5 class="card-title">Sign up</h5>
-            <p class="card-text">Not yet signed up as a partner? Create your account to start shipping with our services.</p>
-            <a th:href="@{/sign/up}"  role="button"  class="btn  btn-primary " style="color: white">Sign up</a>
+        <div class="card text-right" style="width: 18rem; margin: 1rem;">
+            <div class="card-body">
+                <h5 class="card-title">Sign in</h5>
+                <p class="card-text">Already a signed partner? sign in to your account to create or track your
+                    orders.</p>
+                <a th:href="@{/login}" role="button" class="btn  btn-primary" style="color: white">Sign in</a>
+            </div>
         </div>
     </div>
 
-    <div class="card text-right" style="width: 18rem; margin: 1rem;">
-        <div class="card-body">
-            <h5 class="card-title">Sign in</h5>
-            <p class="card-text">Already a signed partner? sign in to your account to create or track your orders.</p>
-            <a th:href="@{/login}"  role="button"  class="btn  btn-primary" style="color: white">Sign in</a>
+
+    <div class="d-flex justify-content-center">
+
+        <div class="card text-right" style="width: 18rem; margin: 1rem;"
+             sec:authorize="hasRole('CUSTOMER')||isAnonymous()">
+            <div class="card-body">
+                <h5 class="card-title">Send a letter</h5>
+                <p class="card-text">Send a letter to be delivered by tomorrow via our easy mailing service.</p>
+                <a th:href="@{/order/letter}" role="button" class="btn  btn-primary" style="color: white">Order
+                    Letter</a>
+            </div>
+        </div>
+
+        <div class="card text-right" style="width: 18rem; margin: 1rem;" sec:authorize="hasRole('CUSTOMER')">
+            <div class="card-body">
+                <h5 class="card-title">Order a shipment</h5>
+                <p class="card-text">Need a custom delivery. Request it now.</p>
+                <a th:href="@{/order/shipment}" role="button" class="btn  btn-primary" style="color: white">Order
+                    Shipment</a>
+            </div>
+        </div>
+
+        <div class="card text-right" style="width: 18rem; margin: 1rem;" sec:authorize="hasRole('CUSTOMER')">
+            <div class="card-body">
+                <h5 class="card-title">My Orders</h5>
+                <p class="card-text">Review or edit your Orders</p>
+                <a th:href="@{/customer/overview}" role="button" class="btn  btn-primary" style="color: white">My
+                    Orders</a>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="d-flex justify-content-center">
-
-    <div class="card text-right" style="width: 18rem; margin: 1rem;" sec:authorize="hasRole('CUSTOMER')||isAnonymous()">
-        <div class="card-body">
-            <h5 class="card-title">Send a letter</h5>
-            <p class="card-text">Send a letter to be delivered by tomorrow via our easy mailing service.</p>
-            <a th:href="@{/order/letter}"   role="button"  class="btn  btn-primary" style="color: white">Order Letter</a>
-        </div>
-    </div>
-
-    <div class="card text-right" style="width: 18rem; margin: 1rem;" sec:authorize="hasRole('CUSTOMER')">
-        <div class="card-body">
-            <h5 class="card-title">Order a shipment</h5>
-            <p class="card-text">Need a custom delivery. Request it now.</p>
-            <a th:href="@{/order/shipment}" role="button"  class="btn  btn-primary" style="color: white">Order Shipment</a>
-        </div>
-    </div>
-
-    <div class="card text-right" style="width: 18rem; margin: 1rem;" sec:authorize="hasRole('CUSTOMER')">
-        <div class="card-body">
-            <h5 class="card-title">My Orders</h5>
-            <p class="card-text">Review or edit your Orders</p>
-            <a th:href="@{/customer/overview}" role="button"  class="btn  btn-primary" style="color: white">My Orders</a>
-        </div>
-    </div>
-</div>
-
-<div class="d-flex justify-content-center" sec:authorize="hasRole('EMPLOYEE')">
-    <div class="card text-right" style="width: 18rem; margin: 1rem;" >
-        <div class="card-body">
-            <h5 class="card-title">My Orders</h5>
-            <p class="card-text">Check which orders you have assigned and mark delivered ones as such.</p>
-            <a th:href="@{/employee/overview}" role="button"  class="btn  btn-primary" style="color: white">Deliver Order</a>
+    <div class="d-flex justify-content-center" sec:authorize="hasRole('EMPLOYEE')">
+        <div class="card text-right" style="width: 18rem; margin: 1rem;">
+            <div class="card-body">
+                <h5 class="card-title">My Orders</h5>
+                <p class="card-text">Check which orders you have assigned and mark delivered ones as such.</p>
+                <a th:href="@{/employee/overview}" role="button" class="btn  btn-primary" style="color: white">Deliver
+                    Order</a>
+            </div>
         </div>
     </div>
 </div>
