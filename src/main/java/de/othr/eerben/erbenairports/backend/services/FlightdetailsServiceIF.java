@@ -5,7 +5,7 @@ import de.othr.eerben.erbenairports.backend.data.entities.UserData;
 
 import java.util.Collection;
 
-public interface FlightdetailsService {
+public interface FlightdetailsServiceIF {
 
     Collection<Flightdetails> getDepartures(String airportcode);
 

@@ -4,18 +4,18 @@ import de.othr.eerben.erbenairports.backend.data.entities.Airport;
 import de.othr.eerben.erbenairports.backend.data.entities.Flightdetails;
 import de.othr.eerben.erbenairports.backend.data.entities.UserData;
 import de.othr.eerben.erbenairports.backend.data.repositories.FlightdetailsRepository;
-import de.othr.eerben.erbenairports.backend.services.AirportService;
-import de.othr.eerben.erbenairports.backend.services.FlightdetailsService;
+import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
+import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
 @Service
-public class FlightdetailsServiceIF implements FlightdetailsService {
+public class FlightdetailsService implements FlightdetailsServiceIF {
 
     @Autowired
-    private AirportService airportService;
+    private AirportServiceIF airportServiceIF;
 
     @Autowired
     private FlightdetailsRepository flightdetailsRepo;
@@ -23,14 +23,14 @@ public class FlightdetailsServiceIF implements FlightdetailsService {
     @Override
     public Collection<Flightdetails> getDepartures(String airportcode){
         //TODO: get departures sorted and after a specific time
-        Airport airport=airportService.getAirportByAirportcode(airportcode);
+        Airport airport= airportServiceIF.getAirportByAirportcode(airportcode);
         return flightdetailsRepo.findByDepartureOrderByDepartureTime(airport);
     }
 
     @Override
     public Collection<Flightdetails> getArrivals(String airportcode) {
         //TODO: get departures sorted and after a specific time
-        Airport airport=airportService.getAirportByAirportcode(airportcode);
+        Airport airport= airportServiceIF.getAirportByAirportcode(airportcode);
         return flightdetailsRepo.findByOriginOrderByArrivalTime(airport);
     }
 

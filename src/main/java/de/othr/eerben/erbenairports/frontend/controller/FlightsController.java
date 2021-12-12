@@ -1,9 +1,8 @@
 package de.othr.eerben.erbenairports.frontend.controller;
 
 
-import de.othr.eerben.erbenairports.backend.data.entities.Customer;
 import de.othr.eerben.erbenairports.backend.data.entities.Flightdetails;
-import de.othr.eerben.erbenairports.backend.services.FlightdetailsService;
+import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,11 +16,11 @@ import java.util.Collection;
 public class FlightsController {
 
     @Autowired
-    private FlightdetailsService flightdetailsService;
+    private FlightdetailsServiceIF flightdetailsServiceIF;
 
     @RequestMapping(value="/departures/{airportcode}", method = RequestMethod.GET)
     public String departures(Model model, @PathVariable("airportcode") String airportcode){
-        Collection<Flightdetails> flights = flightdetailsService.getDepartures(airportcode);
+        Collection<Flightdetails> flights = flightdetailsServiceIF.getDepartures(airportcode);
         model.addAttribute("flights", flights);
         return "unauthenticated/departures";
     }
