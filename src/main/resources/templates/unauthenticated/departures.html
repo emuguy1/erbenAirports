@@ -20,10 +20,10 @@
 
         <tbody>
         <tr th:each="flight : ${flights}">
-            <th scope="row"><label th:text="${flight.getFlightnumber()}"/></th>
-            <td><label th:text="${flight.getDepartureTime().toString()}"/></td>
-            <td><label th:text="${flight.getOrigin().getCity()}"/></td>
-            <td><label th:text="${flight.getArrivalTime().toString}"/></td>
+            <th scope="row"><label th:text="${flight.getFlightnumber()}"></label></th>
+            <td><label th:text="${flight.getDepartureTime().getStartTime().toString()}"></label></td>
+            <td><label th:text="${flight.getOrigin().getCity()}"></label></td>
+            <td><label th:text="${flight.getArrivalTime().getStartTime().toString}"></label></td>
             <td>
                 <form action="@{/flight}">
                     <input type="hidden" value="${book.getSignature()}" name="signature"/>

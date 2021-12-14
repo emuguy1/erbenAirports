@@ -40,10 +40,10 @@ public class Flightdetails {
     private Employee createdBy;
 
     @OneToOne//(mappedBy = "calendarId")
-    private Calendarslot departureTime;
+    private BookedCalendarslot departureTime;
 
     @OneToOne//(mappedBy = "calendarId")
-    private Calendarslot arrivalTime;
+    private BookedCalendarslot arrivalTime;
 
     public Flightdetails(){}
 
@@ -54,6 +54,17 @@ public class Flightdetails {
         this.passangerCount = passangerCount;
         this.departure = departure;
         this.origin = origin;
+    }
+
+    public Flightdetails(String flightnumber, double flightTimeHours, double maxCargo, int passangerCount, Airport departure, Airport origin, BookedCalendarslot departureTime, BookedCalendarslot arrivalTime) {
+        this.flightnumber = flightnumber;
+        this.flightTimeHours = flightTimeHours;
+        this.maxCargo = maxCargo;
+        this.passangerCount = passangerCount;
+        this.departure = departure;
+        this.origin = origin;
+        this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
     }
 
     public String getFlightnumber() {
@@ -120,19 +131,19 @@ public class Flightdetails {
         this.createdBy = createdBy;
     }
 
-    public Calendarslot getDepartureTime() {
+    public BookedCalendarslot getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(Calendarslot departureTime) {
+    public void setDepartureTime(BookedCalendarslot departureTime) {
         this.departureTime = departureTime;
     }
 
-    public Calendarslot getArrivalTime() {
+    public BookedCalendarslot getArrivalTime() {
         return arrivalTime;
     }
 
-    public void setArrivalTime(Calendarslot arrivalTime) {
+    public void setArrivalTime(BookedCalendarslot arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
 
@@ -159,6 +170,7 @@ public class Flightdetails {
                 ", departure=" + departure +
                 ", origin=" + origin +
                 ", customer=" + customer +
+                ", createdBy=" + createdBy +
                 ", departureTime=" + departureTime +
                 ", arrivalTime=" + arrivalTime +
                 '}';

@@ -3,11 +3,13 @@ package de.othr.eerben.erbenairports.backend.data.entities;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
+//BookedCalendarslot is a slot for a airport that always includes 5 min intervalls
+
 @Entity
-public class Calendarslot {
+public class BookedCalendarslot {
 
 
     @Id
@@ -25,25 +27,24 @@ public class Calendarslot {
     private int year;
 
     @Column(nullable = false)
-    private boolean booked;
-
-    @Column(nullable = false)
     private int durationInMinutes;
 
     @Column(nullable = false)
-    @Temporal(TemporalType.DATE)
-    private Date startTime;
+    private LocalDateTime startTime;
+
+    @OneToOne
+    private Airport airport;
 
 
-    public Calendarslot(){};
+    public BookedCalendarslot(){};
 
-    public Calendarslot(int day, int month, int year, boolean booked, int durationInMinutes, Date startTime) {
+    public BookedCalendarslot(int day, int month, int year, int durationInMinutes, LocalDateTime startTime,Airport airport) {
         this.day = day;
         this.month = month;
         this.year = year;
-        this.booked = booked;
         this.durationInMinutes = durationInMinutes;
         this.startTime = startTime;
+        this.airport = airport;
     }
 
     public long getCalendarId() {
@@ -74,14 +75,6 @@ public class Calendarslot {
         this.year = year;
     }
 
-    public boolean isBooked() {
-        return booked;
-    }
-
-    public void setBooked(boolean booked) {
-        this.booked = booked;
-    }
-
     public int getDurationInMinutes() {
         return durationInMinutes;
     }
@@ -90,25 +83,31 @@ public class Calendarslot {
         this.durationInMinutes = durationInMinutes;
     }
 
-    public Date getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
+    }
+
+    public Airport getAirport(){ return airport; }
+
+    public void setAirport(Airport airport) {
+        this.airport = airport;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Calendarslot that = (Calendarslot) o;
-        return calendarId == that.calendarId && day == that.day && month == that.month && year == that.year && booked == that.booked && durationInMinutes == that.durationInMinutes && startTime.equals(that.startTime);
+        BookedCalendarslot that = (BookedCalendarslot) o;
+        return calendarId == that.calendarId && day == that.day && month == that.month && year == that.year && durationInMinutes == that.durationInMinutes && airport.equals(this.airport) && startTime.equals(that.startTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(calendarId, day, month, year, booked, durationInMinutes, startTime);
+        return Objects.hash(calendarId, day, month, year, durationInMinutes, startTime, airport);
     }
 
     @Override
@@ -117,9 +116,9 @@ public class Calendarslot {
                 "day=" + day +
                 ", month=" + month +
                 ", year=" + year +
-                ", booked=" + booked +
                 ", durationInMinutes=" + durationInMinutes +
                 ", startTime=" + startTime +
+                ", airport=" + airport +
                 '}';
     }
 }

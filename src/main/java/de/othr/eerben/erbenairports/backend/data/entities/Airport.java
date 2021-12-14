@@ -13,7 +13,7 @@ public class Airport {
     @NotNull
     private String airportcode;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private TimeZone timeZone;
 
     @Column(nullable = false)

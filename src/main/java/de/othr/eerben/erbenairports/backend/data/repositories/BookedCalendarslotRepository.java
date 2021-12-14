@@ -1,9 +1,9 @@
 package de.othr.eerben.erbenairports.backend.data.repositories;
 
-import de.othr.eerben.erbenairports.backend.data.entities.Calendarslot;
+import de.othr.eerben.erbenairports.backend.data.entities.BookedCalendarslot;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CalendarslotRepository  extends CrudRepository<Calendarslot,Long>  {
+public interface BookedCalendarslotRepository extends CrudRepository<BookedCalendarslot,Long>  {
 }
