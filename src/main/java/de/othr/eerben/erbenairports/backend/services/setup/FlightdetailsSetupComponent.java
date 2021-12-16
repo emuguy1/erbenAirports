@@ -26,8 +26,8 @@ public class FlightdetailsSetupComponent extends AbstractSetupComponent{
             }
             LocalDateTime now= LocalDateTime.now();
             LocalDateTime now12= LocalDateTime.now().plusHours(12);
-            Airport muc = new Airport("MUC", TimeZone.getTimeZone("Germany/Berlin"),"Germany","Munich",48.21,11.46);
-            Airport lax = new Airport("LAX", TimeZone.getTimeZone("USA/LosAngeles"),"USA","Los Angeles",23.11,44.56);
+            Airport muc = new Airport("MUC", TimeZone.getTimeZone("Germany/Berlin"),"Germany","Munich");
+            Airport lax = new Airport("LAX", TimeZone.getTimeZone("USA/LosAngeles"),"USA","Los Angeles");
             BookedCalendarslot calendarslotnowMUC= new BookedCalendarslot(now.getDayOfMonth(),now.getMonthValue(),now.getYear(), 15,now,muc);
             BookedCalendarslot bookedCalendarslot12MUC = new BookedCalendarslot(now12.getDayOfMonth(),now12.getMonthValue(),now12.getYear(), 15,now12, muc);
             BookedCalendarslot calendarslotnowLAX= new BookedCalendarslot(now.getDayOfMonth(),now.getMonthValue(),now.getYear(), 15,now,lax);

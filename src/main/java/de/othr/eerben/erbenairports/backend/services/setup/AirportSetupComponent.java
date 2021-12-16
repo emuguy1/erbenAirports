@@ -20,9 +20,8 @@ public class AirportSetupComponent extends AbstractSetupComponent {
             if(airportRepo.findByAirportcode("MUC") != null){
                 return true;
             }
-            airportRepo.save(new Airport("MUC", TimeZone.getTimeZone("Germany/Berlin"),"Germany","Munich",48.21,11.46));
-            //TODO: ändern Koordinaten
-            airportRepo.save(new Airport("LAX", TimeZone.getTimeZone("USA/LosAngeles"),"USA","Los Angeles",23.11,44.56));
+            airportRepo.save(new Airport("MUC", TimeZone.getTimeZone("Germany/Berlin"),"Germany","Munich"));
+            airportRepo.save(new Airport("LAX", TimeZone.getTimeZone("USA/LosAngeles"),"USA","Los Angeles"));
             return true;
         }catch(Exception e){
             throw new ApplicationException("Airport Setup failed. Couldnt create Airports");
