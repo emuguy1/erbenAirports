@@ -22,22 +22,14 @@ public class Airport {
     @Column(nullable = false,unique = true)
     private String city;
 
-    @Column(nullable = false)
-    private double longitudinal;
-
-    @Column(nullable = false)
-    private double latitudinal;
-
 
     public Airport(){}
 
-    public Airport(String airportcode, TimeZone timeZone, String country, String city, double longitudinal, double latitudinal) {
+    public Airport(String airportcode, TimeZone timeZone, String country, String city) {
         this.airportcode = airportcode;
         this.timeZone = timeZone;
         this.country = country;
         this.city = city;
-        this.longitudinal = longitudinal;
-        this.latitudinal = latitudinal;
     }
 
     public String getAirportcode() {
@@ -72,33 +64,17 @@ public class Airport {
         this.city = city;
     }
 
-    public double getLongitudinal() {
-        return longitudinal;
-    }
-
-    public void setLongitudinal(double longitudinal) {
-        this.longitudinal = longitudinal;
-    }
-
-    public double getLatitudinal() {
-        return latitudinal;
-    }
-
-    public void setLatitudinal(double latitudinal) {
-        this.latitudinal = latitudinal;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Airport airport = (Airport) o;
-        return Double.compare(airport.longitudinal, longitudinal) == 0 && Double.compare(airport.latitudinal, latitudinal) == 0 && airportcode.equals(airport.airportcode) && timeZone.equals(airport.timeZone) && country.equals(airport.country) && city.equals(airport.city);
+        return airportcode.equals(airport.airportcode) && timeZone.equals(airport.timeZone) && country.equals(airport.country) && city.equals(airport.city);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(airportcode, timeZone, country, city, longitudinal, latitudinal);
+        return Objects.hash(airportcode, timeZone, country, city);
     }
 
     @Override
@@ -107,9 +83,7 @@ public class Airport {
                 "airportcode='" + airportcode + '\'' +
                 ", timeZone=" + timeZone +
                 ", country='" + country + '\'' +
-                ", city='" + city + '\'' +
-                ", longitudinal=" + longitudinal +
-                ", latitudinal=" + latitudinal +
+                ", city='" + city +
                 '}';
     }
 }
