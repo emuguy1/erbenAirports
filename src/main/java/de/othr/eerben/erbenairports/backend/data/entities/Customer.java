@@ -37,6 +37,7 @@ public class Customer {
     private String company_name;
 
     @Column(nullable = false,unique = true)
+    @Embedded
     private UserData login;
 
     public Customer(){}

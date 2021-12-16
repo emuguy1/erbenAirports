@@ -19,6 +19,7 @@ public class Employee {
     private String surname;
 
     @Column(nullable = false,unique = true)
+    @Embedded
     private UserData login;
 
 

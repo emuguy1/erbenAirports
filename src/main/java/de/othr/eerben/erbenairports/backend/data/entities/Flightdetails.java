@@ -2,16 +2,17 @@ package de.othr.eerben.erbenairports.backend.data.entities;
 
 import com.sun.istack.NotNull;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 public class Flightdetails {
 
     @Id
+    @NotNull
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long flightid;
+
     @NotNull
     private String flightnumber;
 
@@ -147,23 +148,26 @@ public class Flightdetails {
         this.arrivalTime = arrivalTime;
     }
 
+    public long getFlightid() {return flightid;}
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Flightdetails)) return false;
         Flightdetails that = (Flightdetails) o;
-        return Double.compare(that.getFlightTimeHours(), getFlightTimeHours()) == 0 && Double.compare(that.getMaxCargo(), getMaxCargo()) == 0 && getPassangerCount() == that.getPassangerCount() && getFlightnumber().equals(that.getFlightnumber()) && getDeparture().equals(that.getDeparture()) && getOrigin().equals(that.getOrigin()) && getCustomer().equals(that.getCustomer()) && Objects.equals(getCreatedBy(), that.getCreatedBy()) && Objects.equals(getDepartureTime(), that.getDepartureTime()) && Objects.equals(getArrivalTime(), that.getArrivalTime());
+        return getFlightid() == that.getFlightid() && Double.compare(that.getFlightTimeHours(), getFlightTimeHours()) == 0 && Double.compare(that.getMaxCargo(), getMaxCargo()) == 0 && getPassangerCount() == that.getPassangerCount() && Objects.equals(getFlightnumber(), that.getFlightnumber()) && Objects.equals(getDeparture(), that.getDeparture()) && Objects.equals(getOrigin(), that.getOrigin()) && Objects.equals(getCustomer(), that.getCustomer()) && Objects.equals(getCreatedBy(), that.getCreatedBy()) && Objects.equals(getDepartureTime(), that.getDepartureTime()) && Objects.equals(getArrivalTime(), that.getArrivalTime());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getFlightnumber(), getFlightTimeHours(), getMaxCargo(), getPassangerCount(), getDeparture(), getOrigin(), getCustomer(), getCreatedBy(), getDepartureTime(), getArrivalTime());
+        return Objects.hash(getFlightid(), getFlightnumber(), getFlightTimeHours(), getMaxCargo(), getPassangerCount(), getDeparture(), getOrigin(), getCustomer(), getCreatedBy(), getDepartureTime(), getArrivalTime());
     }
 
     @Override
     public String toString() {
         return "Flightdetails{" +
-                "flightnumber='" + flightnumber + '\'' +
+                "flightid=" + flightid +
+                ", flightnumber='" + flightnumber + '\'' +
                 ", flightTimeHours=" + flightTimeHours +
                 ", maxCargo=" + maxCargo +
                 ", passangerCount=" + passangerCount +
