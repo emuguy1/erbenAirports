@@ -35,10 +35,10 @@ public class Flightdetails {
 
     @NotNull
     @ManyToOne
-    private Customer customer;
+    private User customer;
 
     @ManyToOne
-    private Employee createdBy;
+    private User createdBy;
 
     @OneToOne//(mappedBy = "calendarId")
     private BookedCalendarslot departureTime;
@@ -116,19 +116,19 @@ public class Flightdetails {
         this.origin = origin;
     }
 
-    public Customer getCustomer() {
+    public User getCustomer() {
         return customer;
     }
 
-    public void setCustomer(Customer customer) {
+    public void setCustomer(User customer) {
         this.customer = customer;
     }
 
-    public Employee getCreatedBy() {
+    public User getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(Employee createdBy) {
+    public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
     }
 

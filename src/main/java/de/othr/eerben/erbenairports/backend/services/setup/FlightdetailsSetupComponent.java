@@ -8,7 +8,9 @@ import de.othr.eerben.erbenairports.backend.data.repositories.FlightdetailsRepos
 import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.TimeZone;
 
 public class FlightdetailsSetupComponent extends AbstractSetupComponent{
@@ -24,14 +26,14 @@ public class FlightdetailsSetupComponent extends AbstractSetupComponent{
             if(flightdetailsRepo.findByFlightnumber("LH320") != null){
                 return true;
             }
-            LocalDateTime now= LocalDateTime.now();
-            LocalDateTime now12= LocalDateTime.now().plusHours(12);
+            Date now= Date.from(Instant.now());
+            Date now12= Date.from(Instant.now().minusSeconds(720));
             Airport muc = new Airport("MUC", TimeZone.getTimeZone("Germany/Berlin"),"Germany","Munich");
             Airport lax = new Airport("LAX", TimeZone.getTimeZone("USA/LosAngeles"),"USA","Los Angeles");
-            BookedCalendarslot calendarslotnowMUC= new BookedCalendarslot(now.getDayOfMonth(),now.getMonthValue(),now.getYear(), 15,now,muc);
-            BookedCalendarslot bookedCalendarslot12MUC = new BookedCalendarslot(now12.getDayOfMonth(),now12.getMonthValue(),now12.getYear(), 15,now12, muc);
-            BookedCalendarslot calendarslotnowLAX= new BookedCalendarslot(now.getDayOfMonth(),now.getMonthValue(),now.getYear(), 15,now,lax);
-            BookedCalendarslot bookedCalendarslot12LAX = new BookedCalendarslot(now12.getDayOfMonth(),now12.getMonthValue(),now12.getYear(), 15,now12, lax);
+            BookedCalendarslot calendarslotnowMUC= new BookedCalendarslot(now.getDay(),now.getMonth(),now.getYear(), 15,now,muc);
+            BookedCalendarslot bookedCalendarslot12MUC = new BookedCalendarslot(now12.getDay(),now12.getMonth(),now12.getYear(), 15,now12, muc);
+            BookedCalendarslot calendarslotnowLAX= new BookedCalendarslot(now.getDay(),now.getMonth(),now.getYear(), 15,now,lax);
+            BookedCalendarslot bookedCalendarslot12LAX = new BookedCalendarslot(now12.getDay(),now12.getMonth(),now12.getYear(), 15,now12, lax);
             calendarslotRepo.save(calendarslotnowLAX);
             calendarslotRepo.save(bookedCalendarslot12LAX);
             calendarslotRepo.save(calendarslotnowMUC);

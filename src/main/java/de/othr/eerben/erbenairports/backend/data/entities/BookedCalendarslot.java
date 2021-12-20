@@ -1,9 +1,11 @@
 package de.othr.eerben.erbenairports.backend.data.entities;
 
 import com.sun.istack.NotNull;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 
 //BookedCalendarslot is a slot for a airport that always includes 5 min intervalls
@@ -29,8 +31,9 @@ public class BookedCalendarslot {
     @Column(nullable = false)
     private int durationInMinutes;
 
-    @Column(nullable = false)
-    private LocalDateTime startTime;
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private Date startTime;
 
     @OneToOne
     private Airport airport;
@@ -38,7 +41,7 @@ public class BookedCalendarslot {
 
     public BookedCalendarslot(){};
 
-    public BookedCalendarslot(int day, int month, int year, int durationInMinutes, LocalDateTime startTime,Airport airport) {
+    public BookedCalendarslot(int day, int month, int year, int durationInMinutes, Date startTime,Airport airport) {
         this.day = day;
         this.month = month;
         this.year = year;
@@ -83,11 +86,11 @@ public class BookedCalendarslot {
         this.durationInMinutes = durationInMinutes;
     }
 
-    public LocalDateTime getStartTime() {
+    public Date getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
+    public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
 

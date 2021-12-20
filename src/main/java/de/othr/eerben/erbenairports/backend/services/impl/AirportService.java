@@ -7,6 +7,8 @@ import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+
 @Service
 public class AirportService implements AirportServiceIF {
 
@@ -21,6 +23,12 @@ public class AirportService implements AirportServiceIF {
     @Override
     public Airport addAirport(Airport airport) {
         return airportRepo.save(airport);
+    }
+
+    @Override
+    public Collection<Airport> getAllAirports(){
+        //TODO: get all and return it as an Collection
+        return null;
     }
 
 

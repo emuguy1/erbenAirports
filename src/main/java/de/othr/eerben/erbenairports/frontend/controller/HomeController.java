@@ -1,6 +1,6 @@
 package de.othr.eerben.erbenairports.frontend.controller;
 
-import de.othr.eerben.erbenairports.backend.data.entities.Customer;
+import de.othr.eerben.erbenairports.backend.data.entities.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +15,7 @@ public class HomeController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET) // /login
     public String login(Model model) {
-        model.addAttribute("user", new Customer());
+        model.addAttribute("user", new User());
         return "authentication/login";
     }
 
