@@ -38,6 +38,9 @@ public class BookedCalendarslot {
     @OneToOne
     private Airport airport;
 
+    @OneToOne
+    private Flightdetails flightdetails;
+
 
     public BookedCalendarslot(){};
 

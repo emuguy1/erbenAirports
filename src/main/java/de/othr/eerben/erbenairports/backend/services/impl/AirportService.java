@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class AirportService implements AirportServiceIF {
@@ -26,9 +27,9 @@ public class AirportService implements AirportServiceIF {
     }
 
     @Override
-    public Collection<Airport> getAllAirports(){
+    public Optional<Collection<Airport>> getAllAirports(){
         //TODO: get all and return it as an Collection
-        return null;
+        return airportRepo.findDistinctByAirportcodeIsNotNull();
     }
 
 

@@ -29,10 +29,10 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link" href="/departures_airport" th:classappend="${#httpServletRequest.getRequestURI() == '/departures_airport' ? 'active':''}">Departures</a>
+                                <a class="nav-link" href="/departures" th:classappend="${#httpServletRequest.getRequestURI() == '/departures' ? 'active':''}">Departures</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/arrivals_airport" th:classappend="${#httpServletRequest.getRequestURI() == '/arrivals_airport' ? 'active':''}">Arrivals</a>
+                                <a class="nav-link" href="/arrivals" th:classappend="${#httpServletRequest.getRequestURI() == '/arrivals' ? 'active':''}">Arrivals</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="/login" sec:authorize="isAnonymous()">Login</a>

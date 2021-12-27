@@ -23,4 +23,7 @@ public class HomeController {
     public String doLogin() {
         return "index";
     }
+
+    @RequestMapping("/errors")
+    public String errorOccured(){return "error";}
 }

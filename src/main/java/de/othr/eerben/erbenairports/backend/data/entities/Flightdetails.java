@@ -40,10 +40,10 @@ public class Flightdetails {
     @ManyToOne
     private User createdBy;
 
-    @OneToOne//(mappedBy = "calendarId")
+    @OneToOne //(mappedBy = "de")
     private BookedCalendarslot departureTime;
 
-    @OneToOne//(mappedBy = "calendarId")
+    @OneToOne //(mappedBy = "flightdetails")
     private BookedCalendarslot arrivalTime;
 
     public Flightdetails(){}
