@@ -10,10 +10,7 @@ import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriBuilder;
 
@@ -33,12 +30,11 @@ public class FlightsController {
     public String departures(Model model, @RequestParam(value = "airport",required = false) String airportcode) throws Exception{
         System.out.println();
         Collection<Flightdetails> flights;
+        Collection<Airport> airports = airportServiceIF.getAllAirports().orElse(Collections.emptyList());
         if(airportcode!= null && !airportcode.isEmpty() && !airportcode.isBlank()){
             flights = flightdetailsServiceIF.getDepartures(airportcode);
-                    }
+        }
         else{
-
-            Collection<Airport> airports = airportServiceIF.getAllAirports().orElse(Collections.emptyList());
             if(!airports.isEmpty()){
                 return "redirect:/departures?airport="+airports.stream().findFirst().get().getAirportcode();
             }
@@ -48,7 +44,17 @@ public class FlightsController {
         }
         System.out.println(flights);
         model.addAttribute("flights", flights);
+        model.addAttribute("airports", airports);
+        model.addAttribute("currentAirport", airportServiceIF.getAirportByAirportcode(airportcode));
+        model.addAttribute("selectedAirport", new Airport());
         return "unauthenticated/departures";
+    }
+
+    @RequestMapping(value="/departure", method = RequestMethod.GET) //th:selected
+    public String departuresSelected(Model model, @RequestParam(value = "airportcode",required = false) String airportcode) throws Exception{
+        System.out.println("Action ausgelöst:");
+        System.out.println(airportcode);
+        return "redirect:/departures?airport="+airportcode;
     }
 
 

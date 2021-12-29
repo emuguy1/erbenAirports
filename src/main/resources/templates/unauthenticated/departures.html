@@ -9,7 +9,24 @@
 <body>
 <div th:replace="components/common :: navigation"/>
 <div class="mx-4">
-    <h1>Departures</h1>
+    <h1 th:text="'Departures ' + ${currentAirport.getAirportcode()}">Departures </h1>
+    <form  th:action="@{/departure}" th:object="${selectedAirport}">
+        <div class="row">
+            <div class="col">
+                <select th:field="${selectedAirport.airportcode}"  th:class="form-select" th:type="submit">
+                    <option disabled th:value="null">Please select an airport...</option>
+                    <option th:each="airport : ${airports}"
+                            th:value="${airport.getAirportcode()}"
+                            th:selected="${currentAirport.getAirportcode() == airport.getAirportcode()}"
+                            th:text="${airport.getAirportcode().toString()} + '-' + ${airport.getCity().toString()} + '-' + ${airport.getCountry().toString()}"
+                            th:type="submit"></option>
+                </select>
+            </div>
+            <div class="col">
+                <button th:type="submit" class=" btn btn-primary shadow mb-5 rounded">refresh</button>
+            </div>
+        </div>
+    </form>
     <table class="table table-striped table-hover">
         <thead>
         <tr>
