@@ -31,7 +31,7 @@ public class FlightsController {
         System.out.println();
         Collection<Flightdetails> flights;
         Collection<Airport> airports = airportServiceIF.getAllAirports().orElse(Collections.emptyList());
-        if(airportcode!= null && !airportcode.isEmpty() && !airportcode.isBlank()){
+        if(airportcode!= null && !airportcode.isEmpty() && !airportcode.isBlank() && !airportcode.equals("null")){
             flights = flightdetailsServiceIF.getDepartures(airportcode);
         }
         else{
