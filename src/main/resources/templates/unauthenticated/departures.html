@@ -13,7 +13,7 @@
     <form  th:action="@{/departure}" th:object="${selectedAirport}">
         <div class="row">
             <div class="col">
-                <select th:field="${selectedAirport.airportcode}"  th:class="form-select" th:type="submit">
+                <select name="airportcode"  th:class="form-select" th:type="submit">
                     <option disabled th:value="null">Please select an airport...</option>
                     <option th:each="airport : ${airports}"
                             th:value="${airport.getAirportcode()}"
