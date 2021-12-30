@@ -4,15 +4,13 @@ package de.othr.eerben.erbenairports.frontend.controller;
 import de.othr.eerben.erbenairports.backend.data.entities.Airport;
 import de.othr.eerben.erbenairports.backend.data.entities.Flightdetails;
 import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
-import de.othr.eerben.erbenairports.backend.exceptions.FlightdetailsException;
+import de.othr.eerben.erbenairports.backend.exceptions.UIErrorMessage;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
 import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.util.UriBuilder;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -28,10 +26,16 @@ public class FlightsController {
 
     @RequestMapping(value="/departures", method = RequestMethod.GET)
     public String departures(Model model, @RequestParam(value = "airport",required = false) String airportcode) throws Exception{
-        System.out.println();
+
         Collection<Flightdetails> flights;
         Collection<Airport> airports = airportServiceIF.getAllAirports().orElse(Collections.emptyList());
         if(airportcode!= null && !airportcode.isEmpty() && !airportcode.isBlank() && !airportcode.equals("null")){
+            System.out.println("Test Test Test " + airportServiceIF.getAirportByAirportcode(airportcode));
+            if(airportServiceIF.getAirportByAirportcode(airportcode)==null){
+                model.addAttribute("errorMessage", new UIErrorMessage("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
+                System.out.println("Did it till here");
+                return "unauthenticated/error-page";
+            }
             flights = flightdetailsServiceIF.getDepartures(airportcode);
         }
         else{
@@ -42,7 +46,6 @@ public class FlightsController {
                 throw new ApplicationException("No Airports were found!");
             }
         }
-        System.out.println(flights);
         model.addAttribute("flights", flights);
         model.addAttribute("airports", airports);
         model.addAttribute("currentAirport", airportServiceIF.getAirportByAirportcode(airportcode));
