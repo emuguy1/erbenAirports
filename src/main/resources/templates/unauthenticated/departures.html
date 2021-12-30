@@ -23,37 +23,37 @@
                 </select>
             </div>
             <div class="col">
-                <button th:type="submit" class=" btn btn-primary shadow mb-5 rounded">refresh</button>
+                <button th:type="submit" class=" btn btn-primary shadow mb-5 rounded">Submit</button>
             </div>
         </div>
     </form>
     <table class="table table-striped table-hover">
         <thead>
         <tr>
-            <th scope="col">Flightsignature</th>
-            <th scope="col">departure time</th>
-            <th scope="col">destination</th>
-            <th scope="col">arrival time</th>
+            <th scope="col">Flight Signature</th>
+            <th scope="col">Departure Time</th>
+            <th scope="col">Destination</th>
+            <th scope="col">Arrival Time</th>
             <th scope="col">&nbsp;</th>
         </tr>
         </thead>
 
         <tbody>
-        <tr th:each="flight : ${flights}">
+        <tr th:if="${!flights.isEmpty()}" th:each="flight : ${flights}">
             <th scope="row"><label th:text="${flight.getFlightnumber()}"></label></th>
             <td><label th:text="${flight.getDepartureTime().getStartTime().toString()}"></label></td>
             <td><label th:text="${flight.getOrigin().getCity()}"></label></td>
             <td><label th:text="${flight.getArrivalTime().getStartTime().toString}"></label></td>
             <td>
-                <form action="@{/flight}">
-                    <input type="hidden" value="${book.getSignature()}" name="signature"/>
+                <form th:action="@{/flight}">
+                    <input type="hidden" value="${flight.getFlightnumber()}" name="signature"/>
                     <button type="button" class="btn btn-primary">more Details</button>
                 </form>
             </td>
         </tr>
-
         </tbody>
     </table>
+    <h3 th:if="${flights.isEmpty()}">There are no flights sheduled at this time</h3>
 </div>
 </body>
 </html>
