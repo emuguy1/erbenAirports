@@ -8,12 +8,18 @@ import de.othr.eerben.erbenairports.backend.exceptions.UIErrorMessage;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
 import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 public class FlightsController {
@@ -25,8 +31,12 @@ public class FlightsController {
     private AirportServiceIF airportServiceIF;
 
     @RequestMapping(value="/departures", method = RequestMethod.GET)
-    public String departures(Model model, @RequestParam(value = "airport",required = false) String airportcode) throws Exception{
+    public String departures(Model model, @RequestParam(value = "airport",required = false) String airportcode,@RequestParam("page") Optional<Integer> page,
+                             @RequestParam("size") Optional<Integer> size) throws Exception{
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(5);
 
+        Page<Flightdetails> flightPage;
         Collection<Flightdetails> flights;
         Collection<Airport> airports = airportServiceIF.getAllAirports().orElse(Collections.emptyList());
         if(airportcode!= null && !airportcode.isEmpty() && !airportcode.isBlank() && !airportcode.equals("null")){
@@ -34,6 +44,9 @@ public class FlightsController {
                 model.addAttribute("errorMessage", new UIErrorMessage("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
                 return "unauthenticated/error-page";
             }
+            flightPage = flightdetailsServiceIF.getDeparturesPaginated(airportcode,PageRequest.of(currentPage - 1, pageSize));
+
+            model.addAttribute("flightPage", flightPage);
             flights = flightdetailsServiceIF.getDepartures(airportcode);
         }
         else{
@@ -43,6 +56,13 @@ public class FlightsController {
             else{
                 throw new ApplicationException("No Airports were found!");
             }
+        }
+        int totalPages = flightPage.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
         }
         model.addAttribute("flights", flights);
         model.addAttribute("airports", airports);

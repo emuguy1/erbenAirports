@@ -7,7 +7,7 @@
 </head>
 
 <body>
-<div th:replace="components/common :: navigation"/>
+<div th:replace="components/common :: navigation"></div>
 <div class="mx-4">
     <h1 th:text="'Departures ' + ${currentAirport.getAirportcode()}">Departures </h1>
     <form  th:action="@{/departure}" th:object="${selectedAirport}">
@@ -53,7 +53,13 @@
         </tr>
         </tbody>
     </table>
-    <h3 th:if="${flights.isEmpty()}">There are no flights sheduled at this time</h3>
+    <h3 th:if="${flights.isEmpty()}">There are no flights scheduled at this time</h3>
+    <div th:if="${flightPage.totalPages > 0}" class="pagination"
+         th:each="pageNumber : ${pageNumbers}">
+        <a th:href="@{/departures(airport=${currentAirport.getAirportcode()},size=${flightPage.size}, page=${pageNumber})}"
+           th:text="${pageNumber}"
+           th:class="${pageNumber==flightPage.number + 1} ? active"></a>
+    </div>
 </div>
 </body>
 </html>

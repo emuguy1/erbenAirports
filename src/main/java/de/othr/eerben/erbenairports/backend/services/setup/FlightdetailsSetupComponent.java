@@ -23,7 +23,8 @@ public class FlightdetailsSetupComponent extends AbstractSetupComponent{
     @Override
     boolean setup() throws ApplicationException {
         try{
-            if(flightdetailsRepo.findByFlightnumber("LH3200") != null){
+
+            if(flightdetailsRepo.findByFlightnumber("LH3200").isPresent()){
                 return true;
             }
             Date now= Date.from(Instant.now());
