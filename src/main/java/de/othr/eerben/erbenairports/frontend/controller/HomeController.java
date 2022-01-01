@@ -18,6 +18,7 @@ public class HomeController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET) // /login
     public String login(Model model, @RequestParam("error") Optional<Boolean> error) {
+        System.out.println(error);
         if(error.isPresent() && error.get()){
             model.addAttribute("error",true);
         }else{

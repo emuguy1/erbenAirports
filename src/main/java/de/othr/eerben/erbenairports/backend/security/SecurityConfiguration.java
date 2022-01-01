@@ -1,6 +1,6 @@
 package de.othr.eerben.erbenairports.backend.security;
 
-import de.othr.eerben.erbenairports.backend.security.util.AirportSecurityUtilities;
+import de.othr.eerben.erbenairports.backend.security.AirportSecurityUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -63,7 +63,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage("/login").permitAll()
                 .defaultSuccessUrl("/")
-                .failureUrl("/login?error")
+                .failureUrl("/login?error=true")
                 .and()
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/?logout")

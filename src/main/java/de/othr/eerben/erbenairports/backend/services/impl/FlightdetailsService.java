@@ -4,6 +4,7 @@ import de.othr.eerben.erbenairports.backend.data.entities.Airport;
 import de.othr.eerben.erbenairports.backend.data.entities.Flightdetails;
 import de.othr.eerben.erbenairports.backend.data.entities.User;
 import de.othr.eerben.erbenairports.backend.data.repositories.FlightdetailsRepository;
+import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
 import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -27,14 +30,14 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     private FlightdetailsRepository flightdetailsRepo;
 
     @Override
-    public Collection<Flightdetails> getDepartures(String airportcode){
+    public Collection<Flightdetails> getDepartures(String airportcode) throws ApplicationException{
         //TODO: get departures sorted and after a specific time
         Airport airport= airportServiceIF.getAirportByAirportcode(airportcode);
-        return flightdetailsRepo.findByDepartureOrderByDepartureTime(airport);
+        return flightdetailsRepo.getAllByDepartureAndDepartureTimeIsAfterOrderByDepartureTime(airport, Timestamp.from(Instant.now())).orElseThrow(()-> new ApplicationException("Error, no Departures for airport after now could be found"));
     }
 
     @Override
-    public Page<Flightdetails> getDeparturesPaginated(String airportcode, Pageable pageable) {
+    public Page<Flightdetails> getDeparturesPaginated(String airportcode, Pageable pageable) throws ApplicationException {
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;
@@ -42,7 +45,8 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
         //TODO: get departures sorted and after a specific time
         Airport airport= airportServiceIF.getAirportByAirportcode(airportcode);
-        Collection<Flightdetails> flights= flightdetailsRepo.findByOriginOrderByArrivalTime(airport);
+        Collection<Flightdetails> flights= flightdetailsRepo.getAllByDepartureAndDepartureTimeIsAfterOrderByDepartureTime(airport, Timestamp.from(Instant.now())).orElseThrow(()-> new ApplicationException("Error, no Departures for airport after now could be found"));
+        System.out.println(flights);
         List<Flightdetails> list;
 
         if (flights.size() < startItem) {
@@ -59,7 +63,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     }
 
     @Override
-    public Collection<Flightdetails> getArrivals(String airportcode) {
+    public Collection<Flightdetails> getArrivals(String airportcode) throws ApplicationException {
         //TODO: get departures sorted and after a specific time
         Airport airport= airportServiceIF.getAirportByAirportcode(airportcode);
         return flightdetailsRepo.findByOriginOrderByArrivalTime(airport);

@@ -1,4 +1,4 @@
-package de.othr.eerben.erbenairports.backend.security.util;
+package de.othr.eerben.erbenairports.backend.security;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

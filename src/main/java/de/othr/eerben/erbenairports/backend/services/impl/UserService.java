@@ -24,7 +24,7 @@ public class UserService implements UserServiceIF{
 
     @Transactional
     @Override
-    public User registerCustomer(User user) throws ApplicationException {
+    public User registerUser(User user) throws ApplicationException {
         //rewrite statment to something like exists
         if(userRepo.findByUsername(user.getUsername()).isPresent()){
             throw new ApplicationException("Error: This User already exists!");
@@ -42,7 +42,7 @@ public class UserService implements UserServiceIF{
     @Override
     public User getUserByUsername(String username) {
         return userRepo.findByUsername(username).orElseThrow(
-                () -> new ServiceException("User with email " + username + " not found")
+                () -> new ServiceException("User with username " + username + " not found")
         );
     }
 

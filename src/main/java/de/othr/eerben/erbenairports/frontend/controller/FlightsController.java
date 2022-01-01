@@ -32,7 +32,7 @@ public class FlightsController {
 
     @RequestMapping(value="/departures", method = RequestMethod.GET)
     public String departures(Model model, @RequestParam(value = "airport",required = false) String airportcode,@RequestParam("page") Optional<Integer> page,
-                             @RequestParam("size") Optional<Integer> size) throws Exception{
+                             @RequestParam("size") Optional<Integer> size) throws ApplicationException{
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(5);
 
@@ -78,7 +78,7 @@ public class FlightsController {
 
 
     @RequestMapping(value="/arrivals", method = RequestMethod.GET)
-    public String arrivals(Model model, @RequestParam(value="airport",required = false) String airportcode){
+    public String arrivals(Model model, @RequestParam(value="airport",required = false) String airportcode) throws ApplicationException {
         if(airportcode!= null &&!airportcode.isEmpty()&&!airportcode.isBlank()){
             Collection<Flightdetails> flights = flightdetailsServiceIF.getDepartures(airportcode);
             model.addAttribute("flights", flights);
@@ -87,7 +87,7 @@ public class FlightsController {
     }
 
     @RequestMapping(value="/flight/{flightnumber}", method = RequestMethod.GET)
-    public String getFlightdetails(Model model, @PathVariable("flightnumber") String flightnumber){
+    public String getFlightdetails(Model model, @PathVariable("flightnumber") String flightnumber) throws ApplicationException {
         Collection<Flightdetails> flights = flightdetailsServiceIF.getDepartures(flightnumber);
         model.addAttribute("flights", flights);
         return "unauthenticated/arrivals";
