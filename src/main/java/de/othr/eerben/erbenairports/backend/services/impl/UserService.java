@@ -1,7 +1,6 @@
 package de.othr.eerben.erbenairports.backend.services.impl;
 
 import de.othr.eerben.erbenairports.backend.data.entities.User;
-import de.othr.eerben.erbenairports.backend.data.entities.UserData;
 import de.othr.eerben.erbenairports.backend.data.repositories.UserRepository;
 import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
 import de.othr.eerben.erbenairports.backend.services.UserServiceIF;

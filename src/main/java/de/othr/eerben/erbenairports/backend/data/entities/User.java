@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 public class User extends SingleIdEntity<String> implements UserDetails {
@@ -189,7 +190,12 @@ public class User extends SingleIdEntity<String> implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return List.of(new GrantedAuthority() {
+            @Override
+            public String getAuthority() {
+                return User.this.accountType.name();
+            }
+        });
     }
 
     @Override

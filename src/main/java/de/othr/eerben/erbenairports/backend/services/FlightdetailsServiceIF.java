@@ -1,7 +1,7 @@
 package de.othr.eerben.erbenairports.backend.services;
 
 import de.othr.eerben.erbenairports.backend.data.entities.Flightdetails;
-import de.othr.eerben.erbenairports.backend.data.entities.UserData;
+import de.othr.eerben.erbenairports.backend.data.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,8 +17,8 @@ public interface FlightdetailsServiceIF {
 
     Flightdetails getFlightdetails(String flightnumber);
 
-    boolean cancleFlight(UserData user, String flightnumber);
+    boolean cancleFlight(User user, String flightnumber);
 
-    Flightdetails bookFlight(UserData user, Flightdetails flightdetails);
+    Flightdetails bookFlight(User user, Flightdetails flightdetails);
 
 }

@@ -2,7 +2,7 @@ package de.othr.eerben.erbenairports.backend.services.impl;
 
 import de.othr.eerben.erbenairports.backend.data.entities.Airport;
 import de.othr.eerben.erbenairports.backend.data.entities.Flightdetails;
-import de.othr.eerben.erbenairports.backend.data.entities.UserData;
+import de.othr.eerben.erbenairports.backend.data.entities.User;
 import de.othr.eerben.erbenairports.backend.data.repositories.FlightdetailsRepository;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
 import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
@@ -80,13 +80,13 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
 
     @Override
-    public boolean cancleFlight(UserData user, String flightnumber) {
+    public boolean cancleFlight(User user, String flightnumber) {
         //TODO:
         return false;
     }
 
     @Override
-    public Flightdetails bookFlight(UserData user, Flightdetails flightdetails) {
+    public Flightdetails bookFlight(User user, Flightdetails flightdetails) {
         //TODO:
         return null;
     }

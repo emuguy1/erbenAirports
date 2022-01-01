@@ -33,7 +33,7 @@
     <div class="d-flex justify-content-center">
 
         <div class="card text-right" style="width: 18rem; margin: 1rem;"
-             sec:authorize="hasRole('CUSTOMER')||isAnonymous()">
+             sec:authorize="hasAuthority('CUSTOMER')||isAnonymous()">
             <div class="card-body">
                 <h5 class="card-title">Book an flight</h5>
                 <p class="card-text">Book a flight with our airportsolution for easy managment of flights. </p>
@@ -41,7 +41,7 @@
             </div>
         </div>
 
-        <div class="card text-right" style="width: 18rem; margin: 1rem;" sec:authorize="hasRole('EMPLOYEE')">
+        <div class="card text-right" style="width: 18rem; margin: 1rem;" sec:authorize="hasAuthority('EMPLOYEE')">
             <div class="card-body">
                 <h5 class="card-title">Create Airport</h5>
                 <p class="card-text">Wanna Add an Airport for even more flights possible to shedule with this software?</p>
@@ -50,7 +50,7 @@
             </div>
         </div>
 
-        <div class="card text-right" style="width: 18rem; margin: 1rem;" sec:authorize="hasRole('CUSTOMER')||isAnonymous()">
+        <div class="card text-right" style="width: 18rem; margin: 1rem;" sec:authorize="hasAuthority('CUSTOMER')||isAnonymous()">
             <div class="card-body">
                 <h5 class="card-title">My Flights</h5>
                 <p class="card-text">Review or edit your Flights</p>
@@ -60,7 +60,7 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-center" sec:authorize="hasRole('EMPLOYEE')">
+    <div class="d-flex justify-content-center" sec:authorize="hasAuthority('EMPLOYEE')">
         <div class="card text-right" style="width: 18rem; margin: 1rem;">
             <div class="card-body">
                 <h5 class="card-title">My Flights</h5>
