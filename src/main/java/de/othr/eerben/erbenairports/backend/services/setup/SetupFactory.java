@@ -18,13 +18,13 @@ public class SetupFactory {
         return new FlightdetailsSetupComponent();
     }
 
-    //@Bean @Qualifier("employee")
-    //public AbstractUserSetup createEmployeeSetup(){
-    //    return new EmployeeAccountSetup();
-    //}
+    @Bean @Qualifier("employee")
+    public AbstractUserSetup createEmployeeSetup(){
+        return new EmployeeSetup();
+    }
 
-    //@Bean @Qualifier("customer")
-    //public AbstractUserSetup createCustomerSetup(){
-    //    return new CustomerAccountSetup();
-    //}
+    @Bean @Qualifier("customer")
+    public AbstractUserSetup createCustomerSetup(){
+        return new CustomerSetup();
+    }
 }

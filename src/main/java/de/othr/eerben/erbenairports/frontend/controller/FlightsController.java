@@ -73,8 +73,6 @@ public class FlightsController {
 
     @RequestMapping(value="/departure", method = RequestMethod.GET) //th:selected
     public String departuresSelected(Model model, @RequestParam(value = "airportcode",required = false) String airportcode) throws Exception{
-        System.out.println("Action ausgelöst:");
-        System.out.println(airportcode);
         return "redirect:/departures?airport="+airportcode;
     }
 

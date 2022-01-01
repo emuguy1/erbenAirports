@@ -1,8 +1,11 @@
 package de.othr.eerben.erbenairports.backend.data.entities;
 
+import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 
+@MappedSuperclass
 public abstract class SingleIdEntity<K extends Comparable> implements Serializable, Comparable<SingleIdEntity> {
+
     public abstract K getID();
 
     @Override
@@ -22,7 +25,5 @@ public abstract class SingleIdEntity<K extends Comparable> implements Serializab
     }
 
     @Override
-    public int compareTo(SingleIdEntity other) {
-        return this.getID().compareTo(other.getID());
-    }
+    public int compareTo(SingleIdEntity other) { return this.getID().compareTo(other.getID()); }
 }

@@ -35,28 +35,27 @@
         <div class="card text-right" style="width: 18rem; margin: 1rem;"
              sec:authorize="hasRole('CUSTOMER')||isAnonymous()">
             <div class="card-body">
-                <h5 class="card-title">Send a letter</h5>
-                <p class="card-text">Send a letter to be delivered by tomorrow via our easy mailing service.</p>
-                <a th:href="@{/order/letter}" role="button" class="btn  btn-primary" style="color: white">Order
-                    Letter</a>
+                <h5 class="card-title">Book an flight</h5>
+                <p class="card-text">Book a flight with our airportsolution for easy managment of flights. </p>
+                <a th:href="@{/flight/new}" role="button" class="btn  btn-primary" style="color: white">Book Flight</a>
             </div>
         </div>
 
-        <div class="card text-right" style="width: 18rem; margin: 1rem;" sec:authorize="hasRole('CUSTOMER')">
+        <div class="card text-right" style="width: 18rem; margin: 1rem;" sec:authorize="hasRole('EMPLOYEE')||isAnonymous()">
             <div class="card-body">
-                <h5 class="card-title">Order a shipment</h5>
-                <p class="card-text">Need a custom delivery. Request it now.</p>
-                <a th:href="@{/order/shipment}" role="button" class="btn  btn-primary" style="color: white">Order
-                    Shipment</a>
+                <h5 class="card-title">Create Airport</h5>
+                <p class="card-text">Wanna Add an Airport for even more flights possible to shedule with this software?</p>
+                <a th:href="@{/airport/new}" role="button" class="btn  btn-primary" style="color: white">Create
+                    Airport</a>
             </div>
         </div>
 
-        <div class="card text-right" style="width: 18rem; margin: 1rem;" sec:authorize="hasRole('CUSTOMER')">
+        <div class="card text-right" style="width: 18rem; margin: 1rem;" sec:authorize="hasRole('CUSTOMER')||isAnonymous()">
             <div class="card-body">
-                <h5 class="card-title">My Orders</h5>
-                <p class="card-text">Review or edit your Orders</p>
-                <a th:href="@{/customer/overview}" role="button" class="btn  btn-primary" style="color: white">My
-                    Orders</a>
+                <h5 class="card-title">My Flights</h5>
+                <p class="card-text">Review or edit your Flights</p>
+                <a th:href="@{/flights/overview}" role="button" class="btn  btn-primary" style="color: white">My
+                    Flights</a>
             </div>
         </div>
     </div>
@@ -64,10 +63,10 @@
     <div class="d-flex justify-content-center" sec:authorize="hasRole('EMPLOYEE')">
         <div class="card text-right" style="width: 18rem; margin: 1rem;">
             <div class="card-body">
-                <h5 class="card-title">My Orders</h5>
-                <p class="card-text">Check which orders you have assigned and mark delivered ones as such.</p>
-                <a th:href="@{/employee/overview}" role="button" class="btn  btn-primary" style="color: white">Deliver
-                    Order</a>
+                <h5 class="card-title">My Flights</h5>
+                <p class="card-text">Check which flights you created and edit them if necessary.</p>
+                <a th:href="@{/employee/overview}" role="button" class="btn  btn-primary" style="color: white">View
+                    Flights</a>
             </div>
         </div>
     </div>

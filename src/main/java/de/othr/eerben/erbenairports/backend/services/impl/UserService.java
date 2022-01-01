@@ -6,13 +6,15 @@ import de.othr.eerben.erbenairports.backend.data.repositories.UserRepository;
 import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
 import de.othr.eerben.erbenairports.backend.services.UserServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
 @Service
-public class UserService implements UserServiceIF {
+public class UserService implements UserServiceIF{
 
     @Autowired
     private UserRepository userRepo;
@@ -51,5 +53,12 @@ public class UserService implements UserServiceIF {
     @Override
     public User loginCustomer(UserData userData) {
         return null;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepo.findByUsername(username).orElseThrow(
+                () -> new UsernameNotFoundException("User with email " + username + " not found")
+        );
     }
 }

@@ -1,4 +1,4 @@
-package de.othr.eerben.erbenairports;
+package de.othr.eerben.erbenairports.backend.security;
 
 import de.othr.eerben.erbenairports.backend.security.util.AirportSecurityUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return securityUtilities.passwordEncoder();
     }
     private static final String[] ALLOW_ACCESS_WITHOUT_AUTHENTICATION = {
-            "/css/**", "/image/**", "/fonts/**", "/", "/login", "/forgotPassword", "/register" };
+            "/css/**",
+            "/image/**",
+            "/fonts/**",
+            "/",
+            "/login",
+            "/forgotPassword",
+            "/register",
+            "/icons/**",
+            "/departures",
+            "/arrivals",
+            "/departure" };
 
 
     private static final String[] ALLOW_ACCESS_AS_CUSTOMER = {
@@ -42,18 +52,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        /*http.authorizeRequests()
                 .anyRequest()
                 .permitAll()
-                .and().csrf().disable();
-        /*http
-                .authorizeRequests()
+                .and().csrf().disable();*/
+        http.authorizeRequests()
                 .antMatchers(ALLOW_ACCESS_WITHOUT_AUTHENTICATION)
                 .permitAll().anyRequest().authenticated();
         http
                 .formLogin()
                 .loginPage("/login").permitAll()
-                .defaultSuccessUrl("/index")
+                .defaultSuccessUrl("/")
                 .failureUrl("/login?error")
                 .and()
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
@@ -61,7 +70,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .deleteCookies("remember-me")
                 .permitAll()
                 .and()
-                .rememberMe();*/
+                .rememberMe();
+        // Cross-Site Request Forgery ausschalten
+        http.csrf().disable();
     }
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
