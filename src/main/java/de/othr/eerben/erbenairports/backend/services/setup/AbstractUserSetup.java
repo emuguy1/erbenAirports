@@ -6,5 +6,5 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractUserSetup extends AbstractSetupComponent {
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
 }

@@ -5,6 +5,7 @@ import de.othr.eerben.erbenairports.backend.data.entities.UserData;
 import de.othr.eerben.erbenairports.backend.data.repositories.UserRepository;
 import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
 import de.othr.eerben.erbenairports.backend.services.UserServiceIF;
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -40,25 +41,22 @@ public class UserService implements UserServiceIF{
     }
 
     @Override
+    public User getUserByUsername(String username) {
+        return userRepo.findByUsername(username).orElseThrow(
+                () -> new ServiceException("User with email " + username + " not found")
+        );
+    }
+
+    @Override
     public User registerEmployee(User user) {
-        //userRepo.save(user);
-        return null;
-    }
-
-    @Override
-    public User loginEmployee(UserData userData) {
-        return null;
-    }
-
-    @Override
-    public User loginCustomer(UserData userData) {
-        return null;
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepo.save(user);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepo.findByUsername(username).orElseThrow(
-                () -> new UsernameNotFoundException("User with email " + username + " not found")
+        return userRepo.findById(username).orElseThrow(
+                () -> new UsernameNotFoundException("User with username " + username + " not found")
         );
     }
 }
