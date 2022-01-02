@@ -27,7 +27,7 @@ public class FlightdetailsSetupComponent extends AbstractSetupComponent{
             if(flightdetailsRepo.findByFlightnumber("LH3200").isPresent()){
                 return true;
             }
-            Date now= Date.from(Instant.now());
+            Date now= Date.from(Instant.now().plusSeconds(7200));
             Date now12= Date.from(Instant.now().minusSeconds(720));
             Airport muc = new Airport("MUC", TimeZone.getTimeZone("Germany/Berlin"),"Germany","Munich");
             Airport lax = new Airport("LAX", TimeZone.getTimeZone("USA/LosAngeles"),"USA","Los Angeles");

@@ -39,30 +39,34 @@ public class FlightsController {
         Page<Flightdetails> flightPage;
         Collection<Flightdetails> flights;
         Collection<Airport> airports = airportServiceIF.getAllAirports().orElse(Collections.emptyList());
-        if(airportcode!= null && !airportcode.isEmpty() && !airportcode.isBlank() && !airportcode.equals("null")){
-            if(airportServiceIF.getAirportByAirportcode(airportcode)==null){
-                model.addAttribute("errorMessage", new UIErrorMessage("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
-                return "unauthenticated/error-page";
-            }
-            flightPage = flightdetailsServiceIF.getDeparturesPaginated(airportcode,PageRequest.of(currentPage - 1, pageSize));
+        try {
+            if (airportcode != null && !airportcode.isEmpty() && !airportcode.isBlank() && !airportcode.equals("null")) {
+                if (airportServiceIF.getAirportByAirportcode(airportcode) == null) {
+                    model.addAttribute("uiErrorMessage", new UIErrorMessage("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
+                    return "unauthenticated/error-page";
+                }
+                flightPage = flightdetailsServiceIF.getDeparturesPaginated(airportcode, PageRequest.of(currentPage - 1, pageSize));
 
-            model.addAttribute("flightPage", flightPage);
-            flights = flightdetailsServiceIF.getDepartures(airportcode);
-        }
-        else{
-            if(!airports.isEmpty()){
-                return "redirect:/departures?airport="+airports.stream().findFirst().get().getAirportcode();
+                model.addAttribute("flightPage", flightPage);
+                flights = flightdetailsServiceIF.getDepartures(airportcode);
+            } else {
+                if (!airports.isEmpty()) {
+                    return "redirect:/departures?airport=" + airports.stream().findFirst().get().getAirportcode();
+                } else {
+                    throw new ApplicationException("No Airports were found!");
+                }
             }
-            else{
-                throw new ApplicationException("No Airports were found!");
+            int totalPages = flightPage.getTotalPages();
+            if (totalPages > 0) {
+                List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                        .boxed()
+                        .collect(Collectors.toList());
+                model.addAttribute("pageNumbers", pageNumbers);
             }
         }
-        int totalPages = flightPage.getTotalPages();
-        if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                    .boxed()
-                    .collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
+        catch (ApplicationException e){
+            model.addAttribute("uiErrorMessage", new UIErrorMessage("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
+            return "unauthenticated/error-page";
         }
         model.addAttribute("flights", flights);
         model.addAttribute("airports", airports);

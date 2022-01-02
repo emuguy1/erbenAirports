@@ -38,7 +38,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/icons/**",
             "/departures",
             "/arrivals",
-            "/departure" };
+            "/departure",
+            "/error"};
 
 
     private static final String[] ALLOW_ACCESS_AS_CUSTOMER = {
