@@ -3,6 +3,8 @@ package de.othr.eerben.erbenairports.backend.services.impl;
 import de.othr.eerben.erbenairports.backend.data.entities.Airport;
 import de.othr.eerben.erbenairports.backend.data.entities.Flightdetails;
 import de.othr.eerben.erbenairports.backend.data.entities.User;
+import de.othr.eerben.erbenairports.backend.data.entities.dto.FlightdetailsDTO;
+import de.othr.eerben.erbenairports.backend.data.repositories.BookedCalendarslotRepository;
 import de.othr.eerben.erbenairports.backend.data.repositories.FlightdetailsRepository;
 import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
@@ -17,9 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class FlightdetailsService implements FlightdetailsServiceIF {
@@ -32,6 +32,9 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
     @Autowired
     private FlightdetailsRepository flightdetailsRepo;
+
+    @Autowired
+    private BookedCalendarslotRepository calendarslotRepository;
 
     @Override
     public Collection<Flightdetails> getDepartures(String airportcode) throws ApplicationException{
@@ -120,9 +123,21 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     }
 
     @Override
-    public Flightdetails bookFlight(Flightdetails flightdetails) {
+    public Flightdetails bookFlight(FlightdetailsDTO flightdetails) {
 
+        //Calendar calendar = Calendar.getInstance();
+        //calendar.setTime(departureTime);
+        //calendar.add(Calendar.MINUTE, (int) (connection.getFlightTimeHours() * 60));
 
+        //check necessary inputs
+        //get departure time
+        Date wishedDeparture=flightdetails.getDepartureTime();
+        Date approximatedArrivalTime=flightdetails.getDepartureTime();
+        //check for available timeslot at departure and origin and reshedule if necessary max to 60 min after/before wished
+        //create bbokedTimeslot
+        //add user who created it/ created it for
+        //save flightdetails
+        //return flightdetails
         //TODO:add transaktion in trbank
 
         return null;

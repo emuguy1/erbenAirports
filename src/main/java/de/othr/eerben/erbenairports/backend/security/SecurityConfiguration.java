@@ -40,7 +40,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/arrivals",
             "/departure",
             "/arrival",
-            "/error"};
+            "/error",
+            "/efa"
+    };
 
 
     private static final String[] ALLOW_ACCESS_AS_CUSTOMER = {
