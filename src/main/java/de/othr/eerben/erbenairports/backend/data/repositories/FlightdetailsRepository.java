@@ -16,8 +16,10 @@ import java.util.Optional;
 @Repository
 public interface FlightdetailsRepository extends CrudRepository<Flightdetails,String> {
     Collection<Flightdetails> findByDepartureOrderByDepartureTime(Airport airport);
-    @Query("select f from Flightdetails f where f.departure = ?1 and f.departureTime.startTime > ?2 order by f.departureTime.startTime")
+    @Query("select f from Flightdetails f where f.departure = ?1 and f.departureTime.startTime > ?2 order by f.departureTime.startTime ASC")
     Optional<Collection<Flightdetails>> getAllByDepartureAndDepartureTimeIsAfterOrderByDepartureTime(Airport departure, Timestamp departureTime);
+    @Query("select f from Flightdetails f where f.origin = ?1 and f.arrivalTime.startTime > ?2 order by f.arrivalTime.startTime")
+    Optional<Collection<Flightdetails>> getAllByOriginAndArrivalTimeIsAfterOrderByArrivalTime(Airport departure, Timestamp arrivalTime);
     //Collection<Flightdetails> findByDepartureOrderByDepartureTimeAfter(Airport airport, Date date);
     //Collection<Flightdetails> findByDepartureAndDepartureTimeIsAfterWithOrderByDepartureTime(Airport airport, LocalDateTime departureTime);
     Collection<Flightdetails> findByOriginOrderByArrivalTime(Airport airport);

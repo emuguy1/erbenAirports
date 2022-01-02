@@ -16,10 +16,13 @@ public interface FlightdetailsServiceIF {
 
     Collection<Flightdetails> getArrivals(String airportcode) throws ApplicationException;
 
+    Page<Flightdetails> getArrivalsPaginated(String airportcode, Pageable pageable) throws ApplicationException;
+
     Flightdetails getFlightdetails(String flightnumber);
 
     boolean cancleFlight(User user, String flightnumber);
 
     Flightdetails bookFlight(User user, Flightdetails flightdetails);
 
+    Flightdetails bookFlight(Flightdetails flightdetails);
 }

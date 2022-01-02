@@ -35,23 +35,23 @@ public class FlightsController {
                              @RequestParam("size") Optional<Integer> size) throws ApplicationException{
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(5);
-
         Page<Flightdetails> flightPage;
-        Collection<Flightdetails> flights;
         Collection<Airport> airports = airportServiceIF.getAllAirports().orElse(Collections.emptyList());
         try {
             if (airportcode != null && !airportcode.isEmpty() && !airportcode.isBlank() && !airportcode.equals("null")) {
-                if (airportServiceIF.getAirportByAirportcode(airportcode) == null) {
+                if(page.isEmpty() || size.isEmpty()){
+                    return "redirect:/departures?airport="+airportcode+"&size="+pageSize+"&page="+currentPage;
+                }
+                else if (airportServiceIF.getAirportByAirportcode(airportcode) == null) {
                     model.addAttribute("uiErrorMessage", new UIErrorMessage("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
                     return "unauthenticated/error-page";
                 }
                 flightPage = flightdetailsServiceIF.getDeparturesPaginated(airportcode, PageRequest.of(currentPage - 1, pageSize));
 
                 model.addAttribute("flightPage", flightPage);
-                flights = flightdetailsServiceIF.getDepartures(airportcode);
             } else {
                 if (!airports.isEmpty()) {
-                    return "redirect:/departures?airport=" + airports.stream().findFirst().get().getAirportcode();
+                    return "redirect:/departures?airport=" + airports.stream().findFirst().get().getAirportcode()+"&size="+pageSize+"&page="+currentPage;
                 } else {
                     throw new ApplicationException("No Airports were found!");
                 }
@@ -68,7 +68,7 @@ public class FlightsController {
             model.addAttribute("uiErrorMessage", new UIErrorMessage("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
             return "unauthenticated/error-page";
         }
-        model.addAttribute("flights", flights);
+        model.addAttribute("flights", flightPage.stream().toList());
         model.addAttribute("airports", airports);
         model.addAttribute("currentAirport", airportServiceIF.getAirportByAirportcode(airportcode));
         model.addAttribute("selectedAirport", new Airport());
@@ -81,13 +81,57 @@ public class FlightsController {
     }
 
 
+
     @RequestMapping(value="/arrivals", method = RequestMethod.GET)
-    public String arrivals(Model model, @RequestParam(value="airport",required = false) String airportcode) throws ApplicationException {
-        if(airportcode!= null &&!airportcode.isEmpty()&&!airportcode.isBlank()){
-            Collection<Flightdetails> flights = flightdetailsServiceIF.getDepartures(airportcode);
-            model.addAttribute("flights", flights);
+    public String arrivals(Model model, @RequestParam(value = "airport",required = false) String airportcode,@RequestParam("page") Optional<Integer> page,
+                             @RequestParam("size") Optional<Integer> size) throws ApplicationException{
+        //TODO: rewrite for arrivals
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(5);
+
+        Page<Flightdetails> flightPage;
+        Collection<Airport> airports = airportServiceIF.getAllAirports().orElse(Collections.emptyList());
+        try {
+            if (airportcode != null && !airportcode.isEmpty() && !airportcode.isBlank() && !airportcode.equals("null")) {
+                if(page.isEmpty() || size.isEmpty()){
+                    return "redirect:/arrivals?airport="+airportcode+"&size="+pageSize+"&page="+currentPage;
+                }
+                else if (airportServiceIF.getAirportByAirportcode(airportcode) == null) {
+                    model.addAttribute("uiErrorMessage", new UIErrorMessage("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
+                    return "unauthenticated/error-page";
+                }
+                flightPage = flightdetailsServiceIF.getArrivalsPaginated(airportcode, PageRequest.of(currentPage - 1, pageSize));
+
+                model.addAttribute("flightPage", flightPage);
+            } else {
+                if (!airports.isEmpty()) {
+                    return "redirect:/arrivals?airport=" + airports.stream().findFirst().get().getAirportcode()+"&size="+pageSize+"&page="+currentPage;
+                } else {
+                    throw new ApplicationException("No Airports were found!");
+                }
+            }
+            int totalPages = flightPage.getTotalPages();
+            if (totalPages > 0) {
+                List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                        .boxed()
+                        .collect(Collectors.toList());
+                model.addAttribute("pageNumbers", pageNumbers);
+            }
         }
+        catch (ApplicationException e){
+            model.addAttribute("uiErrorMessage", new UIErrorMessage("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
+            return "unauthenticated/error-page";
+        }
+        model.addAttribute("flights", flightPage.stream().toList());
+        model.addAttribute("airports", airports);
+        model.addAttribute("currentAirport", airportServiceIF.getAirportByAirportcode(airportcode));
+        model.addAttribute("selectedAirport", new Airport());
         return "unauthenticated/arrivals";
+    }
+
+    @RequestMapping(value="/arrival", method = RequestMethod.GET) //th:selected
+    public String arrivalsSelected(Model model, @RequestParam(value = "airportcode",required = false) String airportcode) throws Exception{
+        return "redirect:/arrivals?airport="+airportcode;
     }
 
     @RequestMapping(value="/flight/{flightnumber}", method = RequestMethod.GET)

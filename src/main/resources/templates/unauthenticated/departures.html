@@ -8,7 +8,7 @@
 
 <body>
 <div th:replace="components/common :: navigation"></div>
-<div class="mx-4">
+<div class="container my-4">
     <h1 th:text="'Departures ' + ${currentAirport.getAirportcode()}">Departures </h1>
     <form  th:action="@{/departure}" th:object="${selectedAirport}">
         <div class="row">
@@ -18,7 +18,7 @@
                     <option th:each="airport : ${airports}"
                             th:value="${airport.getAirportcode()}"
                             th:selected="${currentAirport.getAirportcode() == airport.getAirportcode()}"
-                            th:text="${airport.getAirportcode().toString()} + '-' + ${airport.getCity().toString()} + '-' + ${airport.getCountry().toString()}"
+                            th:text="${airport.getAirportcode()} + '-' + ${airport.getCity()} + '-' + ${airport.getCountry()}"
                             th:type="submit"></option>
                 </select>
             </div>
@@ -54,11 +54,12 @@
         </tbody>
     </table>
     <h3 th:if="${flights.isEmpty()}">There are no flights scheduled at this time</h3>
-    <div th:if="${flightPage.totalPages > 0}" class="pagination"
-         th:each="pageNumber : ${pageNumbers}">
-        <a th:href="@{/departures(airport=${currentAirport.getAirportcode()},size=${flightPage.size}, page=${pageNumber})}"
+    <div th:if="${flightPage.totalPages > 0}" class="pagination d-flex justify-content-center"
+         >
+        <a th:each="pageNumber : ${pageNumbers}"
+           th:href="@{/departures(airport=${currentAirport.getAirportcode()},size=${flightPage.size}, page=${pageNumber})}"
            th:text="${pageNumber}"
-           th:class="${pageNumber==flightPage.number + 1} ? active"></a>
+           th:classappend="${pageNumber==flightPage.number + 1} ? 'text-secondary': 'text-primary'" class="mx-1"></a>
     </div>
 </div>
 </body>

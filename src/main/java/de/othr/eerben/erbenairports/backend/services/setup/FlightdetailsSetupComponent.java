@@ -9,7 +9,11 @@ import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.TemporalField;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -24,7 +28,7 @@ public class FlightdetailsSetupComponent extends AbstractSetupComponent{
     boolean setup() throws ApplicationException {
         try{
 
-            if(flightdetailsRepo.findByFlightnumber("LH3200").isPresent()){
+            if(/*flightdetailsRepo.findByFlightnumber("LH3200").isPresent()*/false){
                 return true;
             }
             Date now= Date.from(Instant.now().plusSeconds(7200));
@@ -39,8 +43,8 @@ public class FlightdetailsSetupComponent extends AbstractSetupComponent{
             calendarslotRepo.save(bookedCalendarslot12LAX);
             calendarslotRepo.save(calendarslotnowMUC);
             calendarslotRepo.save(bookedCalendarslot12MUC);
-            flightdetailsRepo.save(new Flightdetails("LH3200", 12.4,25.6,250, lax, muc,calendarslotnowLAX, bookedCalendarslot12MUC));
-            flightdetailsRepo.save(new Flightdetails("LH3220", 12.4,25.6,250, muc, lax,calendarslotnowMUC, bookedCalendarslot12LAX));
+            flightdetailsRepo.save(new Flightdetails("LH3200", 12.4,25.6,250, lax, muc, bookedCalendarslot12MUC,calendarslotnowLAX));
+            flightdetailsRepo.save(new Flightdetails("LH3220", 12.4,25.6,250, muc, lax, bookedCalendarslot12LAX,calendarslotnowMUC));
             return true;
         }catch(Exception e){
             throw new ApplicationException("Flightdetails Setup failed. Couldnt create Airports");

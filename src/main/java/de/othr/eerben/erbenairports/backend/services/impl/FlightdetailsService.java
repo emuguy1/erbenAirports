@@ -7,6 +7,7 @@ import de.othr.eerben.erbenairports.backend.data.repositories.FlightdetailsRepos
 import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
 import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
+import de.othr.eerben.erbenairports.backend.services.UserServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,6 +26,9 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
     @Autowired
     private AirportServiceIF airportServiceIF;
+
+    @Autowired
+    private UserServiceIF userServiceIF;
 
     @Autowired
     private FlightdetailsRepository flightdetailsRepo;
@@ -69,12 +73,31 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
         return flightdetailsRepo.findByOriginOrderByArrivalTime(airport);
     }
 
-//    @Override
-//    public Collection<Flightdetails> getArrivalsPaginated(String airportcode) {
-//        //TODO: get departures sorted and after a specific time
-//        Airport airport= airportServiceIF.getAirportByAirportcode(airportcode);
-//        return flightdetailsRepo.findByOriginOrderByArrivalTime(airport);
-//    }
+    @Override
+    public Page<Flightdetails> getArrivalsPaginated(String airportcode, Pageable pageable) throws ApplicationException {
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startItem = currentPage * pageSize;
+
+
+        //TODO: get arrivals after a specific time
+        Airport airport = airportServiceIF.getAirportByAirportcode(airportcode);
+        Collection<Flightdetails> flights = flightdetailsRepo.getAllByOriginAndArrivalTimeIsAfterOrderByArrivalTime(airport, Timestamp.from(Instant.now())).orElseThrow(() -> new ApplicationException("Error, no Arrivals for airport after now could be found"));
+        System.out.println(flights);
+        List<Flightdetails> list;
+
+        if (flights.size() < startItem) {
+            list = Collections.emptyList();
+        } else {
+            int toIndex = Math.min(startItem + pageSize, flights.size());
+            list = flights.stream().toList().subList(startItem, toIndex);
+        }
+
+        Page<Flightdetails> flightsPage
+                = new PageImpl<Flightdetails>(list, PageRequest.of(currentPage, pageSize), flights.size());
+
+        return flightsPage;
+    }
 
     @Override
     public Flightdetails getFlightdetails(String flightnumber) {
@@ -91,7 +114,17 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
     @Override
     public Flightdetails bookFlight(User user, Flightdetails flightdetails) {
+        //userServiceIF.
         //TODO:
+        return null;
+    }
+
+    @Override
+    public Flightdetails bookFlight(Flightdetails flightdetails) {
+
+
+        //TODO:add transaktion in trbank
+
         return null;
     }
 

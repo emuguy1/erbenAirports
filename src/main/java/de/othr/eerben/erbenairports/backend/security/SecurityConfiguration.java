@@ -39,6 +39,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/departures",
             "/arrivals",
             "/departure",
+            "/arrival",
             "/error"};
 
 
