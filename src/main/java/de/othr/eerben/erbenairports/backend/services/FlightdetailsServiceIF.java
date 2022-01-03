@@ -11,15 +11,11 @@ import java.util.Collection;
 
 public interface FlightdetailsServiceIF {
 
-    Collection<Flightdetails> getDepartures(String airportcode) throws ApplicationException;
-
     Page<Flightdetails> getDeparturesPaginated(String airportcode, Pageable pageable) throws ApplicationException;
-
-    Collection<Flightdetails> getArrivals(String airportcode) throws ApplicationException;
 
     Page<Flightdetails> getArrivalsPaginated(String airportcode, Pageable pageable) throws ApplicationException;
 
-    Flightdetails getFlightdetails(String flightnumber);
+    Collection<Flightdetails> getFlightdetails(String flightnumber);
 
     boolean cancleFlight(User user, String flightnumber);
 

@@ -41,7 +41,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/departure",
             "/arrival",
             "/error",
-            "/efa"
+            //TODO: To be replaced
+            "/bookFlight"
     };
 
 

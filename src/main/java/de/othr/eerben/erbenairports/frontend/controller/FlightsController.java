@@ -136,7 +136,7 @@ public class FlightsController {
 
     @RequestMapping(value="/flight/{flightnumber}", method = RequestMethod.GET)
     public String getFlightdetails(Model model, @PathVariable("flightnumber") String flightnumber) throws ApplicationException {
-        Collection<Flightdetails> flights = flightdetailsServiceIF.getDepartures(flightnumber);
+        Collection<Flightdetails> flights = flightdetailsServiceIF.getFlightdetails(flightnumber);
         model.addAttribute("flights", flights);
         return "unauthenticated/arrivals";
     }
@@ -144,8 +144,8 @@ public class FlightsController {
     @Transactional
     @RequestMapping(value="/bookFlight", method = RequestMethod.GET)//temp for testing
     public String bookFlight(Model model) throws ApplicationException {
-        flightdetailsServiceIF.bookFlight(new FlightdetailsDTO("LH352",3.6,1400.6,360,"LAX","MUC",Date.from(Instant.ofEpochSecond(1641219150))));
-        return "index";
+        flightdetailsServiceIF.bookFlight(new FlightdetailsDTO("LH352",63.6,1400.6,360,"LAX","MUC",Date.from(Instant.ofEpochSecond(1641219150))));
+        return "shared/bookFlight";
     }
 
 

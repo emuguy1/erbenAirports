@@ -8,6 +8,7 @@ import de.othr.eerben.erbenairports.backend.data.entities.dto.FlightdetailsDTO;
 import de.othr.eerben.erbenairports.backend.data.repositories.BookedCalendarslotRepository;
 import de.othr.eerben.erbenairports.backend.data.repositories.FlightdetailsRepository;
 import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
+import de.othr.eerben.erbenairports.backend.exceptions.UIErrorMessage;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
 import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import de.othr.eerben.erbenairports.backend.services.UserServiceIF;
@@ -38,12 +39,6 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     @Autowired
     private BookedCalendarslotRepository calendarslotRepository;
 
-    @Override
-    public Collection<Flightdetails> getDepartures(String airportcode) throws ApplicationException{
-        //TODO: get departures sorted and after a specific time
-        Airport airport= airportServiceIF.getAirportByAirportcode(airportcode);
-        return flightdetailsRepo.getAllByDepartureAndDepartureTimeIsAfterOrderByDepartureTime(airport, Timestamp.from(Instant.now())).orElseThrow(()-> new ApplicationException("Error, no Departures for airport after now could be found"));
-    }
 
     @Override
     public Page<Flightdetails> getDeparturesPaginated(String airportcode, Pageable pageable) throws ApplicationException {
@@ -51,8 +46,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;
 
-
-        //TODO: get departures sorted and after a specific time
+        //TODO: get departures after a specific time
         Airport airport= airportServiceIF.getAirportByAirportcode(airportcode);
         Collection<Flightdetails> flights= flightdetailsRepo.getAllByDepartureAndDepartureTimeIsAfterOrderByDepartureTime(airport, Timestamp.from(Instant.now())).orElseThrow(()-> new ApplicationException("Error, no Departures for airport after now could be found"));
         System.out.println(flights);
@@ -72,18 +66,10 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     }
 
     @Override
-    public Collection<Flightdetails> getArrivals(String airportcode) throws ApplicationException {
-        //TODO: get departures sorted and after a specific time
-        Airport airport= airportServiceIF.getAirportByAirportcode(airportcode);
-        return flightdetailsRepo.findByOriginOrderByArrivalTime(airport);
-    }
-
-    @Override
     public Page<Flightdetails> getArrivalsPaginated(String airportcode, Pageable pageable) throws ApplicationException {
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;
-
 
         //TODO: get arrivals after a specific time
         Airport airport = airportServiceIF.getAirportByAirportcode(airportcode);
@@ -105,8 +91,8 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     }
 
     @Override
-    public Flightdetails getFlightdetails(String flightnumber) {
-        return flightdetailsRepo.findByFlightnumber(flightnumber).orElseThrow().stream().findFirst().get();
+    public Collection<Flightdetails> getFlightdetails(String flightnumber) {
+        return flightdetailsRepo.findByFlightnumber(flightnumber).orElseThrow();
     }
 
 
@@ -127,6 +113,9 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     @Override
     public Flightdetails bookFlight(FlightdetailsDTO flightdetails) throws ApplicationException {
 
+        try{
+
+
         //TODO: try-catch
         Airport departureAirport = airportServiceIF.getAirportByAirportcode(flightdetails.getDeparture());
         Airport originAirport = airportServiceIF.getAirportByAirportcode(flightdetails.getOrigin());
@@ -144,22 +133,50 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
         calendar.set(Calendar.MINUTE,cleanedMinutes);
         Date wishedDeparture=calendar.getTime();
 
-        Date approximatedArrivalTime=Date.from(wishedDeparture.toInstant().plus(Duration.ofMinutes((long)(flightdetails.getFlightTimeHours()*60))));
         Calendar calendar1= Calendar.getInstance();
-        calendar1.setTime(approximatedArrivalTime);
+        calendar1.setTime(wishedDeparture);
+        calendar1.add(Calendar.MINUTE,(int) Math.ceil(flightdetails.getFlightTimeHours() * 60));
+        calendar1.set(Calendar.MINUTE,(int)Math.floor((calendar1.get(Calendar.MINUTE) + 2.5) / 5) * 5);
+        Date approximatedArrivalTime=calendar1.getTime();
 
         //check for available timeslot at departure and origin and reshedule if necessary max to 60 min after/before wished
 
         boolean departurefree=calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getDeparture(), wishedDeparture).isEmpty();
-
         boolean arrivalfree=calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getOrigin(), approximatedArrivalTime).isEmpty();
+
+        int i=0;
+        while ((!departurefree || !arrivalfree) &&i<12){
+            i++;
+            calendar.add(Calendar.MINUTE,5);
+            wishedDeparture=calendar.getTime();
+            calendar1.add(Calendar.MINUTE,5);
+            approximatedArrivalTime=calendar.getTime();
+            departurefree=calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getDeparture(), wishedDeparture).isEmpty();
+            arrivalfree=calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getOrigin(), approximatedArrivalTime).isEmpty();
+        }
+        if(!departurefree || !arrivalfree){
+            i=0;
+            calendar.add(Calendar.MINUTE,-60);
+            calendar1.add(Calendar.MINUTE,-60);
+            while ((!departurefree || !arrivalfree)&&i>-12){
+                i--;
+                calendar.add(Calendar.MINUTE,-5);
+                wishedDeparture=calendar.getTime();
+                calendar1.add(Calendar.MINUTE,-5);
+                approximatedArrivalTime=calendar.getTime();
+                departurefree=calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getDeparture(), wishedDeparture).isEmpty();
+                arrivalfree=calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getOrigin(), approximatedArrivalTime).isEmpty();
+            }
+        }
+        if(!departurefree||!arrivalfree){
+            throw new ApplicationException("Found no possible timeslot  in plus/minus 1 hour of wished flightslot");
+        }
         //create bokedTimeslot
         BookedCalendarslot calendarslotDeparture= new BookedCalendarslot(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH),calendar.get(Calendar.YEAR),5,calendar.getTime(),airportServiceIF.getAirportByAirportcode(flightdetails.getDeparture()));
         BookedCalendarslot calendarslotArrival= new BookedCalendarslot(calendar1.get(Calendar.DAY_OF_MONTH), calendar1.get(Calendar.MONTH),calendar1.get(Calendar.YEAR),5,calendar1.getTime(),airportServiceIF.getAirportByAirportcode(flightdetails.getOrigin()));
-        if(departurefree && arrivalfree){
-            calendarslotDeparture=calendarslotRepository.save(calendarslotDeparture);
-            calendarslotArrival=calendarslotRepository.save(calendarslotArrival);
-        }
+
+        calendarslotRepository.save(calendarslotDeparture);
+        calendarslotRepository.save(calendarslotArrival);
         //TODO:add user who created it/ created it for
 
         //save flightdetails
@@ -167,9 +184,11 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
         flightdetails1=flightdetailsRepo.save(flightdetails1);
         //TODO:add transaktion in trbank
 
-        //return flightdetails
-
         return flightdetails1;
+        }
+        catch (ApplicationException e){
+            throw new ApplicationException(e.getMessage());
+        }
     }
 
 

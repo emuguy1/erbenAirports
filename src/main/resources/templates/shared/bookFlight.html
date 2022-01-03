@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>Arrivals</title>
+    <div th:replace="components/common :: header"></div>
+</head>
+
+<body>
+<div th:replace="components/common :: navigation"></div>
+<h1>Book Flight</h1>
+<form  method="post">
+    <div class="modal-header">
+        <h5 class="modal-title" id="bookModalLabel"><label
+                th:text="'Book flight '"></label>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-4">
+                <h6>Departure time:</h6>
+            </div>
+            <div class="col-8">
+                <label >Airport</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <h6>Arrival time:</h6>
+            </div>
+            <div class="col-8">
+                <label >Airpoort</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <div class="mb-3">
+                    <label for="select_seats">
+                        <h6>Select number of seats:</h6></label>
+                    <select class="form-select" aria-label="Default select example"
+                            id="select_seats" >
+                        <option>asdaw</option>
+
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+
+                <input type="hidden"  id="flight" name="flight" readonly>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                Close
+            </button>
+            <button type="submit" class="btn btn-primary">Book</button>
+        </div>
+    </div>
+</form>
+
+</body>
+</html>
