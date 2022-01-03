@@ -17,7 +17,7 @@ public class AirportSetupComponent extends AbstractSetupComponent {
     @Override
     boolean setup() throws ApplicationException {
         try{
-            if(airportRepo.findByAirportcode("MUC") != null){
+            if(airportRepo.existsAirportByAirportcode("MUC")){
                 return true;
             }
             airportRepo.save(new Airport("MUC", TimeZone.getTimeZone("Germany/Berlin"),"Germany","Munich"));

@@ -35,10 +35,10 @@ public class BookedCalendarslot {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date startTime;
 
-    @OneToOne
+    @ManyToOne
     private Airport airport;
 
-    @OneToOne
+    @OneToOne(mappedBy = "departureTime")
     private Flightdetails flightdetails;
 
 

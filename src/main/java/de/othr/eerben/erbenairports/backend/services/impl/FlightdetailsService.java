@@ -1,6 +1,7 @@
 package de.othr.eerben.erbenairports.backend.services.impl;
 
 import de.othr.eerben.erbenairports.backend.data.entities.Airport;
+import de.othr.eerben.erbenairports.backend.data.entities.BookedCalendarslot;
 import de.othr.eerben.erbenairports.backend.data.entities.Flightdetails;
 import de.othr.eerben.erbenairports.backend.data.entities.User;
 import de.othr.eerben.erbenairports.backend.data.entities.dto.FlightdetailsDTO;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
@@ -123,24 +125,51 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     }
 
     @Override
-    public Flightdetails bookFlight(FlightdetailsDTO flightdetails) {
+    public Flightdetails bookFlight(FlightdetailsDTO flightdetails) throws ApplicationException {
 
-        //Calendar calendar = Calendar.getInstance();
-        //calendar.setTime(departureTime);
+        //TODO: try-catch
+        Airport departureAirport = airportServiceIF.getAirportByAirportcode(flightdetails.getDeparture());
+        Airport originAirport = airportServiceIF.getAirportByAirportcode(flightdetails.getOrigin());
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(flightdetails.getDepartureTime());
+        calendar.set(Calendar.SECOND,0);
         //calendar.add(Calendar.MINUTE, (int) (connection.getFlightTimeHours() * 60));
 
         //check necessary inputs
         //get departure time
-        Date wishedDeparture=flightdetails.getDepartureTime();
-        Date approximatedArrivalTime=flightdetails.getDepartureTime();
+        //round to full 5 min upwards
+
+        int cleanedMinutes=(int)Math.floor((calendar.get(Calendar.MINUTE) + 2.5) / 5) * 5;
+        calendar.set(Calendar.MINUTE,cleanedMinutes);
+        Date wishedDeparture=calendar.getTime();
+
+        Date approximatedArrivalTime=Date.from(wishedDeparture.toInstant().plus(Duration.ofMinutes((long)(flightdetails.getFlightTimeHours()*60))));
+        Calendar calendar1= Calendar.getInstance();
+        calendar1.setTime(approximatedArrivalTime);
+
         //check for available timeslot at departure and origin and reshedule if necessary max to 60 min after/before wished
-        //create bbokedTimeslot
-        //add user who created it/ created it for
+
+        boolean departurefree=calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getDeparture(), wishedDeparture).isEmpty();
+
+        boolean arrivalfree=calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getOrigin(), approximatedArrivalTime).isEmpty();
+        //create bokedTimeslot
+        BookedCalendarslot calendarslotDeparture= new BookedCalendarslot(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH),calendar.get(Calendar.YEAR),5,calendar.getTime(),airportServiceIF.getAirportByAirportcode(flightdetails.getDeparture()));
+        BookedCalendarslot calendarslotArrival= new BookedCalendarslot(calendar1.get(Calendar.DAY_OF_MONTH), calendar1.get(Calendar.MONTH),calendar1.get(Calendar.YEAR),5,calendar1.getTime(),airportServiceIF.getAirportByAirportcode(flightdetails.getOrigin()));
+        if(departurefree && arrivalfree){
+            calendarslotDeparture=calendarslotRepository.save(calendarslotDeparture);
+            calendarslotArrival=calendarslotRepository.save(calendarslotArrival);
+        }
+        //TODO:add user who created it/ created it for
+
         //save flightdetails
-        //return flightdetails
+        Flightdetails flightdetails1= new Flightdetails(flightdetails.getFlightnumber(), flightdetails.getFlightTimeHours(), flightdetails.getMaxCargo(), flightdetails.getPassangerCount(), departureAirport,originAirport,calendarslotDeparture,calendarslotArrival);
+        flightdetails1=flightdetailsRepo.save(flightdetails1);
         //TODO:add transaktion in trbank
 
-        return null;
+        //return flightdetails
+
+        return flightdetails1;
     }
 
 

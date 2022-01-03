@@ -40,10 +40,10 @@ public class Flightdetails {
     @ManyToOne
     private User createdBy;
 
-    @OneToOne //(mappedBy = "departureTime")
+    @OneToOne (orphanRemoval = true)
     private BookedCalendarslot departureTime;
 
-    @OneToOne //(mappedBy = "arrivalTime")
+    @OneToOne (orphanRemoval = true)
     private BookedCalendarslot arrivalTime;
 
     public Flightdetails(){}

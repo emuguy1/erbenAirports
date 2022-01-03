@@ -3,6 +3,7 @@ package de.othr.eerben.erbenairports.frontend.controller;
 
 import de.othr.eerben.erbenairports.backend.data.entities.Airport;
 import de.othr.eerben.erbenairports.backend.data.entities.Flightdetails;
+import de.othr.eerben.erbenairports.backend.data.entities.dto.FlightdetailsDTO;
 import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
 import de.othr.eerben.erbenairports.backend.exceptions.UIErrorMessage;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
@@ -11,13 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.time.Instant;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -139,6 +139,13 @@ public class FlightsController {
         Collection<Flightdetails> flights = flightdetailsServiceIF.getDepartures(flightnumber);
         model.addAttribute("flights", flights);
         return "unauthenticated/arrivals";
+    }
+
+    @Transactional
+    @RequestMapping(value="/bookFlight", method = RequestMethod.GET)//temp for testing
+    public String bookFlight(Model model) throws ApplicationException {
+        flightdetailsServiceIF.bookFlight(new FlightdetailsDTO("LH352",3.6,1400.6,360,"LAX","MUC",Date.from(Instant.ofEpochSecond(1641219150))));
+        return "index";
     }
 
 
