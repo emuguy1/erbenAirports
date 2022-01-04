@@ -1,4 +1,9 @@
 package de.othr.eerben.erbenairports.backend.exceptions;
 
-public class FlightdetailsException {
+import de.othr.eerben.erbenairports.backend.data.entities.Flightdetails;
+
+public class FlightdetailsException extends RuntimeException{
+    public FlightdetailsException(Flightdetails flightdetails, String errorMessage){
+        super(errorMessage);
+    }
 }

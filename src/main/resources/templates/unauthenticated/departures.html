@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>Departures</title>
+    <div th:replace="components/common :: header"></div>
+</head>
+
+<body>
+<div th:replace="components/common :: navigation"></div>
+<div class="container my-4">
+    <h1 th:text="'Departures ' + ${currentAirport.getAirportcode()}">Departures </h1>
+    <form  th:action="@{/departure}" th:object="${selectedAirport}">
+        <div class="row">
+            <div class="col">
+                <select name="airportcode"  th:class="form-select" th:type="submit">
+                    <option disabled th:value="null">Please select an airport...</option>
+                    <option th:each="airport : ${airports}"
+                            th:value="${airport.getAirportcode()}"
+                            th:selected="${currentAirport.getAirportcode() == airport.getAirportcode()}"
+                            th:text="${airport.getAirportcode()} + '-' + ${airport.getCity()} + '-' + ${airport.getCountry()}"
+                            th:type="submit"></option>
+                </select>
+            </div>
+            <div class="col">
+                <button th:type="submit" class=" btn btn-primary shadow mb-5 rounded">Submit</button>
+            </div>
+        </div>
+    </form>
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Flight Signature</th>
+            <th scope="col">Departure Time</th>
+            <th scope="col">Destination</th>
+            <th scope="col">Arrival Time</th>
+            <th scope="col">&nbsp;</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:if="${!flights.isEmpty()}" th:each="flight : ${flights}">
+            <th scope="row"><label th:text="${flight.getFlightnumber()}"></label></th>
+            <td><label th:text="${flight.getDepartureTime().getStartTime().toString()}"></label></td>
+            <td><label th:text="${flight.getOrigin().getCity()}"></label></td>
+            <td><label th:text="${flight.getArrivalTime().getStartTime().toString}"></label></td>
+            <td>
+                <form th:action="@{/flight}">
+                    <input type="hidden" value="${flight.getFlightnumber()}" name="signature"/>
+                    <button type="button" class="btn btn-primary">more Details</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <h3 th:if="${flights.isEmpty()}">There are no flights scheduled at this time</h3>
+    <div th:if="${flightPage.totalPages > 0}" class="pagination d-flex justify-content-center"
+         >
+        <a th:each="pageNumber : ${pageNumbers}"
+           th:href="@{/departures(airport=${currentAirport.getAirportcode()},size=${flightPage.size}, page=${pageNumber})}"
+           th:text="${pageNumber}"
+           th:classappend="${pageNumber==flightPage.number + 1} ? 'text-secondary': 'text-primary'" class="mx-1"></a>
+    </div>
+</div>
+</body>
+</html>

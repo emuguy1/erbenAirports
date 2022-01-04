@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>Something went wrong!</title>
+    <div th:replace="components/common :: header"></div>
+</head>
+
+<body>
+<div th:replace="components/common :: navigation"></div>
+<h1>Were Sorry! Something went wrong!</h1>
+<h2 th:text="'This was the error message: '+ ${errorMessage.getErrormessage()}">This was the error message</h2>
+
+</body>
+</html>
