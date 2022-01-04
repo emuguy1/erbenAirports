@@ -44,7 +44,7 @@ public class FlightsController {
                 }
                 else if (airportServiceIF.getAirportByAirportcode(airportcode) == null) {
                     model.addAttribute("uiErrorMessage", new UIErrorMessage("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
-                    return "unauthenticated/error-page";
+                    return "/unauthenticated/error-page";
                 }
                 flightPage = flightdetailsServiceIF.getDeparturesPaginated(airportcode, PageRequest.of(currentPage - 1, pageSize));
 
@@ -66,13 +66,13 @@ public class FlightsController {
         }
         catch (ApplicationException e){
             model.addAttribute("uiErrorMessage", new UIErrorMessage("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
-            return "unauthenticated/error-page";
+            return "/unauthenticated/error-page";
         }
         model.addAttribute("flights", flightPage.stream().toList());
         model.addAttribute("airports", airports);
         model.addAttribute("currentAirport", airportServiceIF.getAirportByAirportcode(airportcode));
         model.addAttribute("selectedAirport", new Airport());
-        return "unauthenticated/departures";
+        return "/unauthenticated/departures";
     }
 
     @RequestMapping(value="/departure", method = RequestMethod.GET) //th:selected
@@ -98,7 +98,7 @@ public class FlightsController {
                 }
                 else if (airportServiceIF.getAirportByAirportcode(airportcode) == null) {
                     model.addAttribute("uiErrorMessage", new UIErrorMessage("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
-                    return "unauthenticated/error-page";
+                    return "/unauthenticated/error-page";
                 }
                 flightPage = flightdetailsServiceIF.getArrivalsPaginated(airportcode, PageRequest.of(currentPage - 1, pageSize));
 
@@ -120,13 +120,13 @@ public class FlightsController {
         }
         catch (ApplicationException e){
             model.addAttribute("uiErrorMessage", new UIErrorMessage("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
-            return "unauthenticated/error-page";
+            return "/unauthenticated/error-page";
         }
         model.addAttribute("flights", flightPage.stream().toList());
         model.addAttribute("airports", airports);
         model.addAttribute("currentAirport", airportServiceIF.getAirportByAirportcode(airportcode));
         model.addAttribute("selectedAirport", new Airport());
-        return "unauthenticated/arrivals";
+        return "/unauthenticated/arrivals";
     }
 
     @RequestMapping(value="/arrival", method = RequestMethod.GET) //th:selected
@@ -134,19 +134,24 @@ public class FlightsController {
         return "redirect:/arrivals?airport="+airportcode;
     }
 
-    @RequestMapping(value="/flight/{flightnumber}", method = RequestMethod.GET)
-    public String getFlightdetails(Model model, @PathVariable("flightnumber") String flightnumber) throws ApplicationException {
-        Collection<Flightdetails> flights = flightdetailsServiceIF.getFlightdetails(flightnumber);
-        model.addAttribute("flights", flights);
-        return "unauthenticated/arrivals";
+    @RequestMapping(value="/flight/new", method = RequestMethod.GET)
+    public String bookFlight(Model model) throws ApplicationException {
+        model.addAttribute("flightdetails", new FlightdetailsDTO());
+        return "flight/new";
     }
 
     @Transactional
-    @RequestMapping(value="/bookFlight", method = RequestMethod.GET)//temp for testing
-    public String bookFlight(Model model) throws ApplicationException {
-        flightdetailsServiceIF.bookFlight(new FlightdetailsDTO("LH352",63.6,1400.6,360,"LAX","MUC",Date.from(Instant.ofEpochSecond(1641219150))));
-        return "shared/bookFlight";
+    @RequestMapping(value="/flight/new", method = RequestMethod.POST)//temp for testing
+    public String addFlight(Model model, @ModelAttribute("flightdetails") FlightdetailsDTO flightdetailsdto) throws ApplicationException {
+        Flightdetails flightdetails=flightdetailsServiceIF.bookFlight(flightdetailsdto);
+        return "redirect:/flight/"+flightdetails.getFlightid();
     }
 
+    @RequestMapping(value="/flight/{id}", method = RequestMethod.GET)
+    public String getFlightdetails(Model model, @PathVariable("id") long flightid) throws ApplicationException {
+        Flightdetails flightdetails=flightdetailsServiceIF.getFlightdetailsById(flightid).orElseThrow();
+        model.addAttribute("flightdetails", flightdetails);
+        return "/flight/details";
+    }
 
 }

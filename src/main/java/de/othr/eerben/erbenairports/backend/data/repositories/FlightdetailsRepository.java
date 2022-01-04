@@ -24,6 +24,6 @@ public interface FlightdetailsRepository extends CrudRepository<Flightdetails,St
     //Collection<Flightdetails> findByDepartureAndDepartureTimeIsAfterWithOrderByDepartureTime(Airport airport, LocalDateTime departureTime);
     Collection<Flightdetails> findByOriginOrderByArrivalTime(Airport airport);
     Optional<Collection<Flightdetails>> findByFlightnumber(String flightnumber);
-
+    Optional<Flightdetails> findByFlightid(long flightid);
     boolean existsFlightdetailsByFlightnumber(String flightnumber);
 }

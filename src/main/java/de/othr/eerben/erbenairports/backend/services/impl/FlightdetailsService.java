@@ -95,6 +95,10 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
         return flightdetailsRepo.findByFlightnumber(flightnumber).orElseThrow();
     }
 
+    @Override
+    public Optional<Flightdetails> getFlightdetailsById(long flightid) {
+        return flightdetailsRepo.findByFlightid(flightid);
+    }
 
 
     @Override
