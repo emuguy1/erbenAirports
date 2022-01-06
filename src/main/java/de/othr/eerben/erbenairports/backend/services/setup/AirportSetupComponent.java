@@ -20,9 +20,9 @@ public class AirportSetupComponent extends AbstractSetupComponent {
             if(airportRepo.existsAirportByAirportcode("MUC")){
                 return true;
             }
-            airportRepo.save(new Airport("MUC", TimeZone.getTimeZone("Germany/Berlin"),"Germany","Munich"));
-            airportRepo.save(new Airport("LAX", TimeZone.getTimeZone("USA/LosAngeles"),"USA","Los Angeles"));
-            airportRepo.save(new Airport("BER", TimeZone.getTimeZone("Germany/Berlin"),"Germany","Berlin"));
+            airportRepo.save(new Airport("MUC", "Germany/Berlin","Germany","Munich"));
+            airportRepo.save(new Airport("LAX", "USA/LosAngeles","USA","Los Angeles"));
+            airportRepo.save(new Airport("BER", "Germany/Berlin","Germany","Berlin"));
             return true;
         }catch(Exception e){
             throw new ApplicationException("Airport Setup failed. Couldnt create Airports");

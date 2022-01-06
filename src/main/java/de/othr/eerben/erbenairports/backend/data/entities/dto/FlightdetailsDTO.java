@@ -1,7 +1,11 @@
 package de.othr.eerben.erbenairports.backend.data.entities.dto;
 
 import com.sun.istack.NotNull;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class FlightdetailsDTO {
@@ -26,14 +30,14 @@ public class FlightdetailsDTO {
     @NotNull
     private String origin;
 
-    private Date departureTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime departureTime;
 
-    private Date arrivalTime;
 
     public FlightdetailsDTO() {
     }
 
-    public FlightdetailsDTO(String flightnumber, double flightTimeHours, double maxCargo, int passangerCount, String departure, String origin, Date departureTime) {
+    public FlightdetailsDTO(String flightnumber, double flightTimeHours, double maxCargo, int passangerCount, String departure, String origin, LocalDateTime departureTime) {
         this.flightnumber = flightnumber;
         this.flightTimeHours = flightTimeHours;
         this.maxCargo = maxCargo;
@@ -108,19 +112,11 @@ public class FlightdetailsDTO {
         this.origin = origin;
     }
 
-    public Date getDepartureTime() {
+    public LocalDateTime getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(Date departureTime) {
+    public void setDepartureTime(LocalDateTime departureTime) {
         this.departureTime = departureTime;
-    }
-
-    public Date getArrivalTime() {
-        return arrivalTime;
-    }
-
-    public void setArrivalTime(Date arrivalTime) {
-        this.arrivalTime = arrivalTime;
     }
 }

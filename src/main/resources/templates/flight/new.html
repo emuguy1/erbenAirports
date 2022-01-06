@@ -26,11 +26,23 @@
             <div class="row col-8">
                 <div class="col-6">
                     <h6>Departure Airport</h6>
-                    <input th:field="*{departure}" type="text"  placeholder="e.g. LAX" />
+                    <select th:field="*{departure}">
+                        <option th:each="airport: ${airports}"
+                                th:value="${airport.getAirportcode()}"
+                                th:text="${airport.getAirportcode()} + '-' + ${airport.getCity()} + '-' + ${airport.getCountry()}">
+                            airport
+                        </option>
+                    </select>
                 </div>
                 <div class="col-6">
                     <h6>Origin Airport</h6>
-                    <input th:field="*{origin}" type="text" placeholder="e.g. MUC"/>
+                    <select th:field="*{origin}">
+                        <option th:each="airport: ${airports}"
+                                th:value="${airport.getAirportcode()}"
+                                th:text="${airport.getAirportcode()} + '-' + ${airport.getCity()} + '-' + ${airport.getCountry()}">
+                            airport
+                        </option>
+                    </select>
                 </div>
             </div>
             <div class="row col-8">
@@ -56,6 +68,9 @@
             </div>
         </div>
     </form>
+</div>
+<div th:replace="components/errorAlert :: errorAlert (${uiErrorMessage})">
+    <!--errorTitel, errorMessage-->
 </div>
 </body>
 </html>

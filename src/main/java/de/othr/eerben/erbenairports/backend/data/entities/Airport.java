@@ -14,7 +14,7 @@ public class Airport {
     private String airportcode;
 
     @Column(nullable = true)
-    private TimeZone timeZone;
+    private String timeZone;
 
     @Column(nullable = false)
     private String country;
@@ -25,7 +25,7 @@ public class Airport {
 
     public Airport(){}
 
-    public Airport(String airportcode, TimeZone timeZone, String country, String city) {
+    public Airport(String airportcode, String timeZone, String country, String city) {
         this.airportcode = airportcode;
         this.timeZone = timeZone;
         this.country = country;
@@ -40,11 +40,11 @@ public class Airport {
         this.airportcode = airportcode;
     }
 
-    public TimeZone getTimeZone() {
+    public String getTimeZone() {
         return timeZone;
     }
 
-    public void setTimeZone(TimeZone timeZone) {
+    public void setTimeZone(String timeZone) {
         this.timeZone = timeZone;
     }
 

@@ -41,19 +41,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/departure",
             "/arrival",
             "/error",
-            //TODO: To be replaced
-            "/bookFlight"
+            "/flight/*/details"
     };
 
-
-    private static final String[] ALLOW_ACCESS_AS_CUSTOMER = {
-            "/order/**",
-            "/customer/**"
-    };
-
-    private static final String[] ALLOW_ACCESS_AS_EMPLOYEE = {
-            "/employee/**"
-    };
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

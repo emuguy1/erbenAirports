@@ -17,6 +17,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -136,6 +139,7 @@ public class FlightsController {
 
     @RequestMapping(value="/flight/new", method = RequestMethod.GET)
     public String bookFlight(Model model) throws ApplicationException {
+        model.addAttribute("airports", airportServiceIF.getAllAirports().orElse(Collections.emptyList()));
         model.addAttribute("flightdetails", new FlightdetailsDTO());
         return "flight/new";
     }
@@ -143,14 +147,46 @@ public class FlightsController {
     @Transactional
     @RequestMapping(value="/flight/new", method = RequestMethod.POST)//temp for testing
     public String addFlight(Model model, @ModelAttribute("flightdetails") FlightdetailsDTO flightdetailsdto) throws ApplicationException {
-        Flightdetails flightdetails=flightdetailsServiceIF.bookFlight(flightdetailsdto);
-        return "redirect:/flight/"+flightdetails.getFlightid();
+        try{
+            if(flightdetailsdto.getFlightnumber().isEmpty()){
+                throw new ApplicationException("Flightnumber empty!"+flightdetailsdto.getDepartureTime());
+            }
+            Flightdetails flightdetails=flightdetailsServiceIF.bookFlight(flightdetailsdto);
+            return "redirect:/flight/"+flightdetails.getFlightid()+"/details";
+        }
+        catch (ApplicationException e){
+            model.addAttribute("flightdetails",flightdetailsdto);
+            model.addAttribute("uiErrorMessage",new UIErrorMessage(e.getMessage()));
+            return "flight/new";
+        }
+
     }
 
-    @RequestMapping(value="/flight/{id}", method = RequestMethod.GET)
+    @RequestMapping(value="/flight/{id}/details", method = RequestMethod.GET)
     public String getFlightdetails(Model model, @PathVariable("id") long flightid) throws ApplicationException {
         Flightdetails flightdetails=flightdetailsServiceIF.getFlightdetailsById(flightid).orElseThrow();
         model.addAttribute("flightdetails", flightdetails);
+        ZonedDateTime departureTimeUTC = ZonedDateTime.ofInstant(flightdetails.getDepartureTime().getStartTime().toInstant(), ZoneId.of("Etc/UTC"));
+
+        //Zoned date time at target timezone
+        ZonedDateTime departuretimeDeparture = departureTimeUTC.withZoneSameInstant(ZoneId.of(flightdetails.getDeparture().getTimeZone()));
+        model.addAttribute("departuretimeDeparture",departuretimeDeparture);
+
+        ZonedDateTime departuretimeOrigin = departureTimeUTC.withZoneSameInstant(ZoneId.of(flightdetails.getOrigin().getTimeZone()));
+        model.addAttribute("departuretimeOrigin",departuretimeOrigin);
+
+
+        ZonedDateTime arrivalTimeUTC = ZonedDateTime.ofInstant(flightdetails.getArrivalTime().getStartTime().toInstant(), ZoneId.of("Etc/UTC"));
+
+        //Zoned date time at target timezone
+        ZonedDateTime arrivaltimeDeparture = arrivalTimeUTC.withZoneSameInstant(ZoneId.of(flightdetails.getDeparture().getTimeZone()));
+        model.addAttribute("arrivaltimeDeparture",arrivaltimeDeparture);
+
+        ZonedDateTime arrivaltimeOrigin = arrivalTimeUTC.withZoneSameInstant(ZoneId.of(flightdetails.getOrigin().getTimeZone()));
+        model.addAttribute("arrivaltimeOrigin",arrivaltimeOrigin);
+
+        String flighttimestring = ((int)flightdetails.getFlightTimeHours())+"h "+(int)((flightdetails.getFlightTimeHours()-((int)(flightdetails.getFlightTimeHours())))*60)+"min";
+        model.addAttribute("flighttime", flighttimestring);
         return "/flight/details";
     }
 

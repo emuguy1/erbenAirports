@@ -9,6 +9,7 @@ import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class FlightdetailsSetupComponent extends AbstractSetupComponent{
@@ -26,7 +27,8 @@ public class FlightdetailsSetupComponent extends AbstractSetupComponent{
             if(flightdetailsRepo.existsFlightdetailsByFlightnumber("LH3200")){
                 return true;
             }
-            Date now= Date.from(Instant.now().plusSeconds(7200));
+            LocalDateTime now= LocalDateTime.from(Instant.now().plusSeconds(7200));
+            //Date now= Date.from(Instant.now().plusSeconds(7200));
 
             FlightdetailsDTO flight= new FlightdetailsDTO("LH3200", 12.4, 25.6, 250, "LAX", "MUC",now);
             FlightdetailsDTO flight2= new FlightdetailsDTO("LH3220", 14.2, 25.6, 250, "MUC", "LAX",now);

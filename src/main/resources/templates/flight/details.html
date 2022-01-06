@@ -15,14 +15,48 @@
                 th:text="${flightdetails.getFlightnumber()} + ' - ' + ${flightdetails.getDeparture().getAirportcode()} + '->' + ${flightdetails.getOrigin().getAirportcode()} ">
                 Card title</h5>
             <h6 class="card-subtitle mb-2 text-muted">Connection Details</h6>
-            <p class="card-text"th:text="'Flighttime:' + ${flightdetails.getFlightTimeHours()} ">Some quick example text to build on the card title and make up the bulk of the card's
-                content.</p>
-            <a href="#" class="card-link">Card link</a>
-            <a href="#" class="card-link">Another link</a>
+            <div class="row">
+                <p class="col-3">Flighttime:</p>
+                <p class="col-8" th:text="${flighttime}">text</p>
+            </div>
+            <div class="row">
+                <p class="col-3">Maximum cargo:</p>
+                <p class="col-8" th:text="${flightdetails.maxCargo}">text</p>
+            </div>
+            <div class="row">
+                <p class="col-3">Passangers booked:</p>
+                <p class="col-8" th:text="${flightdetails.getPassangerCount()}">text</p>
+            </div>
+            <div class="row">
+                <p class="col-3">Departure Airport:</p>
+                <p class="col-8" th:text="${flightdetails.getDeparture().getAirportcode()}+' '
+                                            +${flightdetails.getDeparture().getCity()}+' '
+                                            +${flightdetails.getDeparture().getCountry()}">text</p>
+
+                <p class="col-3">Arrival Airport:</p>
+                <p class="col-8" th:text="${flightdetails.getOrigin().getAirportcode()}+' '
+                                            +${flightdetails.getOrigin().getCity()}+' '
+                                            +${flightdetails.getOrigin().getCountry()}">text</p>
+            </div>
+            <div class="row">
+                <p class="col-3">Departure Time(Departure Airport):</p>
+                <p class="col-8" th:text="${departuretimeDeparture.toString()}">text</p>
+            </div>
+            <div class="row">
+                <p class="col-3">Departure Time(Arrival Airport):</p>
+                <p class="col-8" th:text="${departuretimeOrigin.toString()}">text</p>
+            </div>
+            <div class="row">
+                <p class="col-3">Arrival Time(Departure Airport):</p>
+                <p class="col-8" th:text="${arrivaltimeDeparture.toString()}">text</p>
+            </div>
+            <div class="row">
+                <p class="col-3">Arrival Time(Arrival Airport):</p>
+                <p class="col-8" th:text="${arrivaltimeOrigin.toString()}">text</p>
+            </div>
         </div>
     </div>
 </div>
-<h1 th:text="${flightdetails.toString()}">Flightdetails</h1>
 
 </body>
 </html>

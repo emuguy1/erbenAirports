@@ -12,7 +12,7 @@
 	<artifactId>erbenairports</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>erbenairports</name>
-	<description>Airport Managment System for University</description>
+	<description>Airport Management System for University</description>
 	<properties>
 		<java.version>16</java.version>
 	</properties>

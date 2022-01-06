@@ -27,6 +27,7 @@
             </div>
         </div>
     </form>
+    <div>All data in local time</div>
     <table class="table table-striped table-hover">
         <thead>
         <tr>
@@ -46,8 +47,7 @@
             <td><label th:text="${flight.getArrivalTime().getStartTime().toString}"></label></td>
             <td>
                 <form th:action="@{/flight}">
-                    <input type="hidden" value="${flight.getFlightnumber()}" name="signature"/>
-                    <button type="button" class="btn btn-primary">more Details</button>
+                    <a th:href="'/flight/'+${flight.getFlightid()}+'/details'" role="button" class="btn  btn-primary" style="color: white">more Details</a>
                 </form>
             </td>
         </tr>
