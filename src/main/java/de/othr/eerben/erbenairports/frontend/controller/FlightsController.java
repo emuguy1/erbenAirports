@@ -84,7 +84,6 @@ public class FlightsController {
     }
 
 
-
     @RequestMapping(value="/arrivals", method = RequestMethod.GET)
     public String arrivals(Model model, @RequestParam(value = "airport",required = false) String airportcode,@RequestParam("page") Optional<Integer> page,
                              @RequestParam("size") Optional<Integer> size) throws ApplicationException{
@@ -190,4 +189,30 @@ public class FlightsController {
         return "/flight/details";
     }
 
+    @RequestMapping(value="/airport/new", method = RequestMethod.GET)
+    public String addAirport(Model model) throws ApplicationException {
+        model.addAttribute("timezoneIDs", TimeZone.getAvailableIDs());
+        model.addAttribute("airport", new Airport());
+        return "airport/new";
+    }
+
+    @RequestMapping(value="/airport/new", method = RequestMethod.POST)
+    public String saveAirport(Model model, @ModelAttribute("airport") Airport airport) throws ApplicationException {
+        Airport savedAirport = airportServiceIF.addAirport(airport);
+        return "redirect:/airport/"+savedAirport.getAirportcode()+"/details";
+    }
+
+    @Transactional
+    @RequestMapping(value="/airport/{id}/details", method = RequestMethod.GET)
+    public String getAirportdetails(Model model,@PathVariable("id") String airportcode) throws ApplicationException {
+        model.addAttribute("airport", airportServiceIF.getAirportByAirportcode(airportcode));
+        return "airport/details";
+    }
+
+    @Transactional
+    @RequestMapping(value="/airport/{id}/edit", method = RequestMethod.GET)
+    public String editAirport(Model model,@PathVariable("id") String airportcode) throws ApplicationException {
+        model.addAttribute("airport", airportServiceIF.getAirportByAirportcode(airportcode));
+        return "airport/details";
+    }
 }

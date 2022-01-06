@@ -33,7 +33,6 @@ public class AirportService implements AirportServiceIF {
     @Override
     @Transactional
     public Optional<Collection<Airport>> getAllAirports(){
-        //TODO: get all and return it as an Collection
         return airportRepo.findDistinctByAirportcodeIsNotNull();
     }
 

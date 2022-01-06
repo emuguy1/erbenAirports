@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Create Airport | ErbenAirports</title>
+    <div th:replace="components/common :: header"></div>
+</head>
+
+<body>
+<div th:replace="components/common :: navigation"></div>
+    <form th:object="${airport}" method="post" th:action="@{/airport/new}">
+        <div th:replace="components/airportForm :: airportForm"></div>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+<div th:replace="components/errorAlert :: errorAlert (${uiErrorMessage})">
+    <!--errorTitel, errorMessage-->
+</div>
+</body>
+</html>

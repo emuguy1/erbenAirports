@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title th:text="${airport.getCity()} + ' | ErbenAirports'">Airport | ErbenAirports</title>
+    <div th:replace="components/common :: header"></div>
+</head>
+
+<body>
+<div th:replace="components/common :: navigation"></div>
+
+<h1 class="text-center">Airportdetails</h1>
+<div class="d-flex justify-content-center">
+    <div class="card" style="width: 80%;">
+        <div class="card-body">
+            <h5 class="card-title">
+                Connection Details
+            </h5>
+            <div class="row">
+                <p class="col-3">Airportcode:</p>
+                <p class="col-8" th:text="${airport.getAirportcode()}">text</p>
+            </div>
+            <div class="row">
+                <p class="col-3">Country:</p>
+                <p class="col-8" th:text="${airport.getCountry()}">text</p>
+            </div>
+            <div class="row">
+                <p class="col-3">City:</p>
+                <p class="col-8" th:text="${airport.getCity()}">text</p>
+            </div>
+            <div class="row">
+                <p class="col-3">Timezone:</p>
+                <p class="col-8" th:text="${airport.getTimeZone()}">text</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="components/errorAlert :: errorAlert (${uiErrorMessage})">
+    <!--errorTitel, errorMessage-->
+</div>
+</body>
+</html>
