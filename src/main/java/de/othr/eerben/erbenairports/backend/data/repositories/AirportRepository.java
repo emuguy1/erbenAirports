@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 @Repository
-public interface AirportRepository extends CrudRepository<Airport,Long> {
+public interface AirportRepository extends CrudRepository<Airport,String> {
         Optional<Airport> findByAirportcode(String airportcode);
         Optional<Collection<Airport>> findDistinctByAirportcodeIsNotNull();
         boolean existsAirportByAirportcode(String airportcode);

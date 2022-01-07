@@ -5,12 +5,22 @@
     <div th:replace="components/common :: header"></div>
 </head>
 
-<body>
+<body class="bg-light">
 <div th:replace="components/common :: navigation"></div>
-    <form th:object="${airport}" method="post" th:action="@{/airport/new}">
-        <div th:replace="components/airportForm :: airportForm"></div>
-        <button type="submit" class="btn btn-primary">Create</button>
-    </form>
+<h1 class="text-center my-3">Create new Airport</h1>
+<div class="d-flex justify-content-center">
+    <div class="card" style="width: 80%;">
+        <div class="card-body">
+            <h5 class="text-center my-3">
+                Connection Details
+            </h5>
+            <form th:object="${airport}" method="post" th:action="@{/airport/new}">
+                <div class="my-2" th:replace="components/airportForm :: airportForm"></div>
+                <div class="d-flex justify-content-end"><button type="submit" class="btn btn-primary m-2 me-5">Create</button></div>
+            </form>
+        </div>
+    </div>
+</div>
 <div th:replace="components/errorAlert :: errorAlert (${uiErrorMessage})">
     <!--errorTitel, errorMessage-->
 </div>

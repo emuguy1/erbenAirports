@@ -8,7 +8,6 @@ import de.othr.eerben.erbenairports.backend.data.entities.dto.FlightdetailsDTO;
 import de.othr.eerben.erbenairports.backend.data.repositories.BookedCalendarslotRepository;
 import de.othr.eerben.erbenairports.backend.data.repositories.FlightdetailsRepository;
 import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
-import de.othr.eerben.erbenairports.backend.exceptions.UIErrorMessage;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
 import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import de.othr.eerben.erbenairports.backend.services.UserServiceIF;
@@ -18,7 +17,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.*;
@@ -113,6 +111,21 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
         //TODO:
         return null;
     }
+
+    @Override
+    public Flightdetails updateFlight(Flightdetails flightdetails) throws ApplicationException {
+        Optional<Flightdetails> oldAirportOptional = flightdetailsRepo.findById(flightdetails.getFlightid());
+        if (oldAirportOptional.isPresent()) {
+            Flightdetails oldFlightdetails = oldAirportOptional.get();
+            //TODO notify customers, call airport etc.
+            return flightdetailsRepo.save(flightdetails);
+        } else {
+            System.out.println("Flight not found " + flightdetails.getFlightid());
+            return null;
+        }
+    }
+
+
 
     @Override
     public Flightdetails bookFlight(FlightdetailsDTO flightdetails) throws ApplicationException {

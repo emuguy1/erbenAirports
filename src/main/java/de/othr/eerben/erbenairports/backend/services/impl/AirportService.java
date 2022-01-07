@@ -26,6 +26,31 @@ public class AirportService implements AirportServiceIF {
 
     @Override
     @Transactional
+    public Airport updateAirport(Airport airport) throws ApplicationException{
+        Optional<Airport> oldAirportOptional = airportRepo.findByAirportcode(airport.getAirportcode());
+        if (oldAirportOptional.isPresent()) {
+            Airport oldAirport = oldAirportOptional.get();
+            return airportRepo.save(airport);
+        } else {
+            System.out.println("Airport not found " + airport.getAirportcode());
+            return null;
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteAirport(String airport) throws ApplicationException{
+        Optional<Airport> oldAirportOptional = airportRepo.findByAirportcode(airport);
+
+        if (oldAirportOptional.isPresent()) {
+            airportRepo.deleteById(airport);
+        } else {
+            System.out.println("Airport not found " + airport);
+        }
+    }
+
+    @Override
+    @Transactional
     public Airport addAirport(Airport airport) {
         return airportRepo.save(airport);
     }

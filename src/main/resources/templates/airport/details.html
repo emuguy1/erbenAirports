@@ -5,7 +5,7 @@
     <div th:replace="components/common :: header"></div>
 </head>
 
-<body>
+<body class="bg-light">
 <div th:replace="components/common :: navigation"></div>
 
 <h1 class="text-center">Airportdetails</h1>
@@ -30,6 +30,9 @@
             <div class="row">
                 <p class="col-3">Timezone:</p>
                 <p class="col-8" th:text="${airport.getTimeZone()}">text</p>
+            </div>
+            <div class="d-flex justify-content-end">
+                <a th:href="'/airport/'+${airport.getAirportcode()}+'/edit'" class="btn btn-primary m-2 me-5">Edit</a>
             </div>
         </div>
     </div>

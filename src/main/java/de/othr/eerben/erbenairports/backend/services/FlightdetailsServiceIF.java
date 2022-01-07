@@ -24,5 +24,7 @@ public interface FlightdetailsServiceIF {
 
     Flightdetails bookFlight(User user, Flightdetails flightdetails);
 
+    Flightdetails updateFlight(Flightdetails flightdetails) throws ApplicationException;
+
     Flightdetails bookFlight(FlightdetailsDTO flightdetails) throws ApplicationException;
 }

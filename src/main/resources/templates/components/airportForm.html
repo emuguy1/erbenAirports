@@ -1,31 +1,26 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<div class="card" style="width: 80%;" th:fragment="airportForm">
-    <div class="card-body">
-        <h5 class="card-title">
-            Connection Details
-        </h5>
-        <div class="row m-2">
-            <p class="col-3">Airportcode:</p>
-            <input class="col-8" type="text" th:field="*{airportcode}" placeholder="e.g. MUC"/>
-        </div>
-        <div class="row m-2">
-            <p class="col-3">Country:</p>
-            <input class="col-8" type="text" th:field="*{country}" placeholder="e.g. Germany"/>
-        </div>
-        <div class="row m-2">
-            <p class="col-3">City:</p>
-            <input class="col-8 input" type="text" th:field="*{city}" placeholder="e.g. Munich"/>
-        </div>
-        <div class="row m-2">
-            <p class="col-3">Timezone:</p>
-            <select class="col-8" th:field="*{timeZone}">
-                <option th:each="timezone: ${timezoneIDs}"
-                        th:value="${timezone}"
-                        th:text="${timezone}">
-                    airport
-                </option>
-            </select>
-        </div>
+<div th:fragment="airportForm">
+    <div class="row m-2">
+        <p class="col-3">Airportcode:</p>
+        <input class="col-8" type="text" th:field="*{airportcode}" placeholder="e.g. MUC"/>
+    </div>
+    <div class="row m-2">
+        <p class="col-3">Country:</p>
+        <input class="col-8" type="text" th:field="*{country}" placeholder="e.g. Germany"/>
+    </div>
+    <div class="row m-2">
+        <p class="col-3">City:</p>
+        <input class="col-8 input" type="text" th:field="*{city}" placeholder="e.g. Munich"/>
+    </div>
+    <div class="row m-2">
+        <p class="col-3">Timezone:</p>
+        <select class="col-8" th:field="*{timeZone}">
+            <option th:each="timezone: ${timezoneIDs}"
+                    th:value="${timezone}"
+                    th:text="${timezone}">
+                airport
+            </option>
+        </select>
     </div>
 </div>
