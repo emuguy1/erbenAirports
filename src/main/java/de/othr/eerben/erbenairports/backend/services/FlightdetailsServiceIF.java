@@ -29,4 +29,6 @@ public interface FlightdetailsServiceIF {
     Flightdetails bookFlight(FlightdetailsDTO flightdetails) throws ApplicationException;
 
     void deleteByAirportId(String airport) throws ApplicationException;
+
+    void deleteById(long flightid) throws ApplicationException;
 }

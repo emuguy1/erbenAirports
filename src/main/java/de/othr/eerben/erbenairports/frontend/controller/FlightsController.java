@@ -184,6 +184,29 @@ public class FlightsController {
         return "/flight/details";
     }
 
+    @Transactional
+    @RequestMapping(value = "/flight/{id}/edit", method = RequestMethod.GET)
+    public String editFlightdetails(Model model, @PathVariable("id") long flightid) throws ApplicationException {
+        model.addAttribute("flightdetails", flightdetailsServiceIF.getFlightdetailsById(flightid));
+        //TODO: flightdetailsobject should be converted to DTO and the id should be handled
+        model.addAttribute("edit", true);
+        return "airport/edit";
+    }
+
+    @Transactional
+    @RequestMapping(value = "/flight/edit", method = RequestMethod.POST)
+    public String saveEditedFlightdetails(Model model,  @ModelAttribute("airport") Airport airport) throws ApplicationException {
+        airportServiceIF.updateAirport(airport);
+        return "redirect:/airport/" + airport.getAirportcode() + "/details";
+    }
+    @Transactional
+    @RequestMapping(value = "/flight/{id}/delete", method = RequestMethod.GET)
+    public String deleteFlightdetails(Model model,  @PathVariable("id") long flightid) throws ApplicationException {
+        //TODO: To be thought if only status is set to cancelled
+        flightdetailsServiceIF.deleteById(flightid);
+        return "redirect:/";
+    }
+
     @RequestMapping(value = "/airport/new", method = RequestMethod.GET)
     public String addAirport(Model model) throws ApplicationException {
         model.addAttribute("timezoneIDs", TimeZone.getAvailableIDs());

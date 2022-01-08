@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Optional;
 
 @Repository
@@ -24,4 +25,7 @@ public interface FlightdetailsRepository extends CrudRepository<Flightdetails, L
 
     @Query("select f from Flightdetails f where f.origin.airportcode = ?1 or f.departure.airportcode = ?1")
     Optional<Collection<Flightdetails>> getAllByAirport(String airport);
+
+    @Query("select (count(f) > 0) from Flightdetails f where f.arrivalTime > ?1 and f.departure.airportcode = ?2 or f.origin.airportcode = ?2")
+    boolean getAllByAirportWhereArrivalAfter(Date date, String airport);
 }

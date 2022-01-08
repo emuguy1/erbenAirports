@@ -213,12 +213,32 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
     @Override
     public void deleteByAirportId(String airport) throws ApplicationException {
-        Collection<Flightdetails> toBeCanceledFlights = flightdetailsRepo.getAllByAirport(airport).orElseThrow(() -> new ApplicationException("Error, no Departures for airport after now could be found"));
-        Collection<BookedCalendarslot> toBeDeletedCalendarslots = new ArrayList<>();
-        toBeCanceledFlights.stream().toList().forEach(flight -> toBeDeletedCalendarslots.add(flight.getArrivalTime()));
-        toBeCanceledFlights.stream().toList().forEach(flight -> toBeDeletedCalendarslots.add(flight.getDepartureTime()));
-        flightdetailsRepo.deleteAll(toBeCanceledFlights);
-        calendarslotRepository.deleteAll(toBeDeletedCalendarslots);
+        boolean isdeletable=flightdetailsRepo.getAllByAirportWhereArrivalAfter(Date.from(Instant.now()),airport);
+        if(flightdetailsRepo.getAllByAirportWhereArrivalAfter(Date.from(Instant.now()),airport)){
+            throw new ApplicationException("At least one Flight exists with Arrivaltime after now");
+        }
+        else {
+            Collection<Flightdetails> toBeCanceledFlights = flightdetailsRepo.getAllByAirport(airport).orElseThrow(() -> new ApplicationException("Error, no Departures for airport after now could be found"));
+            Collection<BookedCalendarslot> toBeDeletedCalendarslots = new ArrayList<>();
+            toBeCanceledFlights.stream().toList().forEach(flight -> toBeDeletedCalendarslots.add(flight.getArrivalTime()));
+            toBeCanceledFlights.stream().toList().forEach(flight -> toBeDeletedCalendarslots.add(flight.getDepartureTime()));
+            flightdetailsRepo.deleteAll(toBeCanceledFlights);
+            calendarslotRepository.deleteAll(toBeDeletedCalendarslots);
+        }
+    }
+
+    @Override
+    public void deleteById(long flightid) throws ApplicationException {
+        Flightdetails flight = flightdetailsRepo.findByFlightid(flightid).orElseThrow(() -> new ApplicationException("Error, no Departures for airport after now could be found"));;
+        if(flight.getArrivalTime().getStartTime().after(Date.from(Instant.now()))){
+            throw new ApplicationException("Arrivaltime is after now, only can be canceled!");
+        }
+        else{
+            flightdetailsRepo.deleteById(flightid);
+            calendarslotRepository.delete(flight.getDepartureTime());
+            calendarslotRepository.delete(flight.getArrivalTime());
+        }
+
     }
 
 
