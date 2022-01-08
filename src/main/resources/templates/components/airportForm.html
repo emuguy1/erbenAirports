@@ -3,7 +3,8 @@
 <div th:fragment="airportForm">
     <div class="row m-2">
         <p class="col-3">Airportcode:</p>
-        <input class="col-8" type="text" th:field="*{airportcode}" placeholder="e.g. MUC"/>
+        <input class="col-8" type="text" th:if="${edit==null}" th:field="*{airportcode}" placeholder="e.g. MUC"/>
+        <label class="col-8" th:if="${edit}" th:text="${airport.getAirportcode()}">as</label>
     </div>
     <div class="row m-2">
         <p class="col-3">Country:</p>

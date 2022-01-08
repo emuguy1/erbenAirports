@@ -208,6 +208,7 @@ public class FlightsController {
     @RequestMapping(value = "/airport/{id}/edit", method = RequestMethod.GET)
     public String editAirport(Model model, @PathVariable("id") String airportcode) throws ApplicationException {
         model.addAttribute("airport", airportServiceIF.getAirportByAirportcode(airportcode));
+        model.addAttribute("edit", true);
         model.addAttribute("timezoneIDs", TimeZone.getAvailableIDs());
         return "airport/edit";
     }
@@ -221,6 +222,7 @@ public class FlightsController {
     @Transactional
     @RequestMapping(value = "/airport/{id}/delete", method = RequestMethod.GET)
     public String delete(Model model,  @PathVariable("id") String airport) throws ApplicationException {
+        flightdetailsServiceIF.deleteByAirportId(airport);
         airportServiceIF.deleteAirport(airport);
         return "redirect:/";
     }

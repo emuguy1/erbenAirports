@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Book;
 import java.sql.Timestamp;
 import java.time.*;
 import java.util.*;
@@ -208,6 +209,16 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
         } catch (ApplicationException e) {
             throw new ApplicationException(e.getMessage());
         }
+    }
+
+    @Override
+    public void deleteByAirportId(String airport) throws ApplicationException {
+        Collection<Flightdetails> toBeCanceledFlights = flightdetailsRepo.getAllByAirport(airport).orElseThrow(() -> new ApplicationException("Error, no Departures for airport after now could be found"));
+        Collection<BookedCalendarslot> toBeDeletedCalendarslots = new ArrayList<>();
+        toBeCanceledFlights.stream().toList().forEach(flight -> toBeDeletedCalendarslots.add(flight.getArrivalTime()));
+        toBeCanceledFlights.stream().toList().forEach(flight -> toBeDeletedCalendarslots.add(flight.getDepartureTime()));
+        flightdetailsRepo.deleteAll(toBeCanceledFlights);
+        calendarslotRepository.deleteAll(toBeDeletedCalendarslots);
     }
 
 

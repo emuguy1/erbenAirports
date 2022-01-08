@@ -26,9 +26,13 @@ public class SetupExecutor {
     public void executeSetup(){
         try {
             airportSetupComponent.setup();
+            System.out.println("airportSetupComponent finished!");
             flightdetailsSetupComponent.setup();
+            System.out.println("flightdetailsSetupComponent finished!");
             customerSetupComponent.setup();
+            System.out.println("customerSetupComponent finished!");
             employeeSetupComponent.setup();
+            System.out.println("employeeSetupComponent finished!");
 
             System.out.println("Setup finished!");
         }

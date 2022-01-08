@@ -5,6 +5,7 @@ import de.othr.eerben.erbenairports.backend.data.entities.Airport;
 import de.othr.eerben.erbenairports.backend.data.repositories.AirportRepository;
 import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
+import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -16,7 +16,7 @@
             <form th:object="${airport}" method="post" th:action="@{/airport/edit}">
                 <div class="my-2" th:replace="components/airportForm :: airportForm"></div>
                 <div class="d-flex justify-content-end">
-                    <a th:href="'/airport/'+${airport.getAirportcode()}+'/delete'" class="btn btn-secondary m-2 me-5">Delete</a>
+                    <a th:href="'/airport/'+${airport.getAirportcode()}+'/delete'" class="btn btn-danger m-2 me-5">Delete</a>
                     <button type="submit" class="btn btn-primary m-2 me-5">Update</button>
                     <button th:href="':redirect /airport/'+${airport.getAirportcode()}+'/details'" class="btn btn-secondary m-2 me-5">Abort</button>
                 </div>

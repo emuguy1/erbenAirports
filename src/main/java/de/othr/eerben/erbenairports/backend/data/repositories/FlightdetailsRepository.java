@@ -21,4 +21,7 @@ public interface FlightdetailsRepository extends CrudRepository<Flightdetails, L
     Optional<Collection<Flightdetails>> findByFlightnumber(String flightnumber);
     Optional<Flightdetails> findByFlightid(long flightid);
     boolean existsFlightdetailsByFlightnumber(String flightnumber);
+
+    @Query("select f from Flightdetails f where f.origin.airportcode = ?1 or f.departure.airportcode = ?1")
+    Optional<Collection<Flightdetails>> getAllByAirport(String airport);
 }
