@@ -29,7 +29,8 @@
             <img th:src="@{/icons/airport.png}" type="image/png" width="30" height="30" class="d-inline-block align-top"
                  alt="">
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
@@ -42,12 +43,7 @@
                     <a class="nav-link" href="/arrivals"
                        th:classappend="${#httpServletRequest.getRequestURI() == '/arrivals' ? 'active':''}">Arrivals</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/login" sec:authorize="isAnonymous()">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/logout" sec:authorize="isAuthenticated()">Logout</a>
-                </li>
+
                 <li class="nav-item" sec:authorize="hasAuthority('CUSTOMER')">
                     <a class="nav-link">Ausleihen</a>
                 </li>
@@ -69,6 +65,14 @@
                             <hr class="dropdown-divider">
                         </li>
                     </ul>
+                </li>
+            </ul>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/login" sec:authorize="isAnonymous()">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout" sec:authorize="isAuthenticated()">Logout</a>
                 </li>
             </ul>
         </div>
