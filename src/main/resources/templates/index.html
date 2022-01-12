@@ -1,72 +1,101 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!--All SVGs are from an open source project. Find it under following link: https://undraw.co/ -->
 <head>
     <title>Erben Airports</title>
     <div th:replace="components/common :: header"></div>
 </head>
 <body>
-<div th:replace="components/common :: navigation"/>
+<div th:replace="components/common :: navigation"></div>
 <div class="mx-4">
-    <h1 class="text-center">Welcome to Erben Airports</h1>
-
-    <div class="d-flex justify-content-center" sec:authorize="isAnonymous()">
-        <div class="card text-right" style="width: 18rem; margin: 1rem;">
-            <div class="card-body">
-                <h5 class="card-title">Register</h5>
-                <p class="card-text">Not yet signed up as a customer? Create your account to start booking flights with
-                    our services.</p>
-                <a th:href="@{/register}" role="button" class="btn  btn-primary " style="color: white">Register</a>
-            </div>
-        </div>
-
-        <div class="card text-right" style="width: 18rem; margin: 1rem;">
-            <div class="card-body">
-                <h5 class="card-title">Sign in</h5>
-                <p class="card-text">Already a registered customer? Sign in to your account to create or edit your
-                    flights.</p>
-                <a th:href="@{/login}" role="button" class="btn  btn-primary" style="color: white">Sign in</a>
-            </div>
-        </div>
+    <div class="d-flex justify-content-center mt-4">
+        <img th:src="@{/icons/airport.png}" type="image/png" height="100" class="d-inline-block align-top"
+             alt="">
     </div>
+    <h1 class="text-center gradientHeader">Erben Airports</h1>
+    <div class="row">
+        <div class="d-flex justify-content-center col-md-12 col-lg-6">
+            <div class="card text-right" style="width: 18rem; margin: 1rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Arrivals</h5>
+                    <p class="card-text">You wanna see the arrivals for a specific airport. Just select an airport and
+                        go.</p>
+                    <a th:href="@{/arrivals}" role="button" class="btn  btn-primary" style="color: white">Arrivals</a>
+                </div>
+            </div>
+            <div class="card text-right" style="width: 18rem; margin: 1rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Departures</h5>
+                    <p class="card-text">You wanna see the arrivals for a specific airport. Just select an airport and
+                        go.</p>
+                    <a th:href="@{/departures}" role="button" class="btn  btn-primary" style="color: white">Departures</a>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center col-md-12 col-lg-6" sec:authorize="isAnonymous()">
 
+            <div class="card text-right" style="width: 18rem; margin: 1rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Register</h5>
+                    <p class="card-text">Not yet signed up as a customer? Create your account to start booking flights
+                        with
+                        our services.</p>
+                    <a th:href="@{/register}" role="button" class="btn  btn-primary " style="color: white">Register</a>
+                </div>
+            </div>
 
-    <div class="d-flex justify-content-center">
-
-        <div class="card text-right" style="width: 18rem; margin: 1rem;"
-             sec:authorize="hasAuthority('CUSTOMER')||isAnonymous()">
-            <div class="card-body">
-                <h5 class="card-title">Book an flight</h5>
-                <p class="card-text">Book a flight with our airportsolution for easy managment of flights. </p>
-                <a th:href="@{/flight/new}" role="button" class="btn  btn-primary" style="color: white">Book Flight</a>
+            <div class="card text-right" style="width: 18rem; margin: 1rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Sign in</h5>
+                    <p class="card-text">Already a registered customer? Sign in to your account to create or edit your
+                        flights.</p>
+                    <a th:href="@{/login}" role="button" class="btn  btn-primary" style="color: white">Sign in</a>
+                </div>
             </div>
         </div>
 
-        <div class="card text-right" style="width: 18rem; margin: 1rem;" sec:authorize="hasAuthority('EMPLOYEE')">
-            <div class="card-body">
-                <h5 class="card-title">Create Airport</h5>
-                <p class="card-text">Wanna Add an Airport for even more flights possible to shedule with this software?</p>
-                <a th:href="@{/airport/new}" role="button" class="btn  btn-primary" style="color: white">Create
-                    Airport</a>
+
+        <div class="d-flex justify-content-center">
+
+            <div class="card text-right" style="width: 18rem; margin: 1rem;"
+                 sec:authorize="hasAuthority('CUSTOMER')">
+                <div class="card-body">
+                    <h5 class="card-title">Book an flight</h5>
+                    <p class="card-text">Book a flight with our airportsolution for easy managment of flights. </p>
+                    <a th:href="@{/flight/new}" role="button" class="btn  btn-primary" style="color: white">Book
+                        Flight</a>
+                </div>
+            </div>
+
+            <div class="card text-right" style="width: 18rem; margin: 1rem;" sec:authorize="hasAuthority('EMPLOYEE')">
+                <div class="card-body">
+                    <h5 class="card-title">Create Airport</h5>
+                    <p class="card-text">Wanna Add an Airport for even more flights possible to shedule with this
+                        software?</p>
+                    <a th:href="@{/airport/new}" role="button" class="btn  btn-primary" style="color: white">Create
+                        Airport</a>
+                </div>
+            </div>
+
+            <div class="card text-right" style="width: 18rem; margin: 1rem;"
+                 sec:authorize="hasAuthority('CUSTOMER')">
+                <div class="card-body">
+                    <h5 class="card-title">My Flights</h5>
+                    <p class="card-text">Review or edit your Flights</p>
+                    <a th:href="@{/flights/overview}" role="button" class="btn  btn-primary" style="color: white">My
+                        Flights</a>
+                </div>
             </div>
         </div>
 
-        <div class="card text-right" style="width: 18rem; margin: 1rem;" sec:authorize="hasAuthority('CUSTOMER')||isAnonymous()">
-            <div class="card-body">
-                <h5 class="card-title">My Flights</h5>
-                <p class="card-text">Review or edit your Flights</p>
-                <a th:href="@{/flights/overview}" role="button" class="btn  btn-primary" style="color: white">My
-                    Flights</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="d-flex justify-content-center" sec:authorize="hasAuthority('EMPLOYEE')">
-        <div class="card text-right" style="width: 18rem; margin: 1rem;">
-            <div class="card-body">
-                <h5 class="card-title">My Flights</h5>
-                <p class="card-text">Check which flights you created and edit them if necessary.</p>
-                <a th:href="@{/employee/overview}" role="button" class="btn  btn-primary" style="color: white">View
-                    Flights</a>
+        <div class="d-flex justify-content-center" sec:authorize="hasAuthority('EMPLOYEE')">
+            <div class="card text-right" style="width: 18rem; margin: 1rem;">
+                <div class="card-body">
+                    <h5 class="card-title">My Flights</h5>
+                    <p class="card-text">Check which flights you created and edit them if necessary.</p>
+                    <a th:href="@{/employee/overview}" role="button" class="btn  btn-primary" style="color: white">View
+                        Flights</a>
+                </div>
             </div>
         </div>
     </div>

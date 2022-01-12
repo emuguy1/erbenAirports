@@ -1,0 +1,6 @@
+.gradientHeader {
+    font-size: 52px;
+    background: -webkit-linear-gradient(#052c67,#055160 , #ffc107);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
