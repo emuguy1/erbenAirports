@@ -1,6 +1,7 @@
 package de.othr.eerben.erbenairports.backend.data.entities;
 
 import com.sun.istack.NotNull;
+import org.hibernate.annotations.Cascade;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -38,7 +39,7 @@ public class BookedCalendarslot {
     @ManyToOne
     private Airport airport;
 
-    @OneToOne(mappedBy = "departureTime")
+    @OneToOne(mappedBy = "departureTime", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private Flightdetails flightdetails;
 
 

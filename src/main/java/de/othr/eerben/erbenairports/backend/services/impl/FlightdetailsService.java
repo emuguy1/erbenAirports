@@ -12,11 +12,14 @@ import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
 import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import de.othr.eerben.erbenairports.backend.services.UserServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.awt.print.Book;
 import java.sql.Timestamp;
@@ -37,6 +40,21 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
     @Autowired
     private BookedCalendarslotRepository calendarslotRepository;
+
+    @Autowired
+    RestTemplate restClient;
+
+    @Value("${trBank.url}")
+    private String bankingURL;
+
+    @Value("${trBank.iban}")
+    private String bankingSelfIBAN;
+
+    @Value("${trBank.username}")
+    private String bankingUsername;
+
+    @Value("${trBank.password}")
+    private String bankingPassword;
 
 
     @Override
@@ -203,7 +221,18 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
             //save flightdetails
             Flightdetails flightdetails1 = new Flightdetails(flightdetails.getFlightnumber(), flightdetails.getFlightTimeHours(), flightdetails.getMaxCargo(), flightdetails.getPassangerCount(), departureAirport, originAirport, calendarslotDeparture, calendarslotArrival);
             flightdetails1 = flightdetailsRepo.save(flightdetails1);
-            //TODO:add transaktion in trbank
+            //TODO:add transaktion in trbank and move saving further down
+            String response = "";
+
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(bankingURL).queryParam("value", 100.00);
+            try {
+                //for null Object insert filled Object of TRBank
+                //response = restClient.postForObject(builder.toUriString(), null, String.class);//String.class has to be class of TRBank response
+            }catch(Exception e){
+                System.out.println("could not perform transaction!");
+                throw new ApplicationException("Transaction could not be performed");
+            }
+
 
             return flightdetails1;
         } catch (ApplicationException e) {

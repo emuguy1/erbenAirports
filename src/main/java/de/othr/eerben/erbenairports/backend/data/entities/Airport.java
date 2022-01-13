@@ -7,7 +7,7 @@ import java.util.Objects;
 import java.util.TimeZone;
 
 @Entity
-public class Airport {
+public class  Airport {
 
     @Id
     @NotNull

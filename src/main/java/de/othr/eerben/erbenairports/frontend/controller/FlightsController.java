@@ -9,6 +9,7 @@ import de.othr.eerben.erbenairports.backend.exceptions.UIErrorMessage;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
 import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -144,12 +145,13 @@ public class FlightsController {
     public String addFlight(Model model, @ModelAttribute("flightdetails") FlightdetailsDTO flightdetailsdto) throws ApplicationException {
         try {
             if (flightdetailsdto.getFlightnumber().isEmpty()) {
-                throw new ApplicationException("Flightnumber empty!" + flightdetailsdto.getDepartureTime());
+                throw new ApplicationException("Flightnumber empty!");
             }
             Flightdetails flightdetails = flightdetailsServiceIF.bookFlight(flightdetailsdto);
             return "redirect:/flight/" + flightdetails.getFlightid() + "/details";
         } catch (ApplicationException e) {
             model.addAttribute("flightdetails", flightdetailsdto);
+            model.addAttribute("airports", airportServiceIF.getAllAirports().orElse(Collections.emptyList()));
             model.addAttribute("uiErrorMessage", new UIErrorMessage(e.getMessage()));
             return "flight/new";
         }

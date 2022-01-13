@@ -6,12 +6,11 @@ import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
 import de.othr.eerben.erbenairports.backend.services.UserServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.Optional;
 
@@ -20,7 +19,6 @@ public class HomeController {
 
     @Autowired
     private UserServiceIF userService;
-
 
     @RequestMapping("/")
     public String start(){

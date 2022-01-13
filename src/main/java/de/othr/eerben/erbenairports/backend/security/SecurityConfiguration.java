@@ -41,19 +41,29 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/departure",
             "/arrival",
             "/error",
-            "/flight/*/details"
+            "/flight/*/details",
+            "/api/rest/*"
     };
 
+    private static final String[] ALLOW_ACCESS_AS_CUSTOMER = {
+            "/order/**",
+            "/customer/**"
+    };
+
+    private static final String[] ALLOW_ACCESS_AS_EMPLOYEE = {
+            "/employee/**"
+    };
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        /*http.authorizeRequests()
-                .anyRequest()
-                .permitAll()
-                .and().csrf().disable();*/
         http.authorizeRequests()
                 .antMatchers(ALLOW_ACCESS_WITHOUT_AUTHENTICATION)
-                .permitAll().anyRequest().authenticated();
+                .permitAll()
+                .antMatchers(ALLOW_ACCESS_AS_EMPLOYEE)
+                .hasRole("EMPLOYEE")
+                .antMatchers(ALLOW_ACCESS_AS_CUSTOMER)
+                .hasRole("CUSTOMER")
+                .anyRequest().authenticated();
         http
                 .formLogin()
                 .loginPage("/login").permitAll()

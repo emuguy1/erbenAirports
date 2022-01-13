@@ -1,14 +1,18 @@
 package de.othr.eerben.erbenairports.backend.data.entities.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.time.LocalDateTime;
-import java.util.Date;
 
-public class FlightdetailsDTO {
+public class FlighttransactionDTO {
+
+    @NotNull
+    private  String username;
+
+    @NotNull
+    private  String password;
 
     @NotNull
     private String flightnumber;
@@ -28,14 +32,32 @@ public class FlightdetailsDTO {
     @NotNull
     private String origin;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime departureTime;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime arrivalTime;
 
-    public FlightdetailsDTO() {
+    public FlighttransactionDTO(String username, String password, String flightnumber, double flightTimeHours, double maxCargo, int passangerCount, String departure, String origin, LocalDateTime departureTime, LocalDateTime arrivalTime) {
+        this.username = username;
+        this.password = password;
+        this.flightnumber = flightnumber;
+        this.flightTimeHours = flightTimeHours;
+        this.maxCargo = maxCargo;
+        this.passangerCount = passangerCount;
+        this.departure = departure;
+        this.origin = origin;
+        this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
     }
 
-    public FlightdetailsDTO(String flightnumber, double flightTimeHours, double maxCargo, int passangerCount, String departure, String origin, LocalDateTime departureTime) {
+    public FlighttransactionDTO(){}
+
+    public FlighttransactionDTO(String username, String password, String flightnumber, double flightTimeHours, double maxCargo, int passangerCount, String departure, String origin, LocalDateTime departureTime) {
+        this.username = username;
+        this.password = password;
         this.flightnumber = flightnumber;
         this.flightTimeHours = flightTimeHours;
         this.maxCargo = maxCargo;
@@ -45,13 +67,20 @@ public class FlightdetailsDTO {
         this.departureTime = departureTime;
     }
 
-    public FlightdetailsDTO(String flightnumber, double flightTimeHours, double maxCargo, int passangerCount, String departure, String origin) {
-        this.flightnumber = flightnumber;
-        this.flightTimeHours = flightTimeHours;
-        this.maxCargo = maxCargo;
-        this.passangerCount = passangerCount;
-        this.departure = departure;
-        this.origin = origin;
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFlightnumber() {
@@ -108,5 +137,13 @@ public class FlightdetailsDTO {
 
     public void setDepartureTime(LocalDateTime departureTime) {
         this.departureTime = departureTime;
+    }
+
+    public LocalDateTime getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(LocalDateTime arrivalTime) {
+        this.arrivalTime = arrivalTime;
     }
 }

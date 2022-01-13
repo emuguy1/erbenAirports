@@ -1,6 +1,7 @@
 package de.othr.eerben.erbenairports.backend.data.entities;
 
 import com.sun.istack.NotNull;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -43,10 +44,10 @@ public class Flightdetails {
     @ManyToOne
     private User createdBy;
 
-    @OneToOne (orphanRemoval = true)
+    @OneToOne (orphanRemoval = true, cascade = CascadeType.REMOVE)
     private BookedCalendarslot departureTime;
 
-    @OneToOne (orphanRemoval = true)
+    @OneToOne (orphanRemoval = true, cascade = CascadeType.REMOVE)
     private BookedCalendarslot arrivalTime;
 
     public Flightdetails(){
