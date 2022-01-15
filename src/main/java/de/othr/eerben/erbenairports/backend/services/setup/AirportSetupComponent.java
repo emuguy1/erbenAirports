@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.TimeZone;
 
-@Service
+
 public class AirportSetupComponent extends AbstractSetupComponent {
 
     @Autowired
@@ -20,9 +20,10 @@ public class AirportSetupComponent extends AbstractSetupComponent {
             if(airportRepo.existsAirportByAirportcode("MUC")){
                 return true;
             }
-            airportRepo.save(new Airport("MUC", "Europe/Berlin","Germany","Munich"));
-            airportRepo.save(new Airport("LAX", "America/Los_Angeles","USA","Los_Angeles"));
-            airportRepo.save(new Airport("BER", "Europe/Berlin","Germany","Berlin"));
+            airportRepo.save(new Airport("MUC", "Europe/Berlin","Germany","Munich","Flughafen München „Franz Josef Strauß“"));
+            airportRepo.save(new Airport("LAX", "America/Los_Angeles","USA","Los_Angeles","Los Angeles International Airport"));
+            airportRepo.save(new Airport("BER", "Europe/Berlin","Germany","Berlin","Flughafen Berlin Brandenburg „Willy Brandt“"));
+            airportRepo.save(new Airport("FRA", "Europe/Berlin","Germany","Frankfurt","Flughafen Frankfurt Main"));
             return true;
         }catch(Exception e){
             throw new ApplicationException("Airport Setup failed. Couldnt create Airports");

@@ -1,10 +1,8 @@
 package de.othr.eerben.erbenairports.backend.services.impl;
 
-import de.othr.eerben.erbenairports.backend.data.entities.Airport;
-import de.othr.eerben.erbenairports.backend.data.entities.BookedCalendarslot;
-import de.othr.eerben.erbenairports.backend.data.entities.Flightdetails;
-import de.othr.eerben.erbenairports.backend.data.entities.User;
+import de.othr.eerben.erbenairports.backend.data.entities.*;
 import de.othr.eerben.erbenairports.backend.data.entities.dto.FlightdetailsDTO;
+import de.othr.eerben.erbenairports.backend.data.entities.dto.FlighttransactionDTO;
 import de.othr.eerben.erbenairports.backend.data.repositories.BookedCalendarslotRepository;
 import de.othr.eerben.erbenairports.backend.data.repositories.FlightdetailsRepository;
 import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
@@ -18,6 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -119,16 +118,11 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
 
     @Override
-    public boolean cancleFlight(User user, String flightnumber) {
-        //TODO:
+    public boolean cancleFlight(User user, FlighttransactionDTO flight) {
+        //Should only be allowed if flight isnt departed yet
+        //TODO:über Flughafen und Zeitpunkt und über Rest anbieten
+        //flightRepo.getFlightByDepartureAirportANDByArrivalAirportAndDepartureTimeAndArrivalTime(
         return false;
-    }
-
-    @Override
-    public Flightdetails bookFlight(User user, Flightdetails flightdetails) {
-        //userServiceIF.
-        //TODO:
-        return null;
     }
 
     @Override
@@ -145,9 +139,9 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     }
 
 
-
+    @Transactional
     @Override
-    public Flightdetails bookFlight(FlightdetailsDTO flightdetails) throws ApplicationException {
+    public Flightdetails bookFlight(User user,FlightdetailsDTO flightdetails) throws ApplicationException {
 
         try {
             //TODO: try-catch
@@ -219,7 +213,14 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
             //TODO:add user who created it/ created it for
 
             //save flightdetails
-            Flightdetails flightdetails1 = new Flightdetails(flightdetails.getFlightnumber(), flightdetails.getFlightTimeHours(), flightdetails.getMaxCargo(), flightdetails.getPassangerCount(), departureAirport, originAirport, calendarslotDeparture, calendarslotArrival);
+            Flightdetails flightdetails1 = new Flightdetails(flightdetails.getFlightnumber(), flightdetails.getFlightTimeHours(), flightdetails.getMaxCargo(), flightdetails.getPassengerCount(), departureAirport, originAirport, calendarslotDeparture, calendarslotArrival);
+            if(user.getAccountType()== AccountType.CUSTOMER){
+                flightdetails1.setCustomer(user);
+            }
+            else{
+                flightdetails1.setCreatedBy(user);
+                flightdetails1.setCustomer(user);
+            }
             flightdetails1 = flightdetailsRepo.save(flightdetails1);
             //TODO:add transaktion in trbank and move saving further down
             String response = "";

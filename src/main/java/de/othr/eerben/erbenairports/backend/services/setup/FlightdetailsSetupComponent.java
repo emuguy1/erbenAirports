@@ -1,9 +1,12 @@
 package de.othr.eerben.erbenairports.backend.services.setup;
 
 
+import de.othr.eerben.erbenairports.backend.data.entities.AccountType;
+import de.othr.eerben.erbenairports.backend.data.entities.User;
 import de.othr.eerben.erbenairports.backend.data.entities.dto.FlightdetailsDTO;
 import de.othr.eerben.erbenairports.backend.data.repositories.BookedCalendarslotRepository;
 import de.othr.eerben.erbenairports.backend.data.repositories.FlightdetailsRepository;
+import de.othr.eerben.erbenairports.backend.data.repositories.UserRepository;
 import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
 import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,9 @@ public class FlightdetailsSetupComponent extends AbstractSetupComponent{
     @Autowired
     FlightdetailsServiceIF flightdetailsService;
 
+    @Autowired
+    UserRepository userRepository;
+
     @Override
     boolean setup() throws ApplicationException {
         try{
@@ -33,12 +39,13 @@ public class FlightdetailsSetupComponent extends AbstractSetupComponent{
 
             FlightdetailsDTO flight= new FlightdetailsDTO("LH3200", 12.4, 25.6, 250, "LAX", "MUC",now);
             FlightdetailsDTO flight2= new FlightdetailsDTO("LH3220", 14.2, 25.6, 250, "MUC", "LAX",now);
-            flightdetailsService.bookFlight(flight);
-            flightdetailsService.bookFlight(flight2);
+            User user=userRepository.findByUsername("root").orElseThrow(() -> new ApplicationException("User not found"));
+            flightdetailsService.bookFlight(user,flight);
+            flightdetailsService.bookFlight(user,flight2);
             return true;
 
         }catch(Exception e){
-            throw new ApplicationException("Flightdetails Setup failed. Could'nt create Airports");
+            throw new ApplicationException("Flightdetails Setup failed. Could'nt create Flightdetails");
         }
     }
 }

@@ -24,7 +24,7 @@ public class FlighttransactionDTO {
     private double maxCargo;
 
     @NotNull
-    private int passangerCount;
+    private int passengerCount;
 
     @NotNull
     private String departure;
@@ -40,13 +40,13 @@ public class FlighttransactionDTO {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime arrivalTime;
 
-    public FlighttransactionDTO(String username, String password, String flightnumber, double flightTimeHours, double maxCargo, int passangerCount, String departure, String origin, LocalDateTime departureTime, LocalDateTime arrivalTime) {
+    public FlighttransactionDTO(String username, String password, String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, String departure, String origin, LocalDateTime departureTime, LocalDateTime arrivalTime) {
         this.username = username;
         this.password = password;
         this.flightnumber = flightnumber;
         this.flightTimeHours = flightTimeHours;
         this.maxCargo = maxCargo;
-        this.passangerCount = passangerCount;
+        this.passengerCount = passengerCount;
         this.departure = departure;
         this.origin = origin;
         this.departureTime = departureTime;
@@ -55,13 +55,13 @@ public class FlighttransactionDTO {
 
     public FlighttransactionDTO(){}
 
-    public FlighttransactionDTO(String username, String password, String flightnumber, double flightTimeHours, double maxCargo, int passangerCount, String departure, String origin, LocalDateTime departureTime) {
+    public FlighttransactionDTO(String username, String password, String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, String departure, String origin, LocalDateTime departureTime) {
         this.username = username;
         this.password = password;
         this.flightnumber = flightnumber;
         this.flightTimeHours = flightTimeHours;
         this.maxCargo = maxCargo;
-        this.passangerCount = passangerCount;
+        this.passengerCount = passengerCount;
         this.departure = departure;
         this.origin = origin;
         this.departureTime = departureTime;
@@ -107,12 +107,12 @@ public class FlighttransactionDTO {
         this.maxCargo = maxCargo;
     }
 
-    public int getPassangerCount() {
-        return passangerCount;
+    public int getPassengerCount() {
+        return passengerCount;
     }
 
-    public void setPassangerCount(int passangerCount) {
-        this.passangerCount = passangerCount;
+    public void setPassengerCount(int passengerCount) {
+        this.passengerCount = passengerCount;
     }
 
     public String getDeparture() {

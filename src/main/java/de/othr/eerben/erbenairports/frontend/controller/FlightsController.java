@@ -3,20 +3,25 @@ package de.othr.eerben.erbenairports.frontend.controller;
 
 import de.othr.eerben.erbenairports.backend.data.entities.Airport;
 import de.othr.eerben.erbenairports.backend.data.entities.Flightdetails;
+import de.othr.eerben.erbenairports.backend.data.entities.User;
 import de.othr.eerben.erbenairports.backend.data.entities.dto.FlightdetailsDTO;
 import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
 import de.othr.eerben.erbenairports.backend.exceptions.UIErrorMessage;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
 import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
+import de.othr.eerben.erbenairports.backend.services.UserServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -26,6 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
+@Scope("singleton")
 public class FlightsController {
 
     @Autowired
@@ -33,6 +39,9 @@ public class FlightsController {
 
     @Autowired
     private AirportServiceIF airportServiceIF;
+
+    @Autowired
+    private UserServiceIF userServiceIF;
 
     @RequestMapping(value = "/departures", method = RequestMethod.GET)
     public String departures(Model model, @RequestParam(value = "airport", required = false) String airportcode, @RequestParam("page") Optional<Integer> page,
@@ -142,12 +151,12 @@ public class FlightsController {
 
     @Transactional
     @RequestMapping(value = "/flight/new", method = RequestMethod.POST)//temp for testing
-    public String addFlight(Model model, @ModelAttribute("flightdetails") FlightdetailsDTO flightdetailsdto) throws ApplicationException {
+    public String addFlight(Model model, @AuthenticationPrincipal User user, @ModelAttribute("flightdetails") FlightdetailsDTO flightdetailsdto) throws ApplicationException {
         try {
             if (flightdetailsdto.getFlightnumber().isEmpty()) {
                 throw new ApplicationException("Flightnumber empty!");
             }
-            Flightdetails flightdetails = flightdetailsServiceIF.bookFlight(flightdetailsdto);
+            Flightdetails flightdetails = flightdetailsServiceIF.bookFlight(user,flightdetailsdto);
             return "redirect:/flight/" + flightdetails.getFlightid() + "/details";
         } catch (ApplicationException e) {
             model.addAttribute("flightdetails", flightdetailsdto);

@@ -25,13 +25,26 @@ public class UserService implements UserServiceIF{
     @Transactional
     @Override
     public User registerUser(User user) throws ApplicationException {
-        //rewrite statment to something like exists
+        //TODO: rewrite statment to something like exists
+        //TODO: validation after Role Employee or Customer
         if(userRepo.findByUsername(user.getUsername()).isPresent()){
             throw new ApplicationException("Error: This User already exists!");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return saveUser(user);
+        try {
+            return userRepo.save(user);
+        }
+        catch (Exception e){
+            throw new ApplicationException(e.getMessage());
+        }
     }
+
+    @Override
+    public boolean userExists(String username){
+        return  userRepo.existsById(username);
+    }
+
+
 
     @Transactional
     @Override
@@ -44,12 +57,6 @@ public class UserService implements UserServiceIF{
         return userRepo.findByUsername(username).orElseThrow(
                 () -> new ServiceException("User with username " + username + " not found")
         );
-    }
-
-    @Override
-    public User registerEmployee(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepo.save(user);
     }
 
     @Override

@@ -5,8 +5,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class User extends SingleIdEntity<String> implements UserDetails {
@@ -18,39 +20,30 @@ public class User extends SingleIdEntity<String> implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @Column
-    @Nullable
+    @NotBlank(message="Name cannot be empty!")
     private String name;
 
-    @Column
-    @Nullable
+    @NotBlank(message="Surname cannot be empty!")
     private String surname;
 
-    @Column
     @Nullable
     private String iban;
 
-    @Column
-    @Nullable
+    @NotBlank(message="Country cannot be empty!")
     private String country;
 
-    @Column
-    @Nullable
-    private int zipCode;
+    @NotBlank(message="ZIP-Code cannot be empty!")
+    private String zipCode;
 
-    @Column
-    @Nullable
+    @NotBlank(message="City cannot be empty!")
     private String town;
 
-    @Column
-    @Nullable
+    @NotBlank(message="Street cannot be empty!")
     private String street;
 
-    @Column
-    @Nullable
+    @NotBlank(message="Housenumber cannot be empty!")
     private String housenumber;
 
-    @Column
     @Nullable
     private String company_name;
 
@@ -70,7 +63,8 @@ public class User extends SingleIdEntity<String> implements UserDetails {
         this.accountType = accountType;
     }
 
-    public User(String username, String password, String name, String surname, String iban, String country, int zipCode, String town, String street, String housenumber, String company_name, AccountType accountType) {
+    //Customer
+    public User(String username, String password, String name, String surname, String iban, String country, String zipCode, String town, String street, String housenumber, String company_name, AccountType accountType) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -85,7 +79,8 @@ public class User extends SingleIdEntity<String> implements UserDetails {
         this.accountType = accountType;
     }
 
-    public User(String username, String password, String name, String surname, String country, int zipCode, String town, String street, String housenumber, AccountType accountType) {
+    //Employee
+    public User(String username, String password, String name, String surname, String country, String zipCode, String town, String street, String housenumber, AccountType accountType) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -98,19 +93,6 @@ public class User extends SingleIdEntity<String> implements UserDetails {
         this.accountType = accountType;
     }
 
-    public User(String username, String password, String name, String surname, String iban, String country, int zipCode, String town, String street, String housenumber, String company_name) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.surname = surname;
-        this.iban = iban;
-        this.country = country;
-        this.zipCode = zipCode;
-        this.town = town;
-        this.street = street;
-        this.housenumber = housenumber;
-        this.company_name = company_name;
-    }
 
     public void setPassword(String password) {
         this.password = password;
@@ -148,11 +130,11 @@ public class User extends SingleIdEntity<String> implements UserDetails {
         this.country = country;
     }
 
-    public int getZipCode() {
+    public String getZipCode() {
         return zipCode;
     }
 
-    public void setZipCode(int zipCode) {
+    public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
 
@@ -239,5 +221,39 @@ public class User extends SingleIdEntity<String> implements UserDetails {
     @Override
     public String getID() {
         return this.username;
+    }
+
+    public void setID(String username){ this.username=username;}
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", iban='" + iban + '\'' +
+                ", country='" + country + '\'' +
+                ", zipCode='" + zipCode + '\'' +
+                ", town='" + town + '\'' +
+                ", street='" + street + '\'' +
+                ", housenumber='" + housenumber + '\'' +
+                ", company_name='" + company_name + '\'' +
+                ", accountType=" + accountType +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        if (!super.equals(o)) return false;
+        User user = (User) o;
+        return getUsername().equals(user.getUsername()) && getPassword().equals(user.getPassword()) && getName().equals(user.getName()) && getSurname().equals(user.getSurname()) && Objects.equals(getIban(), user.getIban()) && getCountry().equals(user.getCountry()) && getZipCode().equals(user.getZipCode()) && getTown().equals(user.getTown()) && getStreet().equals(user.getStreet()) && getHousenumber().equals(user.getHousenumber()) && Objects.equals(getCompany_name(), user.getCompany_name()) && getAccountType() == user.getAccountType();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getUsername(), getPassword(), getName(), getSurname(), getIban(), getCountry(), getZipCode(), getTown(), getStreet(), getHousenumber(), getCompany_name(), getAccountType());
     }
 }

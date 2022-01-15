@@ -51,7 +51,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     };
 
     private static final String[] ALLOW_ACCESS_AS_EMPLOYEE = {
-            "/employee/**"
+            "/airport/new"
     };
 
     @Override
@@ -60,9 +60,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(ALLOW_ACCESS_WITHOUT_AUTHENTICATION)
                 .permitAll()
                 .antMatchers(ALLOW_ACCESS_AS_EMPLOYEE)
-                .hasRole("EMPLOYEE")
+                .hasAuthority("EMPLOYEE")
                 .antMatchers(ALLOW_ACCESS_AS_CUSTOMER)
-                .hasRole("CUSTOMER")
+                .hasAuthority("CUSTOMER")
                 .anyRequest().authenticated();
         http
                 .formLogin()

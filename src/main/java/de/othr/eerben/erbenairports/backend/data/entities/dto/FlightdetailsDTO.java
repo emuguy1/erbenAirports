@@ -20,13 +20,16 @@ public class FlightdetailsDTO {
     private double maxCargo;
 
     @NotNull
-    private int passangerCount;
+    private int passengerCount;
 
     @NotNull
     private String departure;
 
     @NotNull
     private String origin;
+
+    @NotNull
+    private String userenameCreatedFor;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime departureTime;
@@ -35,21 +38,21 @@ public class FlightdetailsDTO {
     public FlightdetailsDTO() {
     }
 
-    public FlightdetailsDTO(String flightnumber, double flightTimeHours, double maxCargo, int passangerCount, String departure, String origin, LocalDateTime departureTime) {
+    public FlightdetailsDTO(String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, String departure, String origin, LocalDateTime departureTime) {
         this.flightnumber = flightnumber;
         this.flightTimeHours = flightTimeHours;
         this.maxCargo = maxCargo;
-        this.passangerCount = passangerCount;
+        this.passengerCount = passengerCount;
         this.departure = departure;
         this.origin = origin;
         this.departureTime = departureTime;
     }
 
-    public FlightdetailsDTO(String flightnumber, double flightTimeHours, double maxCargo, int passangerCount, String departure, String origin) {
+    public FlightdetailsDTO(String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, String departure, String origin) {
         this.flightnumber = flightnumber;
         this.flightTimeHours = flightTimeHours;
         this.maxCargo = maxCargo;
-        this.passangerCount = passangerCount;
+        this.passengerCount = passengerCount;
         this.departure = departure;
         this.origin = origin;
     }
@@ -78,12 +81,12 @@ public class FlightdetailsDTO {
         this.maxCargo = maxCargo;
     }
 
-    public int getPassangerCount() {
-        return passangerCount;
+    public int getPassengerCount() {
+        return passengerCount;
     }
 
-    public void setPassangerCount(int passangerCount) {
-        this.passangerCount = passangerCount;
+    public void setPassengerCount(int passengerCount) {
+        this.passengerCount = passengerCount;
     }
 
     public String getDeparture() {
@@ -108,5 +111,13 @@ public class FlightdetailsDTO {
 
     public void setDepartureTime(LocalDateTime departureTime) {
         this.departureTime = departureTime;
+    }
+
+    public String getUserenameCreatedFor() {
+        return userenameCreatedFor;
+    }
+
+    public void setUserenameCreatedFor(String userenameCreatedFor) {
+        this.userenameCreatedFor = userenameCreatedFor;
     }
 }

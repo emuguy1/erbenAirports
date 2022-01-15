@@ -39,7 +39,8 @@ public class BookedCalendarslot {
     @ManyToOne
     private Airport airport;
 
-    @OneToOne(mappedBy = "departureTime", orphanRemoval = true, cascade = CascadeType.REMOVE)
+    @OneToOne(orphanRemoval = true, cascade = CascadeType.REMOVE)
+    @JoinColumn(name="flightdetails_flightid")
     private Flightdetails flightdetails;
 
 

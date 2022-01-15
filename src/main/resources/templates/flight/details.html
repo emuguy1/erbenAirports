@@ -16,7 +16,7 @@
                 Card title</h5>
             <h6 class="card-subtitle mb-2 text-muted">Connection Details</h6>
             <div class="row">
-                <p class="col-3">Flighttime:</p>
+                <p class="col-3">Duration:</p>
                 <p class="col-8" th:text="${flighttime}">text</p>
             </div>
             <div class="row">
@@ -24,8 +24,8 @@
                 <p class="col-8" th:text="${flightdetails.maxCargo}">text</p>
             </div>
             <div class="row">
-                <p class="col-3">Passangers booked:</p>
-                <p class="col-8" th:text="${flightdetails.getPassangerCount()}">text</p>
+                <p class="col-3">Passengers booked:</p>
+                <p class="col-8" th:text="${flightdetails.getPassengerCount()}">text</p>
             </div>
             <div class="row">
                 <p class="col-3">Departure Airport:</p>

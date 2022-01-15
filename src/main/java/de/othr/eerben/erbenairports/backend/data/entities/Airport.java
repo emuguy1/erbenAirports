@@ -3,6 +3,7 @@ package de.othr.eerben.erbenairports.backend.data.entities;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 import java.util.TimeZone;
 
@@ -10,26 +11,30 @@ import java.util.TimeZone;
 public class  Airport {
 
     @Id
-    @NotNull
+    @NotBlank(message="Housenumber cannot be empty!")
     private String airportcode;
 
-    @Column(nullable = true)
+    @NotBlank(message="Housenumber cannot be empty!")
+    private String airportname;
+
+    @NotBlank(message="Housenumber cannot be empty!")
     private String timeZone;
 
-    @Column(nullable = false)
+    @NotBlank(message="Housenumber cannot be empty!")
     private String country;
 
-    @Column(nullable = false,unique = true)
+    @NotBlank(message="Housenumber cannot be empty!")
     private String city;
 
 
     public Airport(){}
 
-    public Airport(String airportcode, String timeZone, String country, String city) {
+    public Airport(String airportcode, String timeZone, String country, String city, String airportname) {
         this.airportcode = airportcode;
         this.timeZone = timeZone;
         this.country = country;
         this.city = city;
+        this.airportname = airportname;
     }
 
     public String getAirportcode() {
@@ -64,26 +69,12 @@ public class  Airport {
         this.city = city;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Airport airport = (Airport) o;
-        return airportcode.equals(airport.airportcode) && timeZone.equals(airport.timeZone) && country.equals(airport.country) && city.equals(airport.city);
+    public String getAirportname() {
+        return airportname;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(airportcode, timeZone, country, city);
+    public void setAirportname(String airportname) {
+        this.airportname = airportname;
     }
 
-    @Override
-    public String toString() {
-        return "Airport{" +
-                "airportcode='" + airportcode + '\'' +
-                ", timeZone=" + timeZone +
-                ", country='" + country + '\'' +
-                ", city='" + city +
-                '}';
-    }
 }
