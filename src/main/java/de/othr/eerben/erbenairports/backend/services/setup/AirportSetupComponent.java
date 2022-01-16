@@ -2,11 +2,8 @@ package de.othr.eerben.erbenairports.backend.services.setup;
 
 import de.othr.eerben.erbenairports.backend.data.entities.Airport;
 import de.othr.eerben.erbenairports.backend.data.repositories.AirportRepository;
-import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
+import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.TimeZone;
 
 
 public class AirportSetupComponent extends AbstractSetupComponent {
@@ -15,7 +12,7 @@ public class AirportSetupComponent extends AbstractSetupComponent {
     AirportRepository airportRepo;
 
     @Override
-    boolean setup() throws ApplicationException {
+    boolean setup() throws AirportException {
         try{
             if(airportRepo.existsAirportByAirportcode("MUC")){
                 return true;
@@ -26,7 +23,7 @@ public class AirportSetupComponent extends AbstractSetupComponent {
             airportRepo.save(new Airport("FRA", "Europe/Berlin","Germany","Frankfurt","Flughafen Frankfurt Main"));
             return true;
         }catch(Exception e){
-            throw new ApplicationException("Airport Setup failed. Couldnt create Airports");
+            throw new AirportException("Airport Setup failed. Couldnt create Airports");
         }
     }
 

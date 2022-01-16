@@ -2,12 +2,12 @@ package de.othr.eerben.erbenairports.backend.services.setup;
 
 import de.othr.eerben.erbenairports.backend.data.entities.AccountType;
 import de.othr.eerben.erbenairports.backend.data.entities.User;
-import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
+import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 
 public class CustomerSetup extends AbstractUserSetup {
 
     @Override
-    boolean setup() throws ApplicationException {
+    boolean setup() throws AirportException {
         try{
             if(userService.userExists("root2")){
                 return true;
@@ -18,7 +18,7 @@ public class CustomerSetup extends AbstractUserSetup {
             userService.registerUser(new User("hoffmannAirways","matteo","Matteo","Hoffman","DE12345678901234500007","Germany","93055","Regensburg","Maximilianstraße","12A","Hoffmann Airways",AccountType.CUSTOMER));
             return true;
         }catch(Exception e){
-            throw new ApplicationException("Customer Setup failed. Couldnt create Customers");
+            throw new AirportException("Customer Setup failed. Couldnt create Customers");
         }
     }
 }

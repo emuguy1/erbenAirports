@@ -53,17 +53,11 @@
                 <li class="nav-item dropdown" sec:authorize="hasAuthority('EMPLOYEE')">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Admin
+                        Employee
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="#">Nutzer hinzufügen</a></li>
-                        <li><a class="dropdown-item" href="#">Nutzer löschen</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
+                        <li><a class="dropdown-item" href="/employee/register">Create new Employee</a></li>
+                        <li><a class="dropdown-item" href="/airport/new">Create new Airport</a></li>
                     </ul>
                 </li>
             </ul>
@@ -77,7 +71,7 @@
             </ul>
         </div>
     </nav>
-    <div th:replace="components/errorAlert :: errorAlert (${uiErrorMessage})">
+    <div th:replace="components/errorAlert :: errorAlert (${error})">
         <!--errorTitel, errorMessage-->
     </div>
 </div>

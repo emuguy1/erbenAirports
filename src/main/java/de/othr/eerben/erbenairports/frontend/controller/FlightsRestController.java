@@ -4,23 +4,18 @@ import de.othr.eerben.erbenairports.backend.data.entities.Flightdetails;
 import de.othr.eerben.erbenairports.backend.data.entities.User;
 import de.othr.eerben.erbenairports.backend.data.entities.dto.FlightdetailsDTO;
 import de.othr.eerben.erbenairports.backend.data.entities.dto.FlighttransactionDTO;
-import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
-import de.othr.eerben.erbenairports.backend.exceptions.UIErrorMessage;
-import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
+import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import de.othr.eerben.erbenairports.backend.services.UserServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collections;
 
 @Scope("singleton")
 @RestController
@@ -35,10 +30,10 @@ public class FlightsRestController {
 
     @Transactional
     @RequestMapping(value = "/flight", method = RequestMethod.POST)
-    public FlighttransactionDTO addFlight( @Valid @RequestBody FlighttransactionDTO flighttransactionDTO) throws Exception {
+    public FlighttransactionDTO addFlight( @Valid @RequestBody FlighttransactionDTO flighttransactionDTO) throws AirportException {
 
             if (flighttransactionDTO.getFlightnumber()==null||flighttransactionDTO.getFlightnumber().isEmpty()) {
-                throw new ApplicationException("Flightnumber empty!");
+                throw new AirportException("Flightnumber empty!");
             }
             User user=userServiceIF.getUserByUsername(flighttransactionDTO.getUsername());
             FlightdetailsDTO flightdetailsDTO=new FlightdetailsDTO(flighttransactionDTO.getFlightnumber(),flighttransactionDTO.getFlightTimeHours(),flighttransactionDTO.getMaxCargo(),flighttransactionDTO.getPassengerCount(),flighttransactionDTO.getDeparture(),flighttransactionDTO.getOrigin(), flighttransactionDTO.getDepartureTime());

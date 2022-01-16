@@ -5,7 +5,7 @@ import de.othr.eerben.erbenairports.backend.data.entities.dto.FlightdetailsDTO;
 import de.othr.eerben.erbenairports.backend.data.entities.dto.FlighttransactionDTO;
 import de.othr.eerben.erbenairports.backend.data.repositories.BookedCalendarslotRepository;
 import de.othr.eerben.erbenairports.backend.data.repositories.FlightdetailsRepository;
-import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
+import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
 import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import de.othr.eerben.erbenairports.backend.services.UserServiceIF;
@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.awt.print.Book;
 import java.sql.Timestamp;
 import java.time.*;
 import java.util.*;
@@ -57,14 +56,14 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
 
     @Override
-    public Page<Flightdetails> getDeparturesPaginated(String airportcode, Pageable pageable) throws ApplicationException {
+    public Page<Flightdetails> getDeparturesPaginated(String airportcode, Pageable pageable) throws AirportException {
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;
 
         //TODO: get departures after a specific time
         Airport airport = airportServiceIF.getAirportByAirportcode(airportcode);
-        Collection<Flightdetails> flights = flightdetailsRepo.getAllByDepartureAndDepartureTimeIsAfterOrderByDepartureTime(airport, Timestamp.from(Instant.now())).orElseThrow(() -> new ApplicationException("Error, no Departures for airport after now could be found"));
+        Collection<Flightdetails> flights = flightdetailsRepo.getAllByDepartureAndDepartureTimeIsAfterOrderByDepartureTime(airport, Timestamp.from(Instant.now())).orElseThrow(() -> new AirportException("Error, no Departures for airport after now could be found"));
         System.out.println(flights);
         List<Flightdetails> list;
 
@@ -82,14 +81,14 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     }
 
     @Override
-    public Page<Flightdetails> getArrivalsPaginated(String airportcode, Pageable pageable) throws ApplicationException {
+    public Page<Flightdetails> getArrivalsPaginated(String airportcode, Pageable pageable) throws AirportException {
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;
 
         //TODO: get arrivals after a specific time
         Airport airport = airportServiceIF.getAirportByAirportcode(airportcode);
-        Collection<Flightdetails> flights = flightdetailsRepo.getAllByOriginAndArrivalTimeIsAfterOrderByArrivalTime(airport, Timestamp.from(Instant.now())).orElseThrow(() -> new ApplicationException("Error, no Arrivals for airport after now could be found"));
+        Collection<Flightdetails> flights = flightdetailsRepo.getAllByOriginAndArrivalTimeIsAfterOrderByArrivalTime(airport, Timestamp.from(Instant.now())).orElseThrow(() -> new AirportException("Error, no Arrivals for airport after now could be found"));
         System.out.println(flights);
         List<Flightdetails> list;
 
@@ -126,7 +125,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     }
 
     @Override
-    public Flightdetails updateFlight(Flightdetails flightdetails) throws ApplicationException {
+    public Flightdetails updateFlight(Flightdetails flightdetails) throws AirportException {
         Optional<Flightdetails> oldAirportOptional = flightdetailsRepo.findById(flightdetails.getFlightid());
         if (oldAirportOptional.isPresent()) {
             Flightdetails oldFlightdetails = oldAirportOptional.get();
@@ -141,7 +140,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
     @Transactional
     @Override
-    public Flightdetails bookFlight(User user,FlightdetailsDTO flightdetails) throws ApplicationException {
+    public Flightdetails bookFlight(User user,FlightdetailsDTO flightdetails) throws AirportException {
 
         try {
             //TODO: try-catch
@@ -202,7 +201,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
                 }
             }
             if (!departurefree || !arrivalfree) {
-                throw new ApplicationException("Found no possible timeslot  in plus/minus 1 hour of wished flightslot");
+                throw new AirportException("Found no possible timeslot  in plus/minus 1 hour of wished flightslot");
             }
             //create bokedTimeslot
             BookedCalendarslot calendarslotDeparture = new BookedCalendarslot(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR), 5, calendar.getTime(), airportServiceIF.getAirportByAirportcode(flightdetails.getDeparture()));
@@ -231,24 +230,24 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
                 //response = restClient.postForObject(builder.toUriString(), null, String.class);//String.class has to be class of TRBank response
             }catch(Exception e){
                 System.out.println("could not perform transaction!");
-                throw new ApplicationException("Transaction could not be performed");
+                throw new AirportException("Transaction could not be performed");
             }
 
 
             return flightdetails1;
-        } catch (ApplicationException e) {
-            throw new ApplicationException(e.getMessage());
+        } catch (AirportException e) {
+            throw new AirportException(e.getMessage());
         }
     }
 
     @Override
-    public void deleteByAirportId(String airport) throws ApplicationException {
+    public void deleteByAirportId(String airport) throws AirportException {
         boolean isdeletable=flightdetailsRepo.getAllByAirportWhereArrivalAfter(Date.from(Instant.now()),airport);
         if(flightdetailsRepo.getAllByAirportWhereArrivalAfter(Date.from(Instant.now()),airport)){
-            throw new ApplicationException("At least one Flight exists with Arrivaltime after now");
+            throw new AirportException("At least one Flight exists with Arrivaltime after now");
         }
         else {
-            Collection<Flightdetails> toBeCanceledFlights = flightdetailsRepo.getAllByAirport(airport).orElseThrow(() -> new ApplicationException("Error, no Departures for airport after now could be found"));
+            Collection<Flightdetails> toBeCanceledFlights = flightdetailsRepo.getAllByAirport(airport).orElseThrow(() -> new AirportException("Error, no Departures for airport after now could be found"));
             Collection<BookedCalendarslot> toBeDeletedCalendarslots = new ArrayList<>();
             toBeCanceledFlights.stream().toList().forEach(flight -> toBeDeletedCalendarslots.add(flight.getArrivalTime()));
             toBeCanceledFlights.stream().toList().forEach(flight -> toBeDeletedCalendarslots.add(flight.getDepartureTime()));
@@ -258,10 +257,10 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     }
 
     @Override
-    public void deleteById(long flightid) throws ApplicationException {
-        Flightdetails flight = flightdetailsRepo.findByFlightid(flightid).orElseThrow(() -> new ApplicationException("Error, no Departures for airport after now could be found"));;
+    public void deleteById(long flightid) throws AirportException {
+        Flightdetails flight = flightdetailsRepo.findByFlightid(flightid).orElseThrow(() -> new AirportException("Error, no Departures for airport after now could be found"));;
         if(flight.getArrivalTime().getStartTime().after(Date.from(Instant.now()))){
-            throw new ApplicationException("Arrivaltime is after now, only can be canceled!");
+            throw new AirportException("Arrivaltime is after now, only can be canceled!");
         }
         else{
             flightdetailsRepo.deleteById(flightid);

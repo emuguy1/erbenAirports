@@ -1,10 +1,9 @@
 package de.othr.eerben.erbenairports.backend.services.setup;
 
-import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
+import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 
@@ -37,7 +36,7 @@ public class SetupExecutor {
 
             System.out.println("Setup finished!");
         }
-        catch(ApplicationException exception){
+        catch(AirportException exception){
             System.out.println("Setup failed!");
         }
 

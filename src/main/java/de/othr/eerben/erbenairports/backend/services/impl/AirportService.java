@@ -3,9 +3,8 @@ package de.othr.eerben.erbenairports.backend.services.impl;
 
 import de.othr.eerben.erbenairports.backend.data.entities.Airport;
 import de.othr.eerben.erbenairports.backend.data.repositories.AirportRepository;
-import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
+import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
-import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,13 +20,13 @@ public class AirportService implements AirportServiceIF {
 
     @Override
     @Transactional
-    public Airport getAirportByAirportcode(String airportcode) throws ApplicationException{
-        return airportRepo.findByAirportcode(airportcode).orElseThrow(()-> new ApplicationException("ERROR: Airport with airportcode not found: "+airportcode));
+    public Airport getAirportByAirportcode(String airportcode) throws AirportException{
+        return airportRepo.findByAirportcode(airportcode).orElseThrow(()-> new AirportException("ERROR: Airport with airportcode not found: "+airportcode));
     }
 
     @Override
     @Transactional
-    public Airport updateAirport(Airport airport) throws ApplicationException{
+    public Airport updateAirport(Airport airport) throws AirportException{
         Optional<Airport> oldAirportOptional = airportRepo.findByAirportcode(airport.getAirportcode());
         if (oldAirportOptional.isPresent()) {
             Airport oldAirport = oldAirportOptional.get();
@@ -40,7 +39,7 @@ public class AirportService implements AirportServiceIF {
 
     @Override
     @Transactional
-    public void deleteAirport(String airport) throws ApplicationException{
+    public void deleteAirport(String airport) throws AirportException{
         Optional<Airport> oldAirportOptional = airportRepo.findByAirportcode(airport);
 
         if (oldAirportOptional.isPresent()) {

@@ -2,7 +2,7 @@ package de.othr.eerben.erbenairports.backend.services.impl;
 
 import de.othr.eerben.erbenairports.backend.data.entities.User;
 import de.othr.eerben.erbenairports.backend.data.repositories.UserRepository;
-import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
+import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 import de.othr.eerben.erbenairports.backend.services.UserServiceIF;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,18 +24,18 @@ public class UserService implements UserServiceIF{
 
     @Transactional
     @Override
-    public User registerUser(User user) throws ApplicationException {
+    public User registerUser(User user) throws AirportException {
         //TODO: rewrite statment to something like exists
         //TODO: validation after Role Employee or Customer
         if(userRepo.findByUsername(user.getUsername()).isPresent()){
-            throw new ApplicationException("Error: This User already exists!");
+            throw new AirportException("Error: This User already exists!");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         try {
             return userRepo.save(user);
         }
         catch (Exception e){
-            throw new ApplicationException(e.getMessage());
+            throw new AirportException(e.getMessage());
         }
     }
 

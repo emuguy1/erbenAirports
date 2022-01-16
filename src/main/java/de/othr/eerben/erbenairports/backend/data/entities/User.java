@@ -218,6 +218,14 @@ public class User extends SingleIdEntity<String> implements UserDetails {
         this.accountType = accountType;
     }
 
+    public boolean isCustomer(){
+        return this.accountType.equals(AccountType.CUSTOMER);
+    }
+
+    public boolean isEmployee(){
+        return this.accountType.equals(AccountType.EMPLOYEE);
+    }
+
     @Override
     public String getID() {
         return this.username;

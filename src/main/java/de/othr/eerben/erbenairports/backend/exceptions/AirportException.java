@@ -1,21 +1,24 @@
 package de.othr.eerben.erbenairports.backend.exceptions;
 /**This is a class for handing down error informations to an UI component,
  that can be specified in the Controllers in order for the user to help handling it*/
-public class UIErrorMessage extends Exception{
+public class AirportException extends Exception{
     public String errortitel;
     public String errormessage;
     public String suggestions;
 
-    public UIErrorMessage(String errormessage){
+    public AirportException(String errormessage){
+        super(errormessage);
         this.errormessage=errormessage;
     }
 
-    public UIErrorMessage(String errormessage, String suggestions){
+    public AirportException(String errormessage, String suggestions){
+        super(errormessage);
         this.errormessage=errormessage;
         this.suggestions=suggestions;
     }
 
-    public UIErrorMessage(String errortitel, String errormessage, String suggestions){
+    public AirportException(String errortitel, String errormessage, String suggestions){
+        super(errormessage);
         this.errortitel=errortitel;
         this.errormessage=errormessage;
         this.suggestions=suggestions;

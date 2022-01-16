@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title th:text="${user.getUsername()} + ' | ErbenAirports'">Airport | ErbenAirports</title>
+    <div th:replace="components/common :: header"></div>
+</head>
+
+<body class="bg-light">
+<div th:replace="components/common :: navigation"></div>
+
+<h1 class="text-center" th:text="'Profile: '+ ${user.getUsername()}">Profile</h1>
+<div class="d-flex justify-content-center">
+    <div class="card" style="width: 80%;">
+        <div class="card-body">
+            <h5 class="card-title">
+                Connection Details
+            </h5>
+            <div class="row">
+                <p class="col-3">Name:</p>
+                <p class="col-8" th:text="${user.getName()}">text</p>
+            </div>
+            <div class="row">
+                <p class="col-3">Surname:</p>
+                <p class="col-8" th:text="${user.getSurname()}">text</p>
+            </div>
+            <div class="row">
+                <p class="col-3">Country:</p>
+                <p class="col-8" th:text="${user.getCountry()}">text</p>
+            </div>
+            <div class="row">
+                <p class="col-3">ZIP-Code:</p>
+                <p class="col-8" th:text="${user.getZipCode()}">text</p>
+            </div>
+            <div class="row">
+                <p class="col-3">City:</p>
+                <p class="col-8" th:text="${user.getTown()}">text</p>
+            </div>
+            <div class="row">
+                <p class="col-3">Street:</p>
+                <p class="col-8" th:text="${user.getStreet()}">text</p>
+            </div>
+            <div class="row">
+                <p class="col-3">Housenumber:</p>
+                <p class="col-8" th:text="${user.getHousenumber()}">text</p>
+            </div>
+            <!--This means shown User is Customer -->
+            <div th:if="${user.isCustomer()}">
+                <div class="row">
+                    <p class="col-3">IBAN:</p>
+                    <p class="col-8" th:text="${user.getIban()}">text</p>
+                </div>
+                <div class="row">
+                    <p class="col-3">Company Name:</p>
+                    <p class="col-8" th:text="${user.getCompany_name()}">text</p>
+                </div>
+            </div>
+            <div th:if="${user.getUsername().equals(#authentication.getName())}">
+                <!--TODO: What to do with this-->
+                Own Profile
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

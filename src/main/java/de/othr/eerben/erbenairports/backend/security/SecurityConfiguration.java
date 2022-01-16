@@ -33,7 +33,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/fonts/**",
             "/",
             "/login",
-            "/forgotPassword",
             "/register",
             "/icons/**",
             "/departures",
@@ -46,12 +45,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     };
 
     private static final String[] ALLOW_ACCESS_AS_CUSTOMER = {
-            "/order/**",
             "/customer/**"
     };
 
     private static final String[] ALLOW_ACCESS_AS_EMPLOYEE = {
-            "/airport/new"
+            "/airport/new",
+            "/employee/new"
     };
 
     @Override
@@ -71,7 +70,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .failureUrl("/login?error=true")
                 .and()
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/?logout")
+                .logoutSuccessUrl("/login")
                 .deleteCookies("remember-me")
                 .permitAll()
                 .and()

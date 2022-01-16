@@ -1,20 +1,20 @@
 package de.othr.eerben.erbenairports.backend.services;
 
 import de.othr.eerben.erbenairports.backend.data.entities.Airport;
-import de.othr.eerben.erbenairports.backend.exceptions.ApplicationException;
+import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.Optional;
 
 public interface AirportServiceIF {
-    Airport getAirportByAirportcode(String airportcode)throws ApplicationException;
+    Airport getAirportByAirportcode(String airportcode)throws AirportException;
 
     @Transactional
-    Airport updateAirport(Airport airport) throws ApplicationException;
+    Airport updateAirport(Airport airport) throws AirportException;
 
     @Transactional
-    void deleteAirport(String airport) throws ApplicationException;
+    void deleteAirport(String airport) throws AirportException;
 
     Airport addAirport(Airport airport);
     Optional<Collection<Airport>> getAllAirports();
