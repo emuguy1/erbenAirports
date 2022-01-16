@@ -14,7 +14,7 @@
 	<name>erbenairports</name>
 	<description>Airport Management System for University</description>
 	<properties>
-		<java.version>16</java.version>
+		<java.version>14</java.version>
 	</properties>
 
 	<dependencies>
@@ -94,6 +94,21 @@
 				<configuration>
 					<mainClass>de.othr.eerben.erbenairports.ErbenairportsApplication</mainClass>
 					<executable>true</executable>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>14</source>
+					<target>14</target>
 				</configuration>
 			</plugin>
 		</plugins>

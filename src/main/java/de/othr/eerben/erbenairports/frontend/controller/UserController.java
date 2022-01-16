@@ -26,7 +26,7 @@ public class UserController {
         }
         //TODO: Error reformati
         catch(Exception e){
-            model.addAttribute("error", new AirportException(e.getMessage()));
+            model.addAttribute("UIerror", new AirportException(e.getMessage()));
             return "index";
         }
         return "profile";

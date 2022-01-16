@@ -9,22 +9,23 @@ import org.springframework.stereotype.Repository;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface FlightdetailsRepository extends CrudRepository<Flightdetails, Long> {
     Collection<Flightdetails> findByDepartureOrderByDepartureTime(Airport airport);
     @Query("select f from Flightdetails f where f.departure = ?1 and f.departureTime.startTime > ?2 order by f.departureTime.startTime ASC")
-    Optional<Collection<Flightdetails>> getAllByDepartureAndDepartureTimeIsAfterOrderByDepartureTime(Airport departure, Timestamp departureTime);
+    List<Flightdetails> getAllByDepartureAndDepartureTimeIsAfterOrderByDepartureTime(Airport departure, Timestamp departureTime);
     @Query("select f from Flightdetails f where f.origin = ?1 and f.arrivalTime.startTime > ?2 order by f.arrivalTime.startTime")
-    Optional<Collection<Flightdetails>> getAllByOriginAndArrivalTimeIsAfterOrderByArrivalTime(Airport departure, Timestamp arrivalTime);
+    Optional<List<Flightdetails>> getAllByOriginAndArrivalTimeIsAfterOrderByArrivalTime(Airport departure, Timestamp arrivalTime);
     Collection<Flightdetails> findByOriginOrderByArrivalTime(Airport airport);
-    Optional<Collection<Flightdetails>> findByFlightnumber(String flightnumber);
+    Optional<List<Flightdetails>> findByFlightnumber(String flightnumber);
     Optional<Flightdetails> findByFlightid(long flightid);
     boolean existsFlightdetailsByFlightnumber(String flightnumber);
 
     @Query("select f from Flightdetails f where f.origin.airportcode = ?1 or f.departure.airportcode = ?1")
-    Optional<Collection<Flightdetails>> getAllByAirport(String airport);
+    Optional<List<Flightdetails>> getAllByAirport(String airport);
 
     @Query("select (count(f) > 0) from Flightdetails f where f.arrivalTime > ?1 and f.departure.airportcode = ?2 or f.origin.airportcode = ?2")
     boolean getAllByAirportWhereArrivalAfter(Date date, String airport);

@@ -40,7 +40,5 @@ public class FlightsRestController {
             Flightdetails flightdetails = flightdetailsServiceIF.bookFlight(user,flightdetailsDTO);
             System.out.println("External creation of flight: " + flightdetails);
             return new FlighttransactionDTO("Admin","123",flightdetails.getFlightnumber(),flightdetails.getFlightTimeHours(),flightdetails.getMaxCargo(),flightdetails.getPassengerCount(),flightdetails.getDeparture().getAirportcode(),flightdetails.getOrigin().getAirportcode(), LocalDateTime.ofInstant(flightdetails.getDepartureTime().getStartTime().toInstant(), ZoneId.of(flightdetails.getDeparture().getTimeZone())),LocalDateTime.ofInstant(flightdetails.getArrivalTime().getStartTime().toInstant(), ZoneId.of(flightdetails.getOrigin().getTimeZone())));
-
-
     }
 }

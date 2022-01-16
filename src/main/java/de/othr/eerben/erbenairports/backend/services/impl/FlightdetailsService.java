@@ -63,7 +63,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
         //TODO: get departures after a specific time
         Airport airport = airportServiceIF.getAirportByAirportcode(airportcode);
-        Collection<Flightdetails> flights = flightdetailsRepo.getAllByDepartureAndDepartureTimeIsAfterOrderByDepartureTime(airport, Timestamp.from(Instant.now())).orElseThrow(() -> new AirportException("Error, no Departures for airport after now could be found"));
+        List<Flightdetails> flights = flightdetailsRepo.getAllByDepartureAndDepartureTimeIsAfterOrderByDepartureTime(airport, Timestamp.from(Instant.now()));
         System.out.println(flights);
         List<Flightdetails> list;
 
@@ -71,7 +71,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
             list = Collections.emptyList();
         } else {
             int toIndex = Math.min(startItem + pageSize, flights.size());
-            list = flights.stream().toList().subList(startItem, toIndex);
+            list = flights.subList(startItem, toIndex);
         }
 
         Page<Flightdetails> flightsPage
@@ -88,7 +88,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
         //TODO: get arrivals after a specific time
         Airport airport = airportServiceIF.getAirportByAirportcode(airportcode);
-        Collection<Flightdetails> flights = flightdetailsRepo.getAllByOriginAndArrivalTimeIsAfterOrderByArrivalTime(airport, Timestamp.from(Instant.now())).orElseThrow(() -> new AirportException("Error, no Arrivals for airport after now could be found"));
+        List<Flightdetails> flights = flightdetailsRepo.getAllByOriginAndArrivalTimeIsAfterOrderByArrivalTime(airport, Timestamp.from(Instant.now())).orElseThrow(() -> new AirportException("Error, no Arrivals for airport after now could be found"));
         System.out.println(flights);
         List<Flightdetails> list;
 
@@ -96,7 +96,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
             list = Collections.emptyList();
         } else {
             int toIndex = Math.min(startItem + pageSize, flights.size());
-            list = flights.stream().toList().subList(startItem, toIndex);
+            list = flights.subList(startItem, toIndex);
         }
 
         Page<Flightdetails> flightsPage
@@ -247,10 +247,10 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
             throw new AirportException("At least one Flight exists with Arrivaltime after now");
         }
         else {
-            Collection<Flightdetails> toBeCanceledFlights = flightdetailsRepo.getAllByAirport(airport).orElseThrow(() -> new AirportException("Error, no Departures for airport after now could be found"));
+            List<Flightdetails> toBeCanceledFlights = flightdetailsRepo.getAllByAirport(airport).orElseThrow(() -> new AirportException("Error, no Departures for airport after now could be found"));
             Collection<BookedCalendarslot> toBeDeletedCalendarslots = new ArrayList<>();
-            toBeCanceledFlights.stream().toList().forEach(flight -> toBeDeletedCalendarslots.add(flight.getArrivalTime()));
-            toBeCanceledFlights.stream().toList().forEach(flight -> toBeDeletedCalendarslots.add(flight.getDepartureTime()));
+            toBeCanceledFlights.forEach(flight -> toBeDeletedCalendarslots.add(flight.getArrivalTime()));
+            toBeCanceledFlights.forEach(flight -> toBeDeletedCalendarslots.add(flight.getDepartureTime()));
             flightdetailsRepo.deleteAll(toBeCanceledFlights);
             calendarslotRepository.deleteAll(toBeDeletedCalendarslots);
         }

@@ -50,8 +50,8 @@ public class FlightsController {
                 if (page.isEmpty() || size.isEmpty()) {
                     return "redirect:/departures?airport=" + airportcode + "&size=" + pageSize + "&page=" + currentPage;
                 } else if (airportServiceIF.getAirportByAirportcode(airportcode) == null) {
-                    model.addAttribute("error", new AirportException("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
-                    return "/unauthenticated/error-page";
+                    model.addAttribute("UIerror", new AirportException("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
+                    return "unauthenticated/error-page";
                 }
                 flightPage = flightdetailsServiceIF.getDeparturesPaginated(airportcode, PageRequest.of(currentPage - 1, pageSize));
 
@@ -71,14 +71,15 @@ public class FlightsController {
                 model.addAttribute("pageNumbers", pageNumbers);
             }
         } catch (AirportException e) {
-            model.addAttribute("error", new AirportException("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
-            return "/unauthenticated/error-page";
+            //TODO: rephrase Error Message
+            model.addAttribute("UIerror", new AirportException("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
+            return "unauthenticated/error-page";
         }
-        model.addAttribute("flights", flightPage.stream().toList());
+        model.addAttribute("flights", flightPage.toList());
         model.addAttribute("airports", airports);
         model.addAttribute("currentAirport", airportServiceIF.getAirportByAirportcode(airportcode));
         model.addAttribute("selectedAirport", new Airport());
-        return "/unauthenticated/departures";
+        return "unauthenticated/departures";
     }
 
     @RequestMapping(value = "/departure", method = RequestMethod.GET) //th:selected
@@ -101,8 +102,8 @@ public class FlightsController {
                 if (page.isEmpty() || size.isEmpty()) {
                     return "redirect:/arrivals?airport=" + airportcode + "&size=" + pageSize + "&page=" + currentPage;
                 } else if (airportServiceIF.getAirportByAirportcode(airportcode) == null) {
-                    model.addAttribute("error", new AirportException("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
-                    return "/unauthenticated/error-page";
+                    model.addAttribute("UIerror", new AirportException("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
+                    return "unauthenticated/error-page";
                 }
                 flightPage = flightdetailsServiceIF.getArrivalsPaginated(airportcode, PageRequest.of(currentPage - 1, pageSize));
 
@@ -122,14 +123,14 @@ public class FlightsController {
                 model.addAttribute("pageNumbers", pageNumbers);
             }
         } catch (AirportException e) {
-            model.addAttribute("error", new AirportException("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
-            return "/unauthenticated/error-page";
+            model.addAttribute("UIerror", new AirportException("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
+            return "unauthenticated/error-page";
         }
-        model.addAttribute("flights", flightPage.stream().toList());
+        model.addAttribute("flights", flightPage.toList());
         model.addAttribute("airports", airports);
         model.addAttribute("currentAirport", airportServiceIF.getAirportByAirportcode(airportcode));
         model.addAttribute("selectedAirport", new Airport());
-        return "/unauthenticated/arrivals";
+        return "unauthenticated/arrivals";
     }
 
     @RequestMapping(value = "/arrival", method = RequestMethod.GET) //th:selected
@@ -156,7 +157,7 @@ public class FlightsController {
         } catch (AirportException e) {
             model.addAttribute("flightdetails", flightdetailsdto);
             model.addAttribute("airports", airportServiceIF.getAllAirports().orElse(Collections.emptyList()));
-            model.addAttribute("error", new AirportException(e.getMessage()));
+            model.addAttribute("UIerror", new AirportException(e.getMessage()));
             return "flight/new";
         }
 
@@ -187,7 +188,7 @@ public class FlightsController {
 
         String flighttimestring = ((int) flightdetails.getFlightTimeHours()) + "h " + (int) ((flightdetails.getFlightTimeHours() - ((int) (flightdetails.getFlightTimeHours()))) * 60) + "min";
         model.addAttribute("flighttime", flighttimestring);
-        return "/flight/details";
+        return "flight/details";
     }
 
     @Transactional

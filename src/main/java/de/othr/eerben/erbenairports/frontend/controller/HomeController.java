@@ -33,9 +33,7 @@ public class HomeController {
     public String login(Model model, @RequestParam("error") Optional<Boolean> error) {
         System.out.println(error);
         if(error.isPresent() && error.get()){
-            model.addAttribute("error",true);
-        }else{
-            model.addAttribute("error",false);
+            model.addAttribute("UIerror", new AirportException("Password or Username were wrong!"));
         }
         model.addAttribute("user", new User());
         return "authentication/login";
@@ -50,7 +48,7 @@ public class HomeController {
     public String errorOccured(){return "error";}
 
     @RequestMapping(value = "/register", method = RequestMethod.GET) // /login
-    public String registerCustomer(Model model) {
+    public String registerCustomer(Model model,HttpServletRequest servlet) {
         model.addAttribute("user", new User());
 
         return "authentication/register";
