@@ -21,7 +21,7 @@ public interface FlightdetailsServiceIF {
 
     Optional<Flightdetails> getFlightdetailsById(long flightid);
 
-    boolean cancleFlight(User user, FlighttransactionDTO flightnumber);
+    boolean cancelFlight(User user, FlighttransactionDTO flightnumber) throws AirportException;
 
     Flightdetails updateFlight(Flightdetails flightdetails) throws AirportException;
 

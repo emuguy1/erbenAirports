@@ -44,7 +44,10 @@ public class UserService implements UserServiceIF{
         return  userRepo.existsById(username);
     }
 
-
+    @Override
+    public boolean checkPassword(String password, User user) {
+        return passwordEncoder.matches(password, user.getPassword());
+    }
 
     @Transactional
     @Override

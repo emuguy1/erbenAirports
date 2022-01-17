@@ -27,9 +27,6 @@ public class Flightdetails {
     private int passengerCount;
 
     @NotNull
-    private boolean isCanceled;
-
-    @NotNull
     @ManyToOne
     private Airport departure;
 
@@ -50,9 +47,7 @@ public class Flightdetails {
     @OneToOne (orphanRemoval = true, cascade = CascadeType.ALL)
     private BookedCalendarslot arrivalTime;
 
-    public Flightdetails(){
-        this.isCanceled = false;
-    }
+    public Flightdetails(){}
 
     public Flightdetails(String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, Airport departure, Airport origin) {
         this.flightnumber = flightnumber;
@@ -61,7 +56,6 @@ public class Flightdetails {
         this.passengerCount = passengerCount;
         this.departure = departure;
         this.origin = origin;
-        this.isCanceled = false;
     }
 
     public Flightdetails(String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, Airport departure, Airport origin, BookedCalendarslot departureTime, BookedCalendarslot arrivalTime) {
@@ -73,7 +67,6 @@ public class Flightdetails {
         this.origin = origin;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
-        this.isCanceled = false;
     }
 
     public String getFlightnumber() {
@@ -157,14 +150,6 @@ public class Flightdetails {
     }
 
     public long getFlightid() {return flightid;}
-
-    public boolean isCanceled() {
-        return isCanceled;
-    }
-
-    public void setCanceled(boolean canceled) {
-        isCanceled = canceled;
-    }
 
     @Override
     public boolean equals(Object o) {

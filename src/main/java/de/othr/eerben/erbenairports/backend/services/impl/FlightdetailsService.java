@@ -115,13 +115,42 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
         return flightdetailsRepo.findByFlightid(flightid);
     }
 
-
+    @Transactional
     @Override
-    public boolean cancleFlight(User user, FlighttransactionDTO flight) {
-        //Should only be allowed if flight isnt departed yet
-        //TODO:über Flughafen und Zeitpunkt und über Rest anbieten
-        //flightRepo.getFlightByDepartureAirportANDByArrivalAirportAndDepartureTimeAndArrivalTime(
-        return false;
+    public boolean cancelFlight(User user, FlighttransactionDTO flight) throws AirportException {
+
+        //TODO:Repo Input has to be Date and not LocalDateTime
+        try {
+            Flightdetails flightdetails;
+            if (user.getAccountType() == AccountType.CUSTOMER) {
+                flightdetails = flightdetailsRepo.
+                        getFlightdetailsByDepartureTimeAndDepartureAndOriginAndFlightnumberAndAndArrivalTimeAndCustomer(
+                                Date.from(flight.getDepartureTime().toInstant(ZoneId.of("Europe/Berlin").getRules().getOffset(LocalDateTime.now()))),
+                                flight.getDeparture(), flight.getOrigin(), flight.getFlightnumber(),
+                                Date.from(flight.getArrivalTime().toInstant(ZoneId.of("Europe/Berlin").getRules().getOffset(LocalDateTime.now()))), user
+                        ).orElseThrow(() -> new AirportException("Flight could not be found!"));
+
+            } else{
+                flightdetails = flightdetailsRepo.
+                        getFlightdetailsByDepartureTimeAndDepartureAndOriginAndFlightnumberAndAndArrivalTime(
+                                Date.from(flight.getDepartureTime().toInstant(ZoneId.of("Europe/Berlin").getRules().getOffset(LocalDateTime.now()))),
+                                flight.getDeparture(), flight.getOrigin(), flight.getFlightnumber(),
+                                Date.from(flight.getArrivalTime().toInstant(ZoneId.of("Europe/Berlin").getRules().getOffset(LocalDateTime.now())))
+                        ).orElseThrow(() -> new AirportException("Flight could not be found!"));
+            }
+
+            if (flight.getDepartureTime().isAfter(LocalDateTime.now())||flight.getArrivalTime().isBefore(LocalDateTime.now())) {
+                //TODO:Book back to Customer via TRBank
+                deleteById(flightdetails.getFlightid());
+            }
+            else{
+                throw new AirportException("Flight is currently in the Air! Cannot be canncled");
+            }
+            return true;
+        } catch (AirportException e) {
+            e.setErrortitel("Flight could'nt be canncled! Please check the credentials!");
+            throw e;
+        }
     }
 
     @Override
@@ -129,7 +158,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
         Optional<Flightdetails> oldAirportOptional = flightdetailsRepo.findById(flightdetails.getFlightid());
         if (oldAirportOptional.isPresent()) {
             Flightdetails oldFlightdetails = oldAirportOptional.get();
-            //TODO notify customers, call airport etc.
+            //TODO: use
             return flightdetailsRepo.save(flightdetails);
         } else {
             System.out.println("Flight not found " + flightdetails.getFlightid());
@@ -140,7 +169,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
     @Transactional
     @Override
-    public Flightdetails bookFlight(User user,FlightdetailsDTO flightdetails) throws AirportException {
+    public Flightdetails bookFlight(User user, FlightdetailsDTO flightdetails) throws AirportException {
 
         try {
             //TODO: try-catch
@@ -150,7 +179,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
             Airport originAirport = airportServiceIF.getAirportByAirportcode(flightdetails.getOrigin());
 
             //get departure time
-            Instant departureInstant=flightdetails.getDepartureTime().atZone(ZoneId.of(departureAirport.getTimeZone())).toInstant();
+            Instant departureInstant = flightdetails.getDepartureTime().atZone(ZoneId.of(departureAirport.getTimeZone())).toInstant();
 
             //Time is safed in local timezone time on Database and then displayed in Airport localtimezone
             Calendar calendar = new GregorianCalendar();
@@ -213,10 +242,9 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
             //save flightdetails
             Flightdetails flightdetails1 = new Flightdetails(flightdetails.getFlightnumber(), flightdetails.getFlightTimeHours(), flightdetails.getMaxCargo(), flightdetails.getPassengerCount(), departureAirport, originAirport, calendarslotDeparture, calendarslotArrival);
-            if(user.getAccountType()== AccountType.CUSTOMER){
+            if (user.getAccountType() == AccountType.CUSTOMER) {
                 flightdetails1.setCustomer(user);
-            }
-            else{
+            } else {
                 flightdetails1.setCreatedBy(user);
                 flightdetails1.setCustomer(user);
             }
@@ -228,7 +256,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
             try {
                 //for null Object insert filled Object of TRBank
                 //response = restClient.postForObject(builder.toUriString(), null, String.class);//String.class has to be class of TRBank response
-            }catch(Exception e){
+            } catch (Exception e) {
                 System.out.println("could not perform transaction!");
                 throw new AirportException("Transaction could not be performed");
             }
@@ -242,30 +270,22 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
     @Override
     public void deleteByAirportId(String airport) throws AirportException {
-        boolean isdeletable=flightdetailsRepo.getAllByAirportWhereArrivalAfter(Date.from(Instant.now()),airport);
-        if(flightdetailsRepo.getAllByAirportWhereArrivalAfter(Date.from(Instant.now()),airport)){
+        if (!flightdetailsRepo.getAllByAirportWhereArrivalTimeAfterAndDepartureTimeBefore(Date.from(Instant.now()), airport)) {
             throw new AirportException("At least one Flight exists with Arrivaltime after now");
-        }
-        else {
+        } else {
             List<Flightdetails> toBeCanceledFlights = flightdetailsRepo.getAllByAirport(airport).orElseThrow(() -> new AirportException("Error, no Departures for airport after now could be found"));
-            Collection<BookedCalendarslot> toBeDeletedCalendarslots = new ArrayList<>();
-            toBeCanceledFlights.forEach(flight -> toBeDeletedCalendarslots.add(flight.getArrivalTime()));
-            toBeCanceledFlights.forEach(flight -> toBeDeletedCalendarslots.add(flight.getDepartureTime()));
             flightdetailsRepo.deleteAll(toBeCanceledFlights);
-            calendarslotRepository.deleteAll(toBeDeletedCalendarslots);
         }
     }
 
     @Override
+    @Transactional
     public void deleteById(long flightid) throws AirportException {
-        Flightdetails flight = flightdetailsRepo.findByFlightid(flightid).orElseThrow(() -> new AirportException("Error, no Departures for airport after now could be found"));;
-        if(flight.getArrivalTime().getStartTime().after(Date.from(Instant.now()))){
+        Flightdetails flight = flightdetailsRepo.findByFlightid(flightid).orElseThrow(() -> new AirportException("Error, no Departures for airport after now could be found"));
+        if (flight.getArrivalTime().getStartTime().after(Date.from(Instant.now()))) {
             throw new AirportException("Arrivaltime is after now, only can be canceled!");
-        }
-        else{
+        } else {
             flightdetailsRepo.deleteById(flightid);
-            calendarslotRepository.delete(flight.getDepartureTime());
-            calendarslotRepository.delete(flight.getArrivalTime());
         }
 
     }

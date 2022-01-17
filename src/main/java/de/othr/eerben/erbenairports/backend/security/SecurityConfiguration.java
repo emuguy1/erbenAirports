@@ -41,7 +41,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/arrival",
             "/error",
             "/flight/*/details",
-            "/api/rest/*"
+            "/api/rest/**"
     };
 
     private static final String[] ALLOW_ACCESS_AS_CUSTOMER = {

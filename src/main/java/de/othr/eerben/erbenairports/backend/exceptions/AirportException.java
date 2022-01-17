@@ -24,6 +24,18 @@ public class AirportException extends Exception{
         this.suggestions=suggestions;
     }
 
+    public void setErrortitel(String errortitel) {
+        this.errortitel = errortitel;
+    }
+
+    public void setErrormessage(String errormessage) {
+        this.errormessage = errormessage;
+    }
+
+    public void setSuggestions(String suggestions) {
+        this.suggestions = suggestions;
+    }
+
     public String getErrormessage() {
         return errormessage;
     }

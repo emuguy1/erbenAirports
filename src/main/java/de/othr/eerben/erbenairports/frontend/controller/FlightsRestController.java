@@ -14,6 +14,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import java.time.LocalDateTime;
@@ -41,10 +44,9 @@ public class FlightsRestController {
     @Transactional
     @RequestMapping(value = "/flight", method = RequestMethod.POST)
     public FlighttransactionDTO addFlightGermanTime( @Valid @RequestBody FlighttransactionDTO flighttransactionDTO) throws AirportException {
-            //Handling in REST muss immer nach deutscher Zeit passieren
-            //Input nur in Deutscher Zeit
-            //Output nur in Deutscher Zeit
-
+        //Handling in this REST Methode has to be in German Time for Partnerprojekt
+        //Input in German Time
+        //Output in German Time
         Airport Departure = airportServiceIF.getAirportByAirportcode(flighttransactionDTO.getDeparture());
         //Set Departure Time from German Local Time to Departureairport Local Time so the service function works as wanted
         Calendar calendar = new GregorianCalendar();
@@ -55,12 +57,10 @@ public class FlightsRestController {
         if (flighttransactionDTO.getFlightnumber()==null||flighttransactionDTO.getFlightnumber().isEmpty()) {
                 throw new AirportException("Flightnumber empty!");
             }
-            //TODO: Make Input from German Time to TimeZone Time
             User user=userServiceIF.getUserByUsername(flighttransactionDTO.getUsername());
             FlightdetailsDTO flightdetailsDTO=new FlightdetailsDTO(flighttransactionDTO.getFlightnumber(),flighttransactionDTO.getFlightTimeHours(),flighttransactionDTO.getMaxCargo(),flighttransactionDTO.getPassengerCount(),flighttransactionDTO.getDeparture(),flighttransactionDTO.getOrigin(), flighttransactionDTO.getDepartureTime());
             Flightdetails flightdetails = flightdetailsServiceIF.bookFlight(user,flightdetailsDTO);
             System.out.println("External creation of flight: " + flightdetails);
-            //We have to transform the Departure and arrival time back to LocalDateTime for
 
         LocalDateTime departure = LocalDateTime.ofInstant(flightdetails.getDepartureTime().getStartTime().toInstant(),ZoneId.of("Europe/Berlin"));
 
@@ -83,19 +83,22 @@ public class FlightsRestController {
         return new FlighttransactionDTO("Admin","123",flightdetails.getFlightnumber(),flightdetails.getFlightTimeHours(),flightdetails.getMaxCargo(),flightdetails.getPassengerCount(),flightdetails.getDeparture().getAirportcode(),flightdetails.getOrigin().getAirportcode(), LocalDateTime.ofInstant(flightdetails.getDepartureTime().getStartTime().toInstant(), ZoneId.of(flightdetails.getDeparture().getTimeZone())),LocalDateTime.ofInstant(flightdetails.getArrivalTime().getStartTime().toInstant(), ZoneId.of(flightdetails.getOrigin().getTimeZone())));
     }
     @Transactional
-    @RequestMapping(value = "/flight/cancle", method = RequestMethod.POST)
-    public FlighttransactionDTO cancleFlight( @Valid @RequestBody FlighttransactionDTO flighttransactionDTO) throws AirportException {
-        //Handling in REST muss immer nach deutscher Zeit passieren
-        //Input nur in Deutscher Zeit
-        //Output nur in Deutscher Zeit
+    @RequestMapping(value = "/flight/cancel", method = RequestMethod.POST)
+    public boolean cancelFlightGermanTime(@Valid @RequestBody FlighttransactionDTO flighttransactionDTO) throws AirportException{
+        User user=userServiceIF.getUserByUsername(flighttransactionDTO.getUsername());
+        if(!userServiceIF.checkPassword(flighttransactionDTO.getPassword(),user)){
+            throw new AirportException("Username or Password were incorrect!");
+        }
+
         if (flighttransactionDTO.getFlightnumber()==null||flighttransactionDTO.getFlightnumber().isEmpty()) {
             throw new AirportException("Flightnumber empty!");
         }
-        //TODO: Make Input from German Time to TimeZone Time
-        User user=userServiceIF.getUserByUsername(flighttransactionDTO.getUsername());
-        FlightdetailsDTO flightdetailsDTO=new FlightdetailsDTO(flighttransactionDTO.getFlightnumber(),flighttransactionDTO.getFlightTimeHours(),flighttransactionDTO.getMaxCargo(),flighttransactionDTO.getPassengerCount(),flighttransactionDTO.getDeparture(),flighttransactionDTO.getOrigin(), flighttransactionDTO.getDepartureTime());
-        Flightdetails flightdetails = flightdetailsServiceIF.bookFlight(user,flightdetailsDTO);
-        System.out.println("External creation of flight: " + flightdetails);
-        return new FlighttransactionDTO("Admin","123",flightdetails.getFlightnumber(),flightdetails.getFlightTimeHours(),flightdetails.getMaxCargo(),flightdetails.getPassengerCount(),flightdetails.getDeparture().getAirportcode(),flightdetails.getOrigin().getAirportcode(), LocalDateTime.ofInstant(flightdetails.getDepartureTime().getStartTime().toInstant(), ZoneId.of(flightdetails.getDeparture().getTimeZone())),LocalDateTime.ofInstant(flightdetails.getArrivalTime().getStartTime().toInstant(), ZoneId.of(flightdetails.getOrigin().getTimeZone())));
+        try{
+            return flightdetailsServiceIF.cancelFlight(user,flighttransactionDTO);
+        }catch(AirportException a){
+            a.setErrortitel("Flight could not be canceled");
+            throw a;
+        }
+
     }
 }

@@ -10,5 +10,7 @@ public interface UserServiceIF extends UserDetailsService {
 
     boolean userExists(String username);
 
+    boolean checkPassword(String password, User user);
+
     User saveUser(User user);
 }
