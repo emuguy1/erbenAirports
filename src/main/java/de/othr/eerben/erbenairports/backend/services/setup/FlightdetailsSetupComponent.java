@@ -6,6 +6,7 @@ import de.othr.eerben.erbenairports.backend.data.entities.dto.FlightdetailsDTO;
 import de.othr.eerben.erbenairports.backend.data.repositories.FlightdetailsRepository;
 import de.othr.eerben.erbenairports.backend.data.repositories.UserRepository;
 import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
+import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
 import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,6 +21,9 @@ public class FlightdetailsSetupComponent extends AbstractSetupComponent{
 
     @Autowired
     FlightdetailsServiceIF flightdetailsService;
+
+    @Autowired
+    AirportServiceIF airportServiceIF;
 
     @Autowired
     UserRepository userRepository;
