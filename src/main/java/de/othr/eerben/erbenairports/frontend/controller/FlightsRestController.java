@@ -15,9 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -43,7 +40,7 @@ public class FlightsRestController {
 
     @Transactional
     @RequestMapping(value = "/flight", method = RequestMethod.POST)
-    public FlighttransactionDTO addFlightGermanTime( @Valid @RequestBody FlighttransactionDTO flighttransactionDTO) throws AirportException {
+    public FlighttransactionDTO addFlightGermanTime(@RequestBody FlighttransactionDTO flighttransactionDTO) throws AirportException {
         //Handling in this REST Methode has to be in German Time for Partnerprojekt
         //Input in German Time
         //Output in German Time
@@ -71,7 +68,7 @@ public class FlightsRestController {
 
     @Transactional
     @RequestMapping(value = "/flight/international", method = RequestMethod.POST)
-    public FlighttransactionDTO addFlightInternational( @Valid @RequestBody FlighttransactionDTO flighttransactionDTO) throws AirportException {
+    public FlighttransactionDTO addFlightInternational(@RequestBody FlighttransactionDTO flighttransactionDTO) throws AirportException {
 
         if (flighttransactionDTO.getFlightnumber()==null||flighttransactionDTO.getFlightnumber().isEmpty()) {
             throw new AirportException("Flightnumber empty!");
@@ -84,7 +81,7 @@ public class FlightsRestController {
     }
     @Transactional
     @RequestMapping(value = "/flight/cancel", method = RequestMethod.POST)
-    public boolean cancelFlightGermanTime(@Valid @RequestBody FlighttransactionDTO flighttransactionDTO) throws AirportException{
+    public boolean cancelFlightGermanTime(@RequestBody FlighttransactionDTO flighttransactionDTO) throws AirportException{
         User user=userServiceIF.getUserByUsername(flighttransactionDTO.getUsername());
         if(!userServiceIF.checkPassword(flighttransactionDTO.getPassword(),user)){
             throw new AirportException("Username or Password were incorrect!");

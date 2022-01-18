@@ -9,6 +9,9 @@ import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
 import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import de.othr.eerben.erbenairports.backend.services.UserServiceIF;
+import de.othr.sw.TRBank.entity.dto.RestDTO;
+import de.othr.sw.TRBank.entity.dto.TransaktionDTO;
+import de.othr.sw.TRBank.service.exception.TRBankException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -20,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.*;
 import java.util.*;
@@ -130,7 +134,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
                                 Date.from(flight.getArrivalTime().toInstant(ZoneId.of("Europe/Berlin").getRules().getOffset(LocalDateTime.now()))), user
                         ).orElseThrow(() -> new AirportException("Flight could not be found!"));
 
-            } else{
+            } else {
                 flightdetails = flightdetailsRepo.
                         getFlightdetailsByDepartureTimeAndDepartureAndOriginAndFlightnumberAndAndArrivalTime(
                                 Date.from(flight.getDepartureTime().toInstant(ZoneId.of("Europe/Berlin").getRules().getOffset(LocalDateTime.now()))),
@@ -139,11 +143,10 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
                         ).orElseThrow(() -> new AirportException("Flight could not be found!"));
             }
 
-            if (flight.getDepartureTime().isAfter(LocalDateTime.now())||flight.getArrivalTime().isBefore(LocalDateTime.now())) {
+            if (flight.getDepartureTime().isAfter(LocalDateTime.now()) || flight.getArrivalTime().isBefore(LocalDateTime.now())) {
                 //TODO:Book back to Customer via TRBank
                 deleteById(flightdetails.getFlightid());
-            }
-            else{
+            } else {
                 throw new AirportException("Flight is currently in the Air! Cannot be canncled");
             }
             return true;
@@ -250,15 +253,26 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
             }
             flightdetails1 = flightdetailsRepo.save(flightdetails1);
             //TODO:add transaktion in trbank and move saving further down
-            String response = "";
+            if (user.getAccountType().equals(AccountType.CUSTOMER)) {
+                TransaktionDTO bankingTransaction = new TransaktionDTO(user.getIban(), bankingSelfIBAN,
+                        new BigDecimal("4000.00"), "Usage of airport for " + flightdetails.getFlightnumber()
+                        + " on Airports: " + flightdetails.getDeparture() + " and " + flightdetails.getOrigin()
+                        + " starting with :" + flightdetails1.getDepartureTime().getStartTime());//Source, target, amount, purpose
+                RestDTO bankingDTO = new RestDTO(bankingUsername, bankingPassword, bankingTransaction);
+                TransaktionDTO response;
 
-            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(bankingURL).queryParam("value", 100.00);
-            try {
-                //for null Object insert filled Object of TRBank
-                //response = restClient.postForObject(builder.toUriString(), null, String.class);//String.class has to be class of TRBank response
-            } catch (Exception e) {
-                System.out.println("could not perform transaction!");
-                throw new AirportException("Transaction could not be performed");
+                UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(bankingURL).queryParam("value", 100.00);
+                try {
+                    //for null Object insert filled Object of TRBank
+                    response = restClient.postForObject(builder.toUriString(), bankingDTO, TransaktionDTO.class);//String.class has to be class of TRBank response
+                } catch (Exception e) {
+                    System.out.println("could not perform transaction!");
+                    throw new AirportException("Transaction could not be performed!");
+                }
+                System.out.println(response);
+                if (response == null) {
+                    throw new AirportException("Transaction could not be performed!");
+                }
             }
 
 
