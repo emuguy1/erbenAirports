@@ -44,9 +44,6 @@ public class HomeController {
         return "index";
     }
 
-    @RequestMapping("/errors")
-    public String errorOccured(){return "error";}
-
     @RequestMapping(value = "/register", method = RequestMethod.GET) // /login
     public String registerCustomer(Model model,HttpServletRequest servlet) {
         model.addAttribute("user", new User());

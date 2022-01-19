@@ -39,7 +39,7 @@ public class FlightdetailsSetupComponent extends AbstractSetupComponent {
                 return true;
             }
 
-            //TODO:create more Example data
+            //TODO:create more Example data and set Seconds to 0
             LocalDateTime now = LocalDateTime.ofInstant(Instant.now().plusSeconds(7200), ZoneId.systemDefault());
 
             FlighttransactionDTO flight = new FlighttransactionDTO("LH123456", 12.4, 25.6, 250, "LAX", "MUC", now);

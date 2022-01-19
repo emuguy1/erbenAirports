@@ -9,3 +9,4 @@ Main settings are saved in application.properties.
 All graphics used are svg's from open source project undraw:
 <a>https://undraw.co/illustrations</a>
 
+Flight bookment only works in combination with running TR-Bank on port

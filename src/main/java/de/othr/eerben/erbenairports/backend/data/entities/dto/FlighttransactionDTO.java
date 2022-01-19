@@ -45,6 +45,32 @@ public class FlighttransactionDTO {
 
 
     public FlighttransactionDTO() {}
+
+    public FlighttransactionDTO(String username, String password, String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, String departureAirport, String arrivalAirport, LocalDateTime departureTime, LocalDateTime arrivalTime, String userenameCreatedFor) {
+        this.username = username;
+        this.password = password;
+        this.flightnumber = flightnumber;
+        this.flightTimeHours = flightTimeHours;
+        this.maxCargo = maxCargo;
+        this.passengerCount = passengerCount;
+        this.departureAirport = departureAirport;
+        this.arrivalAirport = arrivalAirport;
+        this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
+        this.userenameCreatedFor = userenameCreatedFor;
+    }
+
+    public FlighttransactionDTO(String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, String departureAirport, String arrivalAirport, LocalDateTime departureTime, String userenameCreatedFor) {
+        this.flightnumber = flightnumber;
+        this.flightTimeHours = flightTimeHours;
+        this.maxCargo = maxCargo;
+        this.passengerCount = passengerCount;
+        this.departureAirport = departureAirport;
+        this.arrivalAirport = arrivalAirport;
+        this.departureTime = departureTime;
+        this.userenameCreatedFor = userenameCreatedFor;
+    }
+
     public FlighttransactionDTO(String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, String departureAirport, String arrivalAirport, LocalDateTime departureTime) {
         this.flightnumber = flightnumber;
         this.flightTimeHours = flightTimeHours;
@@ -159,5 +185,13 @@ public class FlighttransactionDTO {
 
     public void setArrivalTime(LocalDateTime arrivalTime) {
         this.arrivalTime = arrivalTime;
+    }
+
+    public String getUserenameCreatedFor() {
+        return userenameCreatedFor;
+    }
+
+    public void setUserenameCreatedFor(String userenameCreatedFor) {
+        this.userenameCreatedFor = userenameCreatedFor;
     }
 }

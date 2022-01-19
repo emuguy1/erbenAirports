@@ -130,7 +130,7 @@
         <button th:type="submit" class=" btn btn-primary shadow mb-5 rounded col-2">Submit</button>
     </form>
 
-    <div>All data in local time</div>
+    <h5 class="text-center">All times and dates are shown in LocalTime of TimeZone MEZ</h5>
     <table class="table table-striped table-hover">
         <thead>
         <tr>
@@ -162,7 +162,7 @@
         <a th:each="pageNumber : ${pageNumbers}"
            th:href="@{/arrivals(airport=${currentAirport.getAirportcode()},size=${flightPage.size}, page=${pageNumber})}"
            th:text="${pageNumber}"
-           th:classappend="${pageNumber==flightPage.number + 1} ? 'text-secondary disabled': 'text-primary'" class="btn mx-1"></a>
+           th:classappend="${pageNumber==flightPage.number + 1} ? 'text-secondary disabled': 'text-primary'" class="btn bg-white mx-1"></a>
     </div>
 </div>
 </body>

@@ -10,6 +10,8 @@ import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import de.othr.eerben.erbenairports.backend.services.UserServiceIF;
 import de.othr.sw.TRBank.entity.dto.RestDTO;
 import de.othr.sw.TRBank.entity.dto.TransaktionDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -54,6 +56,8 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
     @Value("${trBank.password}")
     private String bankingPassword;
+
+    Logger logger= LoggerFactory.getLogger(FlightdetailsServiceIF.class);
 
 
     @Override
@@ -119,7 +123,6 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     @Transactional
     @Override
     public boolean cancelFlight(User user, FlighttransactionDTO flight) throws AirportException {
-
         //TODO:Repo Input has to be Date and not LocalDateTime
         try {
             Flightdetails flightdetails;
@@ -141,28 +144,54 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
             }
 
             if (flight.getDepartureTime().isAfter(LocalDateTime.now()) || flight.getArrivalTime().isBefore(LocalDateTime.now())) {
+                if(flightdetails.getCustomer() != null){
+                    TransaktionDTO bankingTransaction = new TransaktionDTO(bankingSelfIBAN, user.getIban(),
+                            new BigDecimal("4000.00"), "Cancellation of: Usage of airport for " + flightdetails.getFlightnumber()
+                            + " on Airports: " + flightdetails.getDepartureAirport() + " and " + flightdetails.getArrivalAirport()
+                            + " departing at :" + flightdetails.getDepartureTime().getStartTime());//Source, target, amount, purpose
+                    RestDTO bankingDTO = new RestDTO(bankingUsername, bankingPassword, bankingTransaction);
+                    TransaktionDTO response;
+
+                    //UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(bankingURL).queryParam("value", 100.00);
+                    try {
+                        //for null Object insert filled Object of TRBank
+                        response = restClient.postForObject(bankingURL, bankingDTO, TransaktionDTO.class);//String.class has to be class of TRBank response
+                        System.out.println(response);
+                    } catch (Exception e) {
+                        logger.error("Could not perform transaction!");
+                        throw new AirportException("Transaction could not be performed!");
+                    }
+                    if (response == null) {
+                        logger.error("Could not perform transaction!");
+                        throw new AirportException("Transaction could not be performed!");
+                    }
+                }
                 //TODO:Book back to Customer via TRBank
                 deleteById(flightdetails.getFlightid());
             } else {
-                throw new AirportException("Flight is currently in the Air! Cannot be canncled");
+                logger.warn("Flight is currently in the Air! Cannot be canncled!");
+                throw new AirportException("Flight is currently in the Air! Cannot be canncled!");
             }
             return true;
         } catch (AirportException e) {
+            logger.error("Flight could'nt be canncled! "+flight);
             e.setErrortitle("Flight could'nt be canncled! Please check the credentials!");
             throw e;
         }
     }
 
+    @Transactional
     @Override
     public Flightdetails updateFlight(Flightdetails flightdetails) throws AirportException {
-        Optional<Flightdetails> oldAirportOptional = flightdetailsRepo.findById(flightdetails.getFlightid());
-        if (oldAirportOptional.isPresent()) {
-            Flightdetails oldFlightdetails = oldAirportOptional.get();
-            //TODO: use
+        try{
+            Flightdetails oldFlightdetailsOptional = flightdetailsRepo.findById(flightdetails.getFlightid()).orElseThrow(() -> new AirportException("Flight not found " + flightdetails.getFlightid()));
             return flightdetailsRepo.save(flightdetails);
-        } else {
-            System.out.println("Flight not found " + flightdetails.getFlightid());
+        }catch(AirportException e){
+            logger.info("Flight not found and not updated " + flightdetails.getFlightid());
             return null;
+        }catch(Exception b){
+            logger.error("Flight could not be updated! Errormessage: "+b.getMessage());
+            throw new AirportException("Flight could not be updated!",b.getMessage());
         }
     }
 
@@ -170,8 +199,15 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     @Transactional
     @Override
     public Flightdetails bookFlight(User user, FlighttransactionDTO flightdetails) throws AirportException {
-
+        //In Case of exception we have to check if Transaction with bank was performed. Therefore we have an boolean flag
+        boolean moneyTransfered = false;
         try {
+
+            User createdForCustomer=null;
+            //Check if this user exists this early, so that Exception is thrown early
+            if(flightdetails.getUserenameCreatedFor()!=null){
+                createdForCustomer = userServiceIF.getUserByUsername(flightdetails.getUserenameCreatedFor());
+            }
 
             //check necessary inputs
             Airport departureAirport = airportServiceIF.getAirportByAirportcode(flightdetails.getDepartureAirport());
@@ -201,7 +237,11 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
             //check for available timeslot at departureAirport and arrivalAirport and reshedule if necessary max to 60 min after/before wished
 
-            //have to check that Airports and check if the time is more than 5 minutes, else, the slot would be booked twice which leads to errors
+            //check if the time is not the same and the airports are not the same. Else, the slot would be booked twice which leads to errors
+            if(wishedDeparture==approximatedArrivalTime&&flightdetails.getDepartureAirport().equals(flightdetails.getArrivalAirport())){
+                calendar1.add(Calendar.MINUTE, 5);
+                approximatedArrivalTime=calendar1.getTime();
+            }
 
             boolean departurefree = calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getDepartureAirport(), wishedDeparture).isEmpty();
             boolean arrivalfree = calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getArrivalAirport(), approximatedArrivalTime).isEmpty();
@@ -237,46 +277,58 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
             BookedCalendarslot calendarslotDeparture = new BookedCalendarslot(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR), 5, calendar.getTime(), airportServiceIF.getAirportByAirportcode(flightdetails.getDepartureAirport()));
             BookedCalendarslot calendarslotArrival = new BookedCalendarslot(calendar1.get(Calendar.DAY_OF_MONTH), calendar1.get(Calendar.MONTH), calendar1.get(Calendar.YEAR), 5, calendar1.getTime(), airportServiceIF.getAirportByAirportcode(flightdetails.getArrivalAirport()));
 
+
+            //only transfer money if it was done by a customer or a employee created it for an customer
+            if (user.getAccountType().equals(AccountType.CUSTOMER)||createdForCustomer!=null) {
+                TransaktionDTO bankingTransaction = new TransaktionDTO(user.getIban(), bankingSelfIBAN,
+                        new BigDecimal("4000.00"), "Usage of airport for " + flightdetails.getFlightnumber()
+                        + " on Airports: " + flightdetails.getDepartureAirport() + " and " + flightdetails.getArrivalAirport()
+                        + " starting at :" + calendarslotDeparture.getStartTime());
+                if(createdForCustomer!=null){
+                    //In case that it was booked by an employee for an customer
+                    bankingTransaction.setQuellIban(createdForCustomer.getIban());
+                }
+                RestDTO bankingDTO = new RestDTO(bankingUsername, bankingPassword, bankingTransaction);
+                TransaktionDTO response;
+                try {
+                    response = restClient.postForObject(bankingURL, bankingDTO, TransaktionDTO.class);
+                    moneyTransfered=true;
+                    logger.info("Bankingresponse: "+response);
+                } catch (Exception e) {
+                    logger.error("Bankingtransaction could not be performed!");
+                    throw new AirportException("Bankingtransaction could not be performed!");
+                }
+                System.out.println(response);
+                if (response == null) {
+                    logger.error("Bankingtransaction could not be performed!");
+                    throw new AirportException("Bankingtransaction could not be performed!");
+                }
+            }
+
+            //Save found Calendarslots
             calendarslotRepository.save(calendarslotDeparture);
             calendarslotRepository.save(calendarslotArrival);
-            //TODO:add user who created it/ created it for
 
-            //save flightdetails
+
+            //create flightdetails and add additional informations
             Flightdetails flightdetails1 = new Flightdetails(flightdetails.getFlightnumber(), flightdetails.getFlightTimeHours(), flightdetails.getMaxCargo(), flightdetails.getPassengerCount(), departureAirport, arrivalAirport, calendarslotDeparture, calendarslotArrival);
             if (user.getAccountType() == AccountType.CUSTOMER) {
                 flightdetails1.setCustomer(user);
             } else {
                 flightdetails1.setCreatedBy(user);
-                flightdetails1.setCustomer(user);
+                if(createdForCustomer!=null){
+                    flightdetails1.setCustomer(createdForCustomer);
+                }
             }
+
+            //save flightdetails
             flightdetails1 = flightdetailsRepo.save(flightdetails1);
-            //TODO:add transaktion in trbank and move saving further down
-            if (user.getAccountType().equals(AccountType.CUSTOMER)) {
-                TransaktionDTO bankingTransaction = new TransaktionDTO(user.getIban(), bankingSelfIBAN,
-                        new BigDecimal("4000.00"), "Usage of airport for " + flightdetails.getFlightnumber()
-                        + " on Airports: " + flightdetails.getDepartureAirport() + " and " + flightdetails.getArrivalAirport()
-                        + " starting with :" + flightdetails1.getDepartureTime().getStartTime());//Source, target, amount, purpose
-                RestDTO bankingDTO = new RestDTO(bankingUsername, bankingPassword, bankingTransaction);
-                TransaktionDTO response;
-
-                //UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(bankingURL).queryParam("value", 100.00);
-                try {
-                    //for null Object insert filled Object of TRBank
-                    response = restClient.postForObject(bankingURL, bankingDTO, TransaktionDTO.class);//String.class has to be class of TRBank response
-                    System.out.println(response);
-                } catch (Exception e) {
-                    System.out.println("could not perform transaction!");
-                    throw new AirportException("Transaction could not be performed!");
-                }
-                System.out.println(response);
-                if (response == null) {
-                    throw new AirportException("Transaction could not be performed!");
-                }
-            }
-
-
             return flightdetails1;
         } catch (AirportException e) {
+            if(moneyTransfered){
+                //TODO:wire the money back to customer
+                moneyTransfered=false;
+            }
             throw new AirportException(e.getMessage());
         }
     }

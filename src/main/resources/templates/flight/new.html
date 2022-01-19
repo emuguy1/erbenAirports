@@ -9,21 +9,21 @@
 <div th:replace="components/common :: navigation"></div>
 <h1 class="text-center">Book Flight</h1>
 <div class="container my-4">
-    <form th:object="${flightdetails}" method="post" th:action="@{/flight/new}">
+    <form class="mb-4" th:object="${flightdetails}" method="post" th:action="@{/flight/new}">
         <div class="d-flex flex-column align-items-center">
-            <div class="row col-8">
+            <div class="row col-md-10 col-sm-12 col-8">
                 <div class="mb-3">
                     <h6>Flightnumber:</h6>
                     <input type="text" th:field="*{flightnumber}" placeholder="e.g. LH0001"/>
                 </div>
             </div>
-            <div class="row col-8">
+            <div class="row col-md-10 col-sm-12 col-8">
                 <div class="mb-3">
                     <h6>Departure time:</h6>
                     <input th:field="*{departureTime}" type="datetime-local"/>
                 </div>
             </div>
-            <div class="row col-8">
+            <div class="row col-md-10 col-sm-12 col-8">
                 <div class="col-6">
                     <h6>Departure Airport</h6>
                     <select th:field="*{departureAirport}">
@@ -45,7 +45,7 @@
                     </select>
                 </div>
             </div>
-            <div class="row col-8">
+            <div class="row col-md-10 col-sm-12 col-8">
                 <div class="form-group">
                     <div class="mb-3">
                         <h6>Number of seats</h6>
@@ -64,10 +64,12 @@
                 </div>
             </div>
             <div>
-                <button type="submit" class="btn btn-primary">Book</button>
+                <button type="submit" class="btn btn-primary">Book *</button>
             </div>
         </div>
     </form>
+    <h6 class="text-left mt-4">*When clicking on the book button you accept, that 4000€ are booked from your Account at TR-Bank.**</h6>
+    <h6 class="text-left mb-2">**The money will be refunded, if something goes wrong, or you cancel the flight.</h6>
 </div>
 </body>
 </html>
