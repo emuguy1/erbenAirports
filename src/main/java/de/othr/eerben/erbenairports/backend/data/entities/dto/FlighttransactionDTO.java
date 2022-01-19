@@ -27,10 +27,10 @@ public class FlighttransactionDTO {
     private int passengerCount;
 
     @NotNull
-    private String departure;
+    private String departureAirport;
 
     @NotNull
-    private String origin;
+    private String arrivalAirport;
 
     @NotNull
     @JsonFormat(pattern="yyyy-MM-dd HH:mm")
@@ -45,39 +45,39 @@ public class FlighttransactionDTO {
 
 
     public FlighttransactionDTO() {}
-    public FlighttransactionDTO(String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, String departure, String origin, LocalDateTime departureTime) {
+    public FlighttransactionDTO(String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, String departureAirport, String arrivalAirport, LocalDateTime departureTime) {
         this.flightnumber = flightnumber;
         this.flightTimeHours = flightTimeHours;
         this.maxCargo = maxCargo;
         this.passengerCount = passengerCount;
-        this.departure = departure;
-        this.origin = origin;
+        this.departureAirport = departureAirport;
+        this.arrivalAirport = arrivalAirport;
         this.departureTime = departureTime;
     }
 
-    public FlighttransactionDTO(String username, String password, String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, String departure, String origin, LocalDateTime departureTime, LocalDateTime arrivalTime) {
+    public FlighttransactionDTO(String username, String password, String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, String departureAirport, String arrivalAirport, LocalDateTime departureTime, LocalDateTime arrivalTime) {
         this.username = username;
         this.password = password;
         this.flightnumber = flightnumber;
         this.flightTimeHours = flightTimeHours;
         this.maxCargo = maxCargo;
         this.passengerCount = passengerCount;
-        this.departure = departure;
-        this.origin = origin;
+        this.departureAirport = departureAirport;
+        this.arrivalAirport = arrivalAirport;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
     }
 
 
-    public FlighttransactionDTO(String username, String password, String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, String departure, String origin, LocalDateTime departureTime) {
+    public FlighttransactionDTO(String username, String password, String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, String departureAirport, String arrivalAirport, LocalDateTime departureTime) {
         this.username = username;
         this.password = password;
         this.flightnumber = flightnumber;
         this.flightTimeHours = flightTimeHours;
         this.maxCargo = maxCargo;
         this.passengerCount = passengerCount;
-        this.departure = departure;
-        this.origin = origin;
+        this.departureAirport = departureAirport;
+        this.arrivalAirport = arrivalAirport;
         this.departureTime = departureTime;
     }
 
@@ -129,20 +129,20 @@ public class FlighttransactionDTO {
         this.passengerCount = passengerCount;
     }
 
-    public String getDeparture() {
-        return departure;
+    public String getDepartureAirport() {
+        return departureAirport;
     }
 
-    public void setDeparture(String departure) {
-        this.departure = departure;
+    public void setDepartureAirport(String departureAirport) {
+        this.departureAirport = departureAirport;
     }
 
-    public String getOrigin() {
-        return origin;
+    public String getArrivalAirport() {
+        return arrivalAirport;
     }
 
-    public void setOrigin(String origin) {
-        this.origin = origin;
+    public void setArrivalAirport(String arrivalAirport) {
+        this.arrivalAirport = arrivalAirport;
     }
 
     public LocalDateTime getDepartureTime() {

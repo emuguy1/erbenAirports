@@ -64,7 +64,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
         //TODO: get departures after a specific time
         Airport airport = airportServiceIF.getAirportByAirportcode(airportcode);
-        List<Flightdetails> flights = flightdetailsRepo.getAllByDepartureAndDepartureTimeIsAfterOrderByDepartureTime(airport, Timestamp.from(Instant.now()));
+        List<Flightdetails> flights = flightdetailsRepo.getAllByDepartureAirportAndDepartureTimeIsAfterOrderByDepartureTime(airport, Timestamp.from(Instant.now()));
         System.out.println(flights);
         List<Flightdetails> list;
 
@@ -89,7 +89,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
         //TODO: get arrivals after a specific time
         Airport airport = airportServiceIF.getAirportByAirportcode(airportcode);
-        List<Flightdetails> flights = flightdetailsRepo.getAllByOriginAndArrivalTimeIsAfterOrderByArrivalTime(airport, Timestamp.from(Instant.now())).orElseThrow(() -> new AirportException("Error, no Arrivals for airport after now could be found"));
+        List<Flightdetails> flights = flightdetailsRepo.getAllByArrivalAirportAndArrivalTimeIsAfterOrderByArrivalTime(airport, Timestamp.from(Instant.now())).orElseThrow(() -> new AirportException("Error, no Arrivals for airport after now could be found"));
         System.out.println(flights);
         List<Flightdetails> list;
 
@@ -125,17 +125,17 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
             Flightdetails flightdetails;
             if (user.getAccountType() == AccountType.CUSTOMER) {
                 flightdetails = flightdetailsRepo.
-                        getFlightdetailsByDepartureTimeAndDepartureAndOriginAndFlightnumberAndAndArrivalTimeAndCustomer(
+                        getFlightdetailsByDepartureTimeAndDepartureAirportAndArrivalAirportAndFlightnumberAndAndArrivalTimeAndCustomer(
                                 Date.from(flight.getDepartureTime().toInstant(ZoneId.of("Europe/Berlin").getRules().getOffset(LocalDateTime.now()))),
-                                flight.getDeparture(), flight.getOrigin(), flight.getFlightnumber(),
+                                flight.getDepartureAirport(), flight.getArrivalAirport(), flight.getFlightnumber(),
                                 Date.from(flight.getArrivalTime().toInstant(ZoneId.of("Europe/Berlin").getRules().getOffset(LocalDateTime.now()))), user
                         ).orElseThrow(() -> new AirportException("Flight could not be found!"));
 
             } else {
                 flightdetails = flightdetailsRepo.
-                        getFlightdetailsByDepartureTimeAndDepartureAndOriginAndFlightnumberAndAndArrivalTime(
+                        getFlightdetailsByDepartureTimeAndDepartureAirportAndArrivalAirportAndFlightnumberAndAndArrivalTime(
                                 Date.from(flight.getDepartureTime().toInstant(ZoneId.of("Europe/Berlin").getRules().getOffset(LocalDateTime.now()))),
-                                flight.getDeparture(), flight.getOrigin(), flight.getFlightnumber(),
+                                flight.getDepartureAirport(), flight.getArrivalAirport(), flight.getFlightnumber(),
                                 Date.from(flight.getArrivalTime().toInstant(ZoneId.of("Europe/Berlin").getRules().getOffset(LocalDateTime.now())))
                         ).orElseThrow(() -> new AirportException("Flight could not be found!"));
             }
@@ -174,8 +174,8 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
         try {
 
             //check necessary inputs
-            Airport departureAirport = airportServiceIF.getAirportByAirportcode(flightdetails.getDeparture());
-            Airport originAirport = airportServiceIF.getAirportByAirportcode(flightdetails.getOrigin());
+            Airport departureAirport = airportServiceIF.getAirportByAirportcode(flightdetails.getDepartureAirport());
+            Airport arrivalAirport = airportServiceIF.getAirportByAirportcode(flightdetails.getArrivalAirport());
 
             //get departure time
             Instant departureInstant = flightdetails.getDepartureTime().atZone(ZoneId.of(departureAirport.getTimeZone())).toInstant();
@@ -199,10 +199,12 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
             calendar1.set(Calendar.MINUTE, (int) Math.floor((calendar1.get(Calendar.MINUTE) + 2.5) / 5) * 5);
             Date approximatedArrivalTime = calendar1.getTime();
 
-            //check for available timeslot at departure and origin and reshedule if necessary max to 60 min after/before wished
+            //check for available timeslot at departureAirport and arrivalAirport and reshedule if necessary max to 60 min after/before wished
 
-            boolean departurefree = calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getDeparture(), wishedDeparture).isEmpty();
-            boolean arrivalfree = calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getOrigin(), approximatedArrivalTime).isEmpty();
+            //have to check that Airports and check if the time is more than 5 minutes, else, the slot would be booked twice which leads to errors
+
+            boolean departurefree = calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getDepartureAirport(), wishedDeparture).isEmpty();
+            boolean arrivalfree = calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getArrivalAirport(), approximatedArrivalTime).isEmpty();
 
             int i = 0;
             while ((!departurefree || !arrivalfree) && i < 12) {
@@ -211,8 +213,8 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
                 wishedDeparture = calendar.getTime();
                 calendar1.add(Calendar.MINUTE, 5);
                 approximatedArrivalTime = calendar.getTime();
-                departurefree = calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getDeparture(), wishedDeparture).isEmpty();
-                arrivalfree = calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getOrigin(), approximatedArrivalTime).isEmpty();
+                departurefree = calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getDepartureAirport(), wishedDeparture).isEmpty();
+                arrivalfree = calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getArrivalAirport(), approximatedArrivalTime).isEmpty();
             }
             if (!departurefree || !arrivalfree) {
                 i = 0;
@@ -224,23 +226,23 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
                     wishedDeparture = calendar.getTime();
                     calendar1.add(Calendar.MINUTE, -5);
                     approximatedArrivalTime = calendar.getTime();
-                    departurefree = calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getDeparture(), wishedDeparture).isEmpty();
-                    arrivalfree = calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getOrigin(), approximatedArrivalTime).isEmpty();
+                    departurefree = calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getDepartureAirport(), wishedDeparture).isEmpty();
+                    arrivalfree = calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getArrivalAirport(), approximatedArrivalTime).isEmpty();
                 }
             }
             if (!departurefree || !arrivalfree) {
                 throw new AirportException("Found no possible timeslot  in plus/minus 1 hour of wished flightslot");
             }
             //create bookedTimeslot
-            BookedCalendarslot calendarslotDeparture = new BookedCalendarslot(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR), 5, calendar.getTime(), airportServiceIF.getAirportByAirportcode(flightdetails.getDeparture()));
-            BookedCalendarslot calendarslotArrival = new BookedCalendarslot(calendar1.get(Calendar.DAY_OF_MONTH), calendar1.get(Calendar.MONTH), calendar1.get(Calendar.YEAR), 5, calendar1.getTime(), airportServiceIF.getAirportByAirportcode(flightdetails.getOrigin()));
+            BookedCalendarslot calendarslotDeparture = new BookedCalendarslot(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR), 5, calendar.getTime(), airportServiceIF.getAirportByAirportcode(flightdetails.getDepartureAirport()));
+            BookedCalendarslot calendarslotArrival = new BookedCalendarslot(calendar1.get(Calendar.DAY_OF_MONTH), calendar1.get(Calendar.MONTH), calendar1.get(Calendar.YEAR), 5, calendar1.getTime(), airportServiceIF.getAirportByAirportcode(flightdetails.getArrivalAirport()));
 
             calendarslotRepository.save(calendarslotDeparture);
             calendarslotRepository.save(calendarslotArrival);
             //TODO:add user who created it/ created it for
 
             //save flightdetails
-            Flightdetails flightdetails1 = new Flightdetails(flightdetails.getFlightnumber(), flightdetails.getFlightTimeHours(), flightdetails.getMaxCargo(), flightdetails.getPassengerCount(), departureAirport, originAirport, calendarslotDeparture, calendarslotArrival);
+            Flightdetails flightdetails1 = new Flightdetails(flightdetails.getFlightnumber(), flightdetails.getFlightTimeHours(), flightdetails.getMaxCargo(), flightdetails.getPassengerCount(), departureAirport, arrivalAirport, calendarslotDeparture, calendarslotArrival);
             if (user.getAccountType() == AccountType.CUSTOMER) {
                 flightdetails1.setCustomer(user);
             } else {
@@ -252,7 +254,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
             if (user.getAccountType().equals(AccountType.CUSTOMER)) {
                 TransaktionDTO bankingTransaction = new TransaktionDTO(user.getIban(), bankingSelfIBAN,
                         new BigDecimal("4000.00"), "Usage of airport for " + flightdetails.getFlightnumber()
-                        + " on Airports: " + flightdetails.getDeparture() + " and " + flightdetails.getOrigin()
+                        + " on Airports: " + flightdetails.getDepartureAirport() + " and " + flightdetails.getArrivalAirport()
                         + " starting with :" + flightdetails1.getDepartureTime().getStartTime());//Source, target, amount, purpose
                 RestDTO bankingDTO = new RestDTO(bankingUsername, bankingPassword, bankingTransaction);
                 TransaktionDTO response;

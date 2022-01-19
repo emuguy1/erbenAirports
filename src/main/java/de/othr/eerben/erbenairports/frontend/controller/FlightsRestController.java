@@ -42,7 +42,7 @@ public class FlightsRestController {
         //Handling in this REST Methode has to be in German Time for Partnerprojekt
         //Input in German Time
         //Output in German Time
-        Airport Departure = airportServiceIF.getAirportByAirportcode(flighttransactionDTO.getDeparture());
+        Airport Departure = airportServiceIF.getAirportByAirportcode(flighttransactionDTO.getDepartureAirport());
         //Set Departure Time from German Local Time to Departureairport Local Time so the service function works as wanted
         Calendar calendar = new GregorianCalendar();
         calendar.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
@@ -53,7 +53,7 @@ public class FlightsRestController {
                 throw new AirportException("Flightnumber empty!");
             }
             User user=userServiceIF.getUserByUsername(flighttransactionDTO.getUsername());
-        FlighttransactionDTO flightdetailsDTO=new FlighttransactionDTO(flighttransactionDTO.getFlightnumber(),flighttransactionDTO.getFlightTimeHours(),flighttransactionDTO.getMaxCargo(),flighttransactionDTO.getPassengerCount(),flighttransactionDTO.getDeparture(),flighttransactionDTO.getOrigin(), flighttransactionDTO.getDepartureTime());
+        FlighttransactionDTO flightdetailsDTO=new FlighttransactionDTO(flighttransactionDTO.getFlightnumber(),flighttransactionDTO.getFlightTimeHours(),flighttransactionDTO.getMaxCargo(),flighttransactionDTO.getPassengerCount(),flighttransactionDTO.getDepartureAirport(),flighttransactionDTO.getArrivalAirport(), flighttransactionDTO.getDepartureTime());
             Flightdetails flightdetails = flightdetailsServiceIF.bookFlight(user,flightdetailsDTO);
             System.out.println("External creation of flight: " + flightdetails);
 
@@ -61,7 +61,7 @@ public class FlightsRestController {
 
         LocalDateTime arrivalTime =LocalDateTime.ofInstant(flightdetails.getArrivalTime().getStartTime().toInstant(),ZoneId.of("Europe/Berlin"));
 
-            return new FlighttransactionDTO(flighttransactionDTO.getUsername(), flighttransactionDTO.getPassword(), flightdetails.getFlightnumber(),flightdetails.getFlightTimeHours(),flightdetails.getMaxCargo(),flightdetails.getPassengerCount(),flightdetails.getDeparture().getAirportcode(),flightdetails.getOrigin().getAirportcode(), departure, arrivalTime);
+            return new FlighttransactionDTO(flighttransactionDTO.getUsername(), flighttransactionDTO.getPassword(), flightdetails.getFlightnumber(),flightdetails.getFlightTimeHours(),flightdetails.getMaxCargo(),flightdetails.getPassengerCount(),flightdetails.getDepartureAirport().getAirportcode(),flightdetails.getArrivalAirport().getAirportcode(), departure, arrivalTime);
     }
 
     @Transactional
@@ -72,10 +72,10 @@ public class FlightsRestController {
             throw new AirportException("Flightnumber empty!");
         }
         User user=userServiceIF.getUserByUsername(flighttransactionDTO.getUsername());
-        FlighttransactionDTO flightdetailsDTO=new FlighttransactionDTO(flighttransactionDTO.getFlightnumber(),flighttransactionDTO.getFlightTimeHours(),flighttransactionDTO.getMaxCargo(),flighttransactionDTO.getPassengerCount(),flighttransactionDTO.getDeparture(),flighttransactionDTO.getOrigin(), flighttransactionDTO.getDepartureTime());
+        FlighttransactionDTO flightdetailsDTO=new FlighttransactionDTO(flighttransactionDTO.getFlightnumber(),flighttransactionDTO.getFlightTimeHours(),flighttransactionDTO.getMaxCargo(),flighttransactionDTO.getPassengerCount(),flighttransactionDTO.getDepartureAirport(),flighttransactionDTO.getArrivalAirport(), flighttransactionDTO.getDepartureTime());
         Flightdetails flightdetails = flightdetailsServiceIF.bookFlight(user,flightdetailsDTO);
         System.out.println("External creation of flight: " + flightdetails);
-        return new FlighttransactionDTO(flighttransactionDTO.getUsername(), flighttransactionDTO.getPassword(),flightdetails.getFlightnumber(),flightdetails.getFlightTimeHours(),flightdetails.getMaxCargo(),flightdetails.getPassengerCount(),flightdetails.getDeparture().getAirportcode(),flightdetails.getOrigin().getAirportcode(), LocalDateTime.ofInstant(flightdetails.getDepartureTime().getStartTime().toInstant(), ZoneId.of(flightdetails.getDeparture().getTimeZone())),LocalDateTime.ofInstant(flightdetails.getArrivalTime().getStartTime().toInstant(), ZoneId.of(flightdetails.getOrigin().getTimeZone())));
+        return new FlighttransactionDTO(flighttransactionDTO.getUsername(), flighttransactionDTO.getPassword(),flightdetails.getFlightnumber(),flightdetails.getFlightTimeHours(),flightdetails.getMaxCargo(),flightdetails.getPassengerCount(),flightdetails.getDepartureAirport().getAirportcode(),flightdetails.getArrivalAirport().getAirportcode(), LocalDateTime.ofInstant(flightdetails.getDepartureTime().getStartTime().toInstant(), ZoneId.of(flightdetails.getDepartureAirport().getTimeZone())),LocalDateTime.ofInstant(flightdetails.getArrivalTime().getStartTime().toInstant(), ZoneId.of(flightdetails.getArrivalAirport().getTimeZone())));
     }
 
     @Transactional

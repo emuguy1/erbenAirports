@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -169,22 +170,23 @@ public class FlightsController {
         model.addAttribute("flightdetails", flightdetails);
         ZonedDateTime departureTimeUTC = ZonedDateTime.ofInstant(flightdetails.getDepartureTime().getStartTime().toInstant(), ZoneId.of("Etc/UTC"));
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm z");
         //Zoned date time at target timezone
-        ZonedDateTime departuretimeDeparture = departureTimeUTC.withZoneSameInstant(ZoneId.of(flightdetails.getDeparture().getTimeZone()));
-        model.addAttribute("departuretimeDeparture", departuretimeDeparture);
+        ZonedDateTime departureTimeDepartureAirport = departureTimeUTC.withZoneSameInstant(ZoneId.of(flightdetails.getDepartureAirport().getTimeZone()));
+        model.addAttribute("departureTimeDepartureAirport", departureTimeDepartureAirport.format(formatter));
 
-        ZonedDateTime departuretimeOrigin = departureTimeUTC.withZoneSameInstant(ZoneId.of(flightdetails.getOrigin().getTimeZone()));
-        model.addAttribute("departuretimeOrigin", departuretimeOrigin);
+        ZonedDateTime departureTimeArrivalAirport = departureTimeUTC.withZoneSameInstant(ZoneId.of(flightdetails.getArrivalAirport().getTimeZone()));
+        model.addAttribute("departureTimeArrivalAirport", departureTimeArrivalAirport.format(formatter));
 
 
         ZonedDateTime arrivalTimeUTC = ZonedDateTime.ofInstant(flightdetails.getArrivalTime().getStartTime().toInstant(), ZoneId.of("Etc/UTC"));
 
         //Zoned date time at target timezone
-        ZonedDateTime arrivaltimeDeparture = arrivalTimeUTC.withZoneSameInstant(ZoneId.of(flightdetails.getDeparture().getTimeZone()));
-        model.addAttribute("arrivaltimeDeparture", arrivaltimeDeparture);
+        ZonedDateTime arrivalTimeDepartureAirport = arrivalTimeUTC.withZoneSameInstant(ZoneId.of(flightdetails.getDepartureAirport().getTimeZone()));
+        model.addAttribute("arrivalTimeDepartureAirport", arrivalTimeDepartureAirport.format(formatter));
 
-        ZonedDateTime arrivaltimeOrigin = arrivalTimeUTC.withZoneSameInstant(ZoneId.of(flightdetails.getOrigin().getTimeZone()));
-        model.addAttribute("arrivaltimeOrigin", arrivaltimeOrigin);
+        ZonedDateTime arrivalTimeArrivalAirport = arrivalTimeUTC.withZoneSameInstant(ZoneId.of(flightdetails.getArrivalAirport().getTimeZone()));
+        model.addAttribute("arrivalTimeArrivalAirport", arrivalTimeArrivalAirport.format(formatter));
 
         String flighttimestring = ((int) flightdetails.getFlightTimeHours()) + "h " + (int) ((flightdetails.getFlightTimeHours() - ((int) (flightdetails.getFlightTimeHours()))) * 60) + "min";
         model.addAttribute("flighttime", flighttimestring);

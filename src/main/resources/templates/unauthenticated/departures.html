@@ -145,7 +145,7 @@
         <tr th:if="${!flights.isEmpty()}" th:each="flight : ${flights}">
             <th scope="row"><label th:text="${flight.getFlightnumber()}"></label></th>
             <td><label th:text="${flight.getDepartureTime().getStartTime().toString()}"></label></td>
-            <td><label th:text="${flight.getOrigin().getCity()}"></label></td>
+            <td><label th:text="${flight.getArrivalAirport().getCity()}"></label></td>
             <td><label th:text="${flight.getArrivalTime().getStartTime().toString}"></label></td>
             <td>
                 <form th:action="@{/flight}">

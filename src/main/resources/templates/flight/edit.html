@@ -26,7 +26,7 @@
             <div class="row col-8">
                 <div class="col-6">
                     <h6>Departure Airport</h6>
-                    <select th:field="*{departure}">
+                    <select th:field="*{departureAirport}">
                         <option th:each="airport: ${airports}"
                                 th:value="${airport.getAirportcode()}"
                                 th:text="${airport.getAirportcode()} + '-' + ${airport.getCity()} + '-' + ${airport.getCountry()}">
@@ -35,8 +35,8 @@
                     </select>
                 </div>
                 <div class="col-6">
-                    <h6>Origin Airport</h6>
-                    <select th:field="*{origin}">
+                    <h6>Arrival Airport</h6>
+                    <select th:field="*{arrivalAirport}">
                         <option th:each="airport: ${airports}"
                                 th:value="${airport.getAirportcode()}"
                                 th:text="${airport.getAirportcode()} + '-' + ${airport.getCity()} + '-' + ${airport.getCountry()}">

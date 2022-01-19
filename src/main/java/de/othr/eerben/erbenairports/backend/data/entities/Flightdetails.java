@@ -1,7 +1,6 @@
 package de.othr.eerben.erbenairports.backend.data.entities;
 
 import com.sun.istack.NotNull;
-import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -28,11 +27,11 @@ public class Flightdetails {
 
     @NotNull
     @ManyToOne
-    private Airport departure;
+    private Airport departureAirport;
 
     @NotNull
     @ManyToOne
-    private Airport origin;
+    private Airport arrivalAirport;
 
     @NotNull
     @ManyToOne
@@ -49,22 +48,22 @@ public class Flightdetails {
 
     public Flightdetails(){}
 
-    public Flightdetails(String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, Airport departure, Airport origin) {
+    public Flightdetails(String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, Airport departureAirport, Airport arrivalAirport) {
         this.flightnumber = flightnumber;
         this.flightTimeHours = flightTimeHours;
         this.maxCargo = maxCargo;
         this.passengerCount = passengerCount;
-        this.departure = departure;
-        this.origin = origin;
+        this.departureAirport = departureAirport;
+        this.arrivalAirport = arrivalAirport;
     }
 
-    public Flightdetails(String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, Airport departure, Airport origin, BookedCalendarslot departureTime, BookedCalendarslot arrivalTime) {
+    public Flightdetails(String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, Airport departureAirport, Airport arrivalAirport, BookedCalendarslot departureTime, BookedCalendarslot arrivalTime) {
         this.flightnumber = flightnumber;
         this.flightTimeHours = flightTimeHours;
         this.maxCargo = maxCargo;
         this.passengerCount = passengerCount;
-        this.departure = departure;
-        this.origin = origin;
+        this.departureAirport = departureAirport;
+        this.arrivalAirport = arrivalAirport;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
     }
@@ -101,20 +100,20 @@ public class Flightdetails {
         this.passengerCount = passengerCount;
     }
 
-    public Airport getDeparture() {
-        return departure;
+    public Airport getDepartureAirport() {
+        return departureAirport;
     }
 
-    public void setDeparture(Airport departure) {
-        this.departure = departure;
+    public void setDepartureAirport(Airport departureAirport) {
+        this.departureAirport = departureAirport;
     }
 
-    public Airport getOrigin() {
-        return origin;
+    public Airport getArrivalAirport() {
+        return arrivalAirport;
     }
 
-    public void setOrigin(Airport origin) {
-        this.origin = origin;
+    public void setArrivalAirport(Airport arrivalAirport) {
+        this.arrivalAirport = arrivalAirport;
     }
 
     public User getCustomer() {
@@ -156,12 +155,12 @@ public class Flightdetails {
         if (this == o) return true;
         if (!(o instanceof Flightdetails)) return false;
         Flightdetails that = (Flightdetails) o;
-        return getFlightid() == that.getFlightid() && Double.compare(that.getFlightTimeHours(), getFlightTimeHours()) == 0 && Double.compare(that.getMaxCargo(), getMaxCargo()) == 0 && getPassengerCount() == that.getPassengerCount() && Objects.equals(getFlightnumber(), that.getFlightnumber()) && Objects.equals(getDeparture(), that.getDeparture()) && Objects.equals(getOrigin(), that.getOrigin()) && Objects.equals(getCustomer(), that.getCustomer()) && Objects.equals(getCreatedBy(), that.getCreatedBy()) && Objects.equals(getDepartureTime(), that.getDepartureTime()) && Objects.equals(getArrivalTime(), that.getArrivalTime());
+        return getFlightid() == that.getFlightid() && Double.compare(that.getFlightTimeHours(), getFlightTimeHours()) == 0 && Double.compare(that.getMaxCargo(), getMaxCargo()) == 0 && getPassengerCount() == that.getPassengerCount() && getFlightnumber().equals(that.getFlightnumber()) && getDepartureAirport().equals(that.getDepartureAirport()) && getArrivalAirport().equals(that.getArrivalAirport()) && getDepartureTime().equals(that.getDepartureTime()) && getArrivalTime().equals(that.getArrivalTime());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getFlightid(), getFlightnumber(), getFlightTimeHours(), getMaxCargo(), getPassengerCount(), getDeparture(), getOrigin(), getCustomer(), getCreatedBy(), getDepartureTime(), getArrivalTime());
+        return Objects.hash(getFlightid(), getFlightnumber(), getFlightTimeHours(), getMaxCargo(), getPassengerCount(), getDepartureAirport(), getArrivalAirport(), getDepartureTime(), getArrivalTime());
     }
 
     @Override
@@ -172,12 +171,12 @@ public class Flightdetails {
                 ", flightTimeHours=" + flightTimeHours +
                 ", maxCargo=" + maxCargo +
                 ", passengerCount=" + passengerCount +
-                ", departure=" + departure +
-                ", origin=" + origin +
+                ", departureAirport=" + departureAirport.getAirportcode() +
+                ", arrivalAirport=" + arrivalAirport.getAirportcode() +
                 ", customer=" + customer +
                 ", createdBy=" + createdBy +
-                ", departureTime=" + departureTime +
-                ", arrivalTime=" + arrivalTime +
+                ", departureTime=" + departureTime.getStartTime() +
+                ", arrivalTime=" + arrivalTime.getStartTime() +
                 '}';
     }
 }
