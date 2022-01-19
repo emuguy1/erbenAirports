@@ -31,7 +31,7 @@ public class AirportSetupComponent extends AbstractSetupComponent {
             airportRepo.save(new Airport("AMS", "Europe/Amsterdam","Netherlands","Amsterdam","Amsterdam Airport Schiphol"));
             airportRepo.save(new Airport("HKG", "Hongkong","Hongkong","Hongkong","Hong Kong International Airport"));
             airportRepo.save(new Airport("ICN", "Asia/Seoul","South Korea","Seoul","Seoul Incheon International Airport"));
-            airportRepo.save(new Airport("DEL", "IST","India","Delhi","Indira Gandhi International Airport"));
+            airportRepo.save(new Airport("DEL", "Asia/Calcutta","India","Delhi","Indira Gandhi International Airport"));
             airportRepo.save(new Airport("SIN", "Singapore","Singapore","Singapore","Singapore Changi Airport"));
             airportRepo.save(new Airport("JFK", "America/New_York","USA","New_York","John F. Kennedy International Airport"));
             airportRepo.save(new Airport("CPT", "Africa/Johannesburg","South Africa","Capetown","Cape Town International Airport"));

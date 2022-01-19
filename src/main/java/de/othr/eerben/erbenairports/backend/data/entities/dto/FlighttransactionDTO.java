@@ -43,6 +43,18 @@ public class FlighttransactionDTO {
 
     private String userenameCreatedFor;
 
+
+    public FlighttransactionDTO() {}
+    public FlighttransactionDTO(String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, String departure, String origin, LocalDateTime departureTime) {
+        this.flightnumber = flightnumber;
+        this.flightTimeHours = flightTimeHours;
+        this.maxCargo = maxCargo;
+        this.passengerCount = passengerCount;
+        this.departure = departure;
+        this.origin = origin;
+        this.departureTime = departureTime;
+    }
+
     public FlighttransactionDTO(String username, String password, String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, String departure, String origin, LocalDateTime departureTime, LocalDateTime arrivalTime) {
         this.username = username;
         this.password = password;
@@ -56,7 +68,6 @@ public class FlighttransactionDTO {
         this.arrivalTime = arrivalTime;
     }
 
-    public FlighttransactionDTO(){}
 
     public FlighttransactionDTO(String username, String password, String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, String departure, String origin, LocalDateTime departureTime) {
         this.username = username;

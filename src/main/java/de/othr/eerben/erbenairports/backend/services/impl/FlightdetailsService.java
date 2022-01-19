@@ -1,7 +1,6 @@
 package de.othr.eerben.erbenairports.backend.services.impl;
 
 import de.othr.eerben.erbenairports.backend.data.entities.*;
-import de.othr.eerben.erbenairports.backend.data.entities.dto.FlightdetailsDTO;
 import de.othr.eerben.erbenairports.backend.data.entities.dto.FlighttransactionDTO;
 import de.othr.eerben.erbenairports.backend.data.repositories.BookedCalendarslotRepository;
 import de.othr.eerben.erbenairports.backend.data.repositories.FlightdetailsRepository;
@@ -11,7 +10,6 @@ import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import de.othr.eerben.erbenairports.backend.services.UserServiceIF;
 import de.othr.sw.TRBank.entity.dto.RestDTO;
 import de.othr.sw.TRBank.entity.dto.TransaktionDTO;
-import de.othr.sw.TRBank.service.exception.TRBankException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -21,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -172,12 +169,11 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
     @Transactional
     @Override
-    public Flightdetails bookFlight(User user, FlightdetailsDTO flightdetails) throws AirportException {
+    public Flightdetails bookFlight(User user, FlighttransactionDTO flightdetails) throws AirportException {
 
         try {
-            //TODO: try-catch
-            //check necessary inputs
 
+            //check necessary inputs
             Airport departureAirport = airportServiceIF.getAirportByAirportcode(flightdetails.getDeparture());
             Airport originAirport = airportServiceIF.getAirportByAirportcode(flightdetails.getOrigin());
 
@@ -235,7 +231,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
             if (!departurefree || !arrivalfree) {
                 throw new AirportException("Found no possible timeslot  in plus/minus 1 hour of wished flightslot");
             }
-            //create bokedTimeslot
+            //create bookedTimeslot
             BookedCalendarslot calendarslotDeparture = new BookedCalendarslot(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR), 5, calendar.getTime(), airportServiceIF.getAirportByAirportcode(flightdetails.getDeparture()));
             BookedCalendarslot calendarslotArrival = new BookedCalendarslot(calendar1.get(Calendar.DAY_OF_MONTH), calendar1.get(Calendar.MONTH), calendar1.get(Calendar.YEAR), 5, calendar1.getTime(), airportServiceIF.getAirportByAirportcode(flightdetails.getOrigin()));
 
@@ -261,10 +257,11 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
                 RestDTO bankingDTO = new RestDTO(bankingUsername, bankingPassword, bankingTransaction);
                 TransaktionDTO response;
 
-                UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(bankingURL).queryParam("value", 100.00);
+                //UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(bankingURL).queryParam("value", 100.00);
                 try {
                     //for null Object insert filled Object of TRBank
-                    response = restClient.postForObject(builder.toUriString(), bankingDTO, TransaktionDTO.class);//String.class has to be class of TRBank response
+                    response = restClient.postForObject(bankingURL, bankingDTO, TransaktionDTO.class);//String.class has to be class of TRBank response
+                    System.out.println(response);
                 } catch (Exception e) {
                     System.out.println("could not perform transaction!");
                     throw new AirportException("Transaction could not be performed!");
@@ -296,8 +293,8 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     @Transactional
     public void deleteById(long flightid) throws AirportException {
         Flightdetails flight = flightdetailsRepo.findByFlightid(flightid).orElseThrow(() -> new AirportException("Error, no Departures for airport after now could be found"));
-        if (flight.getArrivalTime().getStartTime().after(Date.from(Instant.now()))) {
-            throw new AirportException("Arrivaltime is after now, only can be canceled!");
+        if (flight.getArrivalTime().getStartTime().after(Date.from(Instant.now()))&&flight.getDepartureTime().getStartTime().before(Date.from(Instant.now()))) {
+            throw new AirportException("Flight is in the air!");
         } else {
             flightdetailsRepo.deleteById(flightid);
         }

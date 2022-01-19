@@ -2,7 +2,7 @@ package de.othr.eerben.erbenairports.backend.services.setup;
 
 
 import de.othr.eerben.erbenairports.backend.data.entities.User;
-import de.othr.eerben.erbenairports.backend.data.entities.dto.FlightdetailsDTO;
+import de.othr.eerben.erbenairports.backend.data.entities.dto.FlighttransactionDTO;
 import de.othr.eerben.erbenairports.backend.data.repositories.FlightdetailsRepository;
 import de.othr.eerben.erbenairports.backend.data.repositories.UserRepository;
 import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
@@ -38,8 +38,8 @@ public class FlightdetailsSetupComponent extends AbstractSetupComponent{
             LocalDateTime now= LocalDateTime.ofInstant(Instant.now().plusSeconds(7200), ZoneId.systemDefault());
             //Date now= Date.from(Instant.now().plusSeconds(7200));
 
-            FlightdetailsDTO flight= new FlightdetailsDTO("LH3200", 12.4, 25.6, 250, "LAX", "MUC",now);
-            FlightdetailsDTO flight2= new FlightdetailsDTO("LH3220", 14.2, 25.6, 250, "MUC", "LAX",now);
+            FlighttransactionDTO flight= new FlighttransactionDTO("LH3200", 12.4, 25.6, 250, "LAX", "MUC",now);
+            FlighttransactionDTO flight2= new FlighttransactionDTO("LH3220", 14.2, 25.6, 250, "MUC", "LAX",now);
             User user=userRepository.findByUsername("root").orElseThrow(() -> new AirportException("User not found"));
             flightdetailsService.bookFlight(user,flight);
             flightdetailsService.bookFlight(user,flight2);

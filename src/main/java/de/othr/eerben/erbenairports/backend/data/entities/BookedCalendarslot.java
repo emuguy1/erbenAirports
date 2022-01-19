@@ -20,22 +20,24 @@ public class BookedCalendarslot {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long calendarId;
 
-    @Column(nullable = false)
+    @NotNull
     private int day;
 
-    @Column(nullable = false)
+    @NotNull
     private int month;
 
-    @Column(nullable = false)
+    @NotNull
     private int year;
 
-    @Column(nullable = false)
+    @NotNull
     private int durationInMinutes;
 
+    @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date startTime;
 
+    @NotNull
     @ManyToOne
     private Airport airport;
 

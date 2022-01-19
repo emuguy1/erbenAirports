@@ -4,7 +4,7 @@ package de.othr.eerben.erbenairports.frontend.controller;
 import de.othr.eerben.erbenairports.backend.data.entities.Airport;
 import de.othr.eerben.erbenairports.backend.data.entities.Flightdetails;
 import de.othr.eerben.erbenairports.backend.data.entities.User;
-import de.othr.eerben.erbenairports.backend.data.entities.dto.FlightdetailsDTO;
+import de.othr.eerben.erbenairports.backend.data.entities.dto.FlighttransactionDTO;
 import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
 import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
@@ -141,13 +141,13 @@ public class FlightsController {
     @RequestMapping(value = "/flight/new", method = RequestMethod.GET)
     public String bookFlight(Model model) throws AirportException {
         model.addAttribute("airports", airportServiceIF.getAllAirports().orElse(Collections.emptyList()));
-        model.addAttribute("flightdetails", new FlightdetailsDTO());
+        model.addAttribute("flightdetails", new FlighttransactionDTO());
         return "flight/new";
     }
 
     @Transactional
     @RequestMapping(value = "/flight/new", method = RequestMethod.POST)//temp for testing
-    public String addFlight(Model model, @AuthenticationPrincipal User user, @ModelAttribute("flightdetails") FlightdetailsDTO flightdetailsdto) throws AirportException {
+    public String addFlight(Model model, @AuthenticationPrincipal User user, @ModelAttribute("flightdetails") FlighttransactionDTO flightdetailsdto) throws AirportException {
         try {
             if (flightdetailsdto.getFlightnumber().isEmpty()) {
                 throw new AirportException("Flightnumber empty!");
