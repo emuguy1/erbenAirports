@@ -93,7 +93,7 @@ public class FlightsRestController {
         try{
             return flightdetailsServiceIF.cancelFlight(user,flighttransactionDTO);
         }catch(AirportException a){
-            a.setErrortitel("Flight could not be canceled");
+            a.setErrortitle("Flight could not be canceled");
             throw a;
         }
 

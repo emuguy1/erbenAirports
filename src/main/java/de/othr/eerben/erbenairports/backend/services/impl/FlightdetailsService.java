@@ -148,7 +148,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
             }
             return true;
         } catch (AirportException e) {
-            e.setErrortitel("Flight could'nt be canncled! Please check the credentials!");
+            e.setErrortitle("Flight could'nt be canncled! Please check the credentials!");
             throw e;
         }
     }

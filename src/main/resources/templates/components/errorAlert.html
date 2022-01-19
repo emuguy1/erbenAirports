@@ -14,7 +14,7 @@ Inspired by: https://www.tutorialrepublic.com/twitter-bootstrap-tutorial/bootstr
         </div>
         <div class="col-9">
             <div class="fs-4 alert-heading">
-                <label th:text="${UIerror.getErrortitel() != null ? UIerror.getErrortitel() : 'An error occured!'}"></label>
+                <label th:text="${UIerror.getErrortitle() != null ? UIerror.getErrortitle() : 'An error occured!'}"></label>
             </div>
             <p th:text="${UIerror.getErrormessage()}" class="error"></p>
             <div th:if="${UIerror.getSuggestions() != null}">

@@ -1,31 +1,35 @@
 package de.othr.eerben.erbenairports.backend.exceptions;
-/**This is a class for handing down error informations to an UI component,
- that can be specified in the Controllers in order for the user to help handling it*/
-public class AirportException extends Exception{
-    public String errortitel;
+
+/**
+ * Exception class with specifications for UI.
+ * With the help of suggestions or message and title, the user can get a better understanding of the Problem 
+ * and maybe fix it.
+ */
+public class AirportException extends Exception {
+    public String errortitle;
     public String errormessage;
     public String suggestions;
 
-    public AirportException(String errormessage){
+    public AirportException(String errormessage) {
         super(errormessage);
-        this.errormessage=errormessage;
+        this.errormessage = errormessage;
     }
 
-    public AirportException(String errormessage, String suggestions){
+    public AirportException(String errormessage, String suggestions) {
         super(errormessage);
-        this.errormessage=errormessage;
-        this.suggestions=suggestions;
+        this.errormessage = errormessage;
+        this.suggestions = suggestions;
     }
 
-    public AirportException(String errortitel, String errormessage, String suggestions){
+    public AirportException(String errortitle, String errormessage, String suggestions) {
         super(errormessage);
-        this.errortitel=errortitel;
-        this.errormessage=errormessage;
-        this.suggestions=suggestions;
+        this.errortitle = errortitle;
+        this.errormessage = errormessage;
+        this.suggestions = suggestions;
     }
 
-    public void setErrortitel(String errortitel) {
-        this.errortitel = errortitel;
+    public void setErrortitle(String errortitle) {
+        this.errortitle = errortitle;
     }
 
     public void setErrormessage(String errormessage) {
@@ -44,12 +48,14 @@ public class AirportException extends Exception{
         return suggestions;
     }
 
-    public String getErrortitel(){ return  errortitel; }
+    public String getErrortitle() {
+        return errortitle;
+    }
 
     @Override
     public String toString() {
         return "UIErrorMessage{" +
-                "errortitel='" + errortitel + '\'' +
+                "errortitle='" + errortitle + '\'' +
                 ", errormessage='" + errormessage + '\'' +
                 ", suggestions='" + suggestions + '\'' +
                 '}';
