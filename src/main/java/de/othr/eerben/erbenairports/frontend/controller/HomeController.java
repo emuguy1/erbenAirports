@@ -31,8 +31,8 @@ public class HomeController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET) // /login
     public String login(Model model, @RequestParam("error") Optional<Boolean> error) {
-        System.out.println(error);
         if(error.isPresent() && error.get()){
+            //TODO: Logger mit Error
             model.addAttribute("UIerror", new AirportException("Password or Username were wrong!"));
         }
         model.addAttribute("user", new User());
