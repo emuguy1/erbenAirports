@@ -5,11 +5,12 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface AirportRepository extends CrudRepository<Airport,String> {
         Optional<Airport> findByAirportcode(String airportcode);
-        Optional<Collection<Airport>> findDistinctByAirportcodeIsNotNull();
+        List<Airport> findDistinctByAirportcodeIsNotNull();
         boolean existsAirportByAirportcode(String airportcode);
 }

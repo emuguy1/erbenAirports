@@ -51,7 +51,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String[] ALLOW_ACCESS_AS_EMPLOYEE = {
             "/airport/new",
-            "/employee/new"
+            "/employee/new",
+            "/customers"
     };
 
     @Override

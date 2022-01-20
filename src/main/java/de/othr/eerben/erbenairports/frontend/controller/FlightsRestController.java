@@ -8,6 +8,8 @@ import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
 import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import de.othr.eerben.erbenairports.backend.services.UserServiceIF;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,63 +38,55 @@ public class FlightsRestController {
     @Autowired
     private AirportServiceIF airportServiceIF;
 
+    Logger logger = LoggerFactory.getLogger(FlightsRestController.class);
+
     @Transactional
     @RequestMapping(value = "/flight", method = RequestMethod.POST)
     public FlighttransactionDTO addFlightGermanTime(@RequestBody FlighttransactionDTO flighttransactionDTO) throws AirportException {
         //Handling in this REST Methode has to be in German Time for Partnerprojekt
         //Input in German Time
         //Output in German Time
+        User user = userServiceIF.getUserByUsername(flighttransactionDTO.getUsername());
+        if (!userServiceIF.checkPassword(flighttransactionDTO.getPassword(), user)) {
+            throw new AirportException("Username or Password were incorrect!");
+        }
+        logger.info("Create FLight in Germantime via REST called");
         Airport Departure = airportServiceIF.getAirportByAirportcode(flighttransactionDTO.getDepartureAirport());
         //Set Departure Time from German Local Time to Departureairport Local Time so the service function works as wanted
         Calendar calendar = new GregorianCalendar();
         calendar.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
         calendar.setTime(Date.from(flighttransactionDTO.getDepartureTime().toInstant(ZoneId.of("Europe/Berlin").getRules().getOffset(LocalDateTime.now()))));
         calendar.setTimeZone(TimeZone.getTimeZone(Departure.getTimeZone()));
-        flighttransactionDTO.setDepartureTime(LocalDateTime.ofInstant(calendar.toInstant(),ZoneId.of(Departure.getTimeZone())));
-        if (flighttransactionDTO.getFlightnumber()==null||flighttransactionDTO.getFlightnumber().isEmpty()) {
-                throw new AirportException("Flightnumber empty!");
-            }
-            User user=userServiceIF.getUserByUsername(flighttransactionDTO.getUsername());
-        FlighttransactionDTO flightdetailsDTO=new FlighttransactionDTO(flighttransactionDTO.getFlightnumber(),flighttransactionDTO.getFlightTimeHours(),flighttransactionDTO.getMaxCargo(),flighttransactionDTO.getPassengerCount(),flighttransactionDTO.getDepartureAirport(),flighttransactionDTO.getArrivalAirport(), flighttransactionDTO.getDepartureTime());
-            Flightdetails flightdetails = flightdetailsServiceIF.bookFlight(user,flightdetailsDTO);
-            System.out.println("External creation of flight: " + flightdetails);
-
-        LocalDateTime departure = LocalDateTime.ofInstant(flightdetails.getDepartureTime().getStartTime().toInstant(),ZoneId.of("Europe/Berlin"));
-
-        LocalDateTime arrivalTime =LocalDateTime.ofInstant(flightdetails.getArrivalTime().getStartTime().toInstant(),ZoneId.of("Europe/Berlin"));
-
-            return new FlighttransactionDTO(flighttransactionDTO.getUsername(), flighttransactionDTO.getPassword(), flightdetails.getFlightnumber(),flightdetails.getFlightTimeHours(),flightdetails.getMaxCargo(),flightdetails.getPassengerCount(),flightdetails.getDepartureAirport().getAirportcode(),flightdetails.getArrivalAirport().getAirportcode(), departure, arrivalTime);
-    }
-
-    @Transactional
-    @RequestMapping(value = "/flight/international", method = RequestMethod.POST)
-    public FlighttransactionDTO addFlightInternational(@RequestBody FlighttransactionDTO flighttransactionDTO) throws AirportException {
-
-        if (flighttransactionDTO.getFlightnumber()==null||flighttransactionDTO.getFlightnumber().isEmpty()) {
+        flighttransactionDTO.setDepartureTime(LocalDateTime.ofInstant(calendar.toInstant(), ZoneId.of(Departure.getTimeZone())));
+        if (flighttransactionDTO.getFlightnumber() == null || flighttransactionDTO.getFlightnumber().isEmpty()) {
             throw new AirportException("Flightnumber empty!");
         }
-        User user=userServiceIF.getUserByUsername(flighttransactionDTO.getUsername());
-        FlighttransactionDTO flightdetailsDTO=new FlighttransactionDTO(flighttransactionDTO.getFlightnumber(),flighttransactionDTO.getFlightTimeHours(),flighttransactionDTO.getMaxCargo(),flighttransactionDTO.getPassengerCount(),flighttransactionDTO.getDepartureAirport(),flighttransactionDTO.getArrivalAirport(), flighttransactionDTO.getDepartureTime());
-        Flightdetails flightdetails = flightdetailsServiceIF.bookFlight(user,flightdetailsDTO);
-        System.out.println("External creation of flight: " + flightdetails);
-        return new FlighttransactionDTO(flighttransactionDTO.getUsername(), flighttransactionDTO.getPassword(),flightdetails.getFlightnumber(),flightdetails.getFlightTimeHours(),flightdetails.getMaxCargo(),flightdetails.getPassengerCount(),flightdetails.getDepartureAirport().getAirportcode(),flightdetails.getArrivalAirport().getAirportcode(), LocalDateTime.ofInstant(flightdetails.getDepartureTime().getStartTime().toInstant(), ZoneId.of(flightdetails.getDepartureAirport().getTimeZone())),LocalDateTime.ofInstant(flightdetails.getArrivalTime().getStartTime().toInstant(), ZoneId.of(flightdetails.getArrivalAirport().getTimeZone())));
+        FlighttransactionDTO flightdetailsDTO = new FlighttransactionDTO(flighttransactionDTO.getFlightnumber(), flighttransactionDTO.getFlightTimeHours(), flighttransactionDTO.getMaxCargo(), flighttransactionDTO.getPassengerCount(), flighttransactionDTO.getDepartureAirport(), flighttransactionDTO.getArrivalAirport(), flighttransactionDTO.getDepartureTime());
+        Flightdetails flightdetails = flightdetailsServiceIF.bookFlight(user, flightdetailsDTO);
+        logger.info("External creation of flight: " + flightdetails);
+
+        LocalDateTime departure = LocalDateTime.ofInstant(flightdetails.getDepartureTime().getStartTime().toInstant(), ZoneId.of("Europe/Berlin"));
+
+        LocalDateTime arrivalTime = LocalDateTime.ofInstant(flightdetails.getArrivalTime().getStartTime().toInstant(), ZoneId.of("Europe/Berlin"));
+
+        return new FlighttransactionDTO(flighttransactionDTO.getUsername(), flighttransactionDTO.getPassword(), flightdetails.getFlightnumber(), flightdetails.getFlightTimeHours(), flightdetails.getMaxCargo(), flightdetails.getPassengerCount(), flightdetails.getDepartureAirport().getAirportcode(), flightdetails.getArrivalAirport().getAirportcode(), departure, arrivalTime);
     }
 
     @Transactional
     @RequestMapping(value = "/flight/cancel", method = RequestMethod.POST)
-    public boolean cancelFlightGermanTime(@RequestBody FlighttransactionDTO flighttransactionDTO) throws AirportException{
-        System.out.println(flighttransactionDTO);
-        User user=userServiceIF.getUserByUsername(flighttransactionDTO.getUsername());
-        if(!userServiceIF.checkPassword(flighttransactionDTO.getPassword(),user)){
+    public boolean cancelFlightGermanTime(@RequestBody FlighttransactionDTO flighttransactionDTO) throws AirportException {
+        logger.info("Cancel Fight in German Time of flight: " + flighttransactionDTO);
+        User user = userServiceIF.getUserByUsername(flighttransactionDTO.getUsername());
+        if (!userServiceIF.checkPassword(flighttransactionDTO.getPassword(), user)) {
             throw new AirportException("Username or Password were incorrect!");
         }
 
-        if (flighttransactionDTO.getFlightnumber()==null||flighttransactionDTO.getFlightnumber().isEmpty()) {
+        if (flighttransactionDTO.getFlightnumber() == null || flighttransactionDTO.getFlightnumber().isEmpty()) {
             throw new AirportException("Flightnumber empty!");
         }
-        try{
-            return flightdetailsServiceIF.cancelFlight(user,flighttransactionDTO);
-        }catch(AirportException a){
+        try {
+            return flightdetailsServiceIF.cancelFlight(user, flighttransactionDTO);
+        } catch (AirportException a) {
             a.setErrortitle("Flight could not be canceled");
             throw a;
         }

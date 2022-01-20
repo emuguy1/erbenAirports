@@ -36,17 +36,14 @@ public class FlightsController {
     @Autowired
     private AirportServiceIF airportServiceIF;
 
-    @Autowired
-    private UserServiceIF userServiceIF;
-
     @RequestMapping(value = "/departures", method = RequestMethod.GET)
     public String departures(Model model, @RequestParam(value = "airport", required = false) String airportcode, @RequestParam("page") Optional<Integer> page,
-                             @RequestParam("size") Optional<Integer> size) throws AirportException {
-        int currentPage = page.orElse(1);
-        int pageSize = size.orElse(5);
-        Page<Flightdetails> flightPage;
-        Collection<Airport> airports = airportServiceIF.getAllAirports().orElse(Collections.emptyList());
+                             @RequestParam("size") Optional<Integer> size) {
         try {
+            int currentPage = page.orElse(1);
+            int pageSize = size.orElse(5);
+            Page<Flightdetails> flightPage;
+            List<Airport> airports = airportServiceIF.getAllAirports();
             if (airportcode != null && !airportcode.isEmpty() && !airportcode.isBlank() && !airportcode.equals("null")) {
                 if (page.isEmpty() || size.isEmpty()) {
                     return "redirect:/departures?airport=" + airportcode + "&size=" + pageSize + "&page=" + currentPage;
@@ -71,34 +68,34 @@ public class FlightsController {
                         .collect(Collectors.toList());
                 model.addAttribute("pageNumbers", pageNumbers);
             }
+            model.addAttribute("flights", flightPage.toList());
+            model.addAttribute("airports", airports);
+            model.addAttribute("currentAirport", airportServiceIF.getAirportByAirportcode(airportcode));
+            model.addAttribute("selectedAirport", new Airport());
+            return "unauthenticated/departures";
         } catch (AirportException e) {
-            //TODO: rephrase Error Message
-            model.addAttribute("UIerror", new AirportException("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
+            model.addAttribute("UIerror", new AirportException("Wrong Airportcode.", "Try clicking on departures and then select your wanted airport from the dropdown list."));
             return "unauthenticated/error-page";
         }
-        model.addAttribute("flights", flightPage.toList());
-        model.addAttribute("airports", airports);
-        model.addAttribute("currentAirport", airportServiceIF.getAirportByAirportcode(airportcode));
-        model.addAttribute("selectedAirport", new Airport());
-        return "unauthenticated/departures";
+
     }
 
-    @RequestMapping(value = "/departure", method = RequestMethod.GET) //th:selected
-    public String departuresSelected(Model model, @RequestParam(value = "airportcode", required = false) String airportcode) throws Exception {
+    //For changing the airport when selected
+    @RequestMapping(value = "/departure", method = RequestMethod.GET)
+    public String departuresSelected(@RequestParam(value = "airportcode", required = false) String airportcode){
         return "redirect:/departures?airport=" + airportcode;
     }
 
-
     @RequestMapping(value = "/arrivals", method = RequestMethod.GET)
     public String arrivals(Model model, @RequestParam(value = "airport", required = false) String airportcode, @RequestParam("page") Optional<Integer> page,
-                           @RequestParam("size") Optional<Integer> size) throws AirportException {
-        //TODO: rewrite for arrivals
-        int currentPage = page.orElse(1);
-        int pageSize = size.orElse(5);
-
-        Page<Flightdetails> flightPage;
-        Collection<Airport> airports = airportServiceIF.getAllAirports().orElse(Collections.emptyList());
+                           @RequestParam("size") Optional<Integer> size){
+        //TODO: maybe rewrite for timeselect
         try {
+            int currentPage = page.orElse(1);
+            int pageSize = size.orElse(5);
+
+            Page<Flightdetails> flightPage;
+            List<Airport> airports = airportServiceIF.getAllAirports();
             if (airportcode != null && !airportcode.isEmpty() && !airportcode.isBlank() && !airportcode.equals("null")) {
                 if (page.isEmpty() || size.isEmpty()) {
                     return "redirect:/arrivals?airport=" + airportcode + "&size=" + pageSize + "&page=" + currentPage;
@@ -123,32 +120,33 @@ public class FlightsController {
                         .collect(Collectors.toList());
                 model.addAttribute("pageNumbers", pageNumbers);
             }
+            model.addAttribute("flights", flightPage.toList());
+            model.addAttribute("airports", airports);
+            model.addAttribute("currentAirport", airportServiceIF.getAirportByAirportcode(airportcode));
+            model.addAttribute("selectedAirport", new Airport());
+            return "unauthenticated/arrivals";
         } catch (AirportException e) {
-            model.addAttribute("UIerror", new AirportException("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
+            model.addAttribute("UIerror", new AirportException("Wrong Airportcode specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
             return "unauthenticated/error-page";
         }
-        model.addAttribute("flights", flightPage.toList());
-        model.addAttribute("airports", airports);
-        model.addAttribute("currentAirport", airportServiceIF.getAirportByAirportcode(airportcode));
-        model.addAttribute("selectedAirport", new Airport());
-        return "unauthenticated/arrivals";
     }
 
-    @RequestMapping(value = "/arrival", method = RequestMethod.GET) //th:selected
-    public String arrivalsSelected(Model model, @RequestParam(value = "airportcode", required = false) String airportcode) throws Exception {
+    //For changing the airport when selected
+    @RequestMapping(value = "/arrival", method = RequestMethod.GET)
+    public String arrivalsSelected(@RequestParam(value = "airportcode", required = false) String airportcode){
         return "redirect:/arrivals?airport=" + airportcode;
     }
 
     @RequestMapping(value = "/flight/new", method = RequestMethod.GET)
-    public String bookFlight(Model model) throws AirportException {
-        model.addAttribute("airports", airportServiceIF.getAllAirports().orElse(Collections.emptyList()));
+    public String bookFlight(Model model) {
+        model.addAttribute("airports", airportServiceIF.getAllAirports());
         model.addAttribute("flightdetails", new FlighttransactionDTO());
         return "flight/new";
     }
 
     @Transactional
-    @RequestMapping(value = "/flight/new", method = RequestMethod.POST)//temp for testing
-    public String addFlight(Model model, @AuthenticationPrincipal User user, @ModelAttribute("flightdetails") FlighttransactionDTO flightdetailsdto) throws AirportException {
+    @RequestMapping(value = "/flight/new", method = RequestMethod.POST)
+    public String addFlight(Model model, @AuthenticationPrincipal User user, @ModelAttribute("flightdetails") FlighttransactionDTO flightdetailsdto){
         try {
             if (flightdetailsdto.getFlightnumber().isEmpty()) {
                 throw new AirportException("Flightnumber empty!");
@@ -157,7 +155,7 @@ public class FlightsController {
             return "redirect:/flight/" + flightdetails.getFlightid() + "/details";
         } catch (AirportException e) {
             model.addAttribute("flightdetails", flightdetailsdto);
-            model.addAttribute("airports", airportServiceIF.getAllAirports().orElse(Collections.emptyList()));
+            model.addAttribute("airports", airportServiceIF.getAllAirports());
             model.addAttribute("UIerror", new AirportException(e.getMessage()));
             return "flight/new";
         }
@@ -166,7 +164,7 @@ public class FlightsController {
 
     @RequestMapping(value = "/flight/{id}/details", method = RequestMethod.GET)
     public String getFlightdetails(Model model, @PathVariable("id") long flightid) throws AirportException {
-        Flightdetails flightdetails = flightdetailsServiceIF.getFlightdetailsById(flightid).orElseThrow();
+        Flightdetails flightdetails = flightdetailsServiceIF.getFlightdetailsById(flightid);
         model.addAttribute("flightdetails", flightdetails);
         ZonedDateTime departureTimeUTC = ZonedDateTime.ofInstant(flightdetails.getDepartureTime().getStartTime().toInstant(), ZoneId.of("Etc/UTC"));
 
@@ -194,25 +192,11 @@ public class FlightsController {
     }
 
     @Transactional
-    @RequestMapping(value = "/flight/{id}/edit", method = RequestMethod.GET)
-    public String editFlightdetails(Model model, @PathVariable("id") long flightid) throws AirportException {
-        model.addAttribute("flightdetails", flightdetailsServiceIF.getFlightdetailsById(flightid));
-        //TODO: flightdetailsobject should be converted to DTO and the id should be handled
-        model.addAttribute("edit", true);
-        return "airport/edit";
-    }
-
-    @Transactional
-    @RequestMapping(value = "/flight/edit", method = RequestMethod.POST)
-    public String saveEditedFlightdetails(Model model,  @ModelAttribute("airport") Airport airport) throws AirportException {
-        airportServiceIF.updateAirport(airport);
-        return "redirect:/airport/" + airport.getAirportcode() + "/details";
-    }
-    @Transactional
     @RequestMapping(value = "/flight/{id}/delete", method = RequestMethod.GET)
-    public String deleteFlightdetails(Model model,  @PathVariable("id") long flightid) throws AirportException {
+    public String deleteFlightdetails(Model model, @AuthenticationPrincipal User user,  @PathVariable("id") long flightid) throws AirportException {
         //TODO: To be thought if only status is set to cancelled
-        flightdetailsServiceIF.deleteById(flightid);
+        Flightdetails flight=flightdetailsServiceIF.getFlightdetailsById(flightid);
+        flightdetailsServiceIF.cancelFlight(user,flightdetailsServiceIF.getFlighttransactionDTO(flight));
         return "redirect:/";
     }
 

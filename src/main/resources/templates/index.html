@@ -14,7 +14,7 @@
     </div>
     <h1 class="text-center gradientHeader">Erben Airports</h1>
     <div class="row">
-        <div class="d-flex justify-content-center col-md-12 col-lg-6">
+        <div class="d-flex justify-content-center col-12">
             <div class="card text-right" style="width: 18rem; margin: 1rem;">
                 <div class="card-body">
                     <h5 class="card-title">Arrivals</h5>
@@ -32,7 +32,7 @@
                 </div>
             </div>
         </div>
-        <div class="d-flex justify-content-center col-md-12 col-lg-6" sec:authorize="isAnonymous()">
+        <div class="d-flex justify-content-center col-12" sec:authorize="isAnonymous()">
 
             <div class="card text-right" style="width: 18rem; margin: 1rem;">
                 <div class="card-body">
@@ -55,7 +55,7 @@
         </div>
 
 
-        <div class="d-flex justify-content-center">
+        <div class="d-flex justify-content-center  col-12">
 
             <div class="card text-right" style="width: 18rem; margin: 1rem;"
                  sec:authorize="hasAuthority('CUSTOMER')">
@@ -64,16 +64,6 @@
                     <p class="card-text">Book a flight with our airportsolution for easy managment of flights. </p>
                     <a th:href="@{/flight/new}" role="button" class="btn  btn-primary" style="color: white">Book
                         Flight</a>
-                </div>
-            </div>
-
-            <div class="card text-right" style="width: 18rem; margin: 1rem;" sec:authorize="hasAuthority('EMPLOYEE')">
-                <div class="card-body">
-                    <h5 class="card-title">Create Airport</h5>
-                    <p class="card-text">Wanna add an Airport for even more flights possible to schedule with this
-                        software?</p>
-                    <a th:href="@{/airport/new}" role="button" class="btn  btn-primary" style="color: white">Create
-                        Airport</a>
                 </div>
             </div>
 
@@ -91,10 +81,19 @@
         <div class="d-flex justify-content-center" sec:authorize="hasAuthority('EMPLOYEE')">
             <div class="card text-right" style="width: 18rem; margin: 1rem;">
                 <div class="card-body">
-                    <h5 class="card-title">My Flights</h5>
-                    <p class="card-text">Check which flights you created and edit them if necessary.</p>
-                    <a th:href="@{/employee/overview}" role="button" class="btn  btn-primary" style="color: white">View
-                        Flights</a>
+                    <h5 class="card-title">Book an flight</h5>
+                    <p class="card-text">Book a flight with our airportsolution for easy managment of flights. </p>
+                    <a th:href="@{/flight/new}" role="button" class="btn  btn-primary" style="color: white">Book
+                        Flight</a>
+                </div>
+            </div>
+            <div class="card text-right" style="width: 18rem; margin: 1rem;" sec:authorize="hasAuthority('EMPLOYEE')">
+                <div class="card-body">
+                    <h5 class="card-title">Create Airport</h5>
+                    <p class="card-text">Wanna add an Airport for even more flights possible to schedule with this
+                        software?</p>
+                    <a th:href="@{/airport/new}" role="button" class="btn  btn-primary" style="color: white">Create
+                        Airport</a>
                 </div>
             </div>
         </div>

@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
-    <title>Departures</title>
+    <title>Departures | Erben Airports</title>
     <div th:replace="components/common :: header"></div>
 </head>
 <script type="text/javascript" th:src="@{/js/selectAirport.js}"></script>
@@ -120,7 +120,8 @@
         <div class="col-6">
             <select id="selectAirport" name="airportcode" th:class="form-select" th:type="submit" th:onchange="setDepartureAirport()">
                 <option disabled th:value="null">Please select an airport...</option>
-                <option th:each="airport : ${airports}"
+                <option th:if="airports"
+                        th:each="airport : ${airports}"
                         th:value="${airport.getAirportcode()}"
                         th:selected="${currentAirport.getAirportcode() == airport.getAirportcode()}"
                         th:text="${airport.getAirportcode()} + '-' + ${airport.getCity()} + '-' + ${airport.getCountry()}"
@@ -128,8 +129,7 @@
             </select>
         </div>
     </form>
-    <h5 class="text-center">All times and dates are shown in LocalTime of TimeZone MEZ</h5>
-    <table class="table table-striped table-hover">
+    <table class="table table-striped table-hover mt-5">
         <thead>
         <tr>
             <th scope="col">Flight Signature</th>
@@ -143,12 +143,12 @@
         <tbody>
         <tr th:if="${!flights.isEmpty()}" th:each="flight : ${flights}">
             <th scope="row"><label th:text="${flight.getFlightnumber()}"></label></th>
-            <td><label th:text="${flight.getDepartureTime().getStartTime().toString()}"></label></td>
+            <td><label th:text="${#dates.format(flight.getDepartureTime().getStartTime(), 'dd.MM.yyyy HH:mm')} + ' MEZ'"></label></td>
             <td><label th:text="${flight.getArrivalAirport().getCity()}"></label></td>
-            <td><label th:text="${flight.getArrivalTime().getStartTime().toString}"></label></td>
+            <td><label th:text="${#dates.format(flight.getArrivalTime().getStartTime(), 'dd.MM.yyyy HH:mm')} + ' MEZ'"></label></td>
             <td>
                 <form th:action="@{/flight}">
-                    <a th:href="'/flight/'+${flight.getFlightid()}+'/details'" role="button" class="btn  btn-primary" style="color: white">more Details</a>
+                    <a th:href="'/flight/'+${flight.getFlightid()}+'/details'" role="button" class="btn  btn-primary" style="color: white">More Details</a>
                 </form>
             </td>
         </tr>

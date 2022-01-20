@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class UserService implements UserServiceIF{
@@ -49,8 +50,12 @@ public class UserService implements UserServiceIF{
         return passwordEncoder.matches(password, user.getPassword());
     }
 
-    @Transactional
     @Override
+    public List<User> getAllCustomers() {
+        return userRepo.getAllCustomers();
+    }
+
+    @Transactional
     public User saveUser(User user){
         return userRepo.save(user);
     }

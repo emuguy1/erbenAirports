@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Collection;
-import java.util.Optional;
 
 public interface FlightdetailsServiceIF {
 
@@ -16,17 +15,15 @@ public interface FlightdetailsServiceIF {
 
     Page<Flightdetails> getArrivalsPaginated(String airportcode, Pageable pageable) throws AirportException;
 
-    Collection<Flightdetails> getFlightdetails(String flightnumber);
-
-    Optional<Flightdetails> getFlightdetailsById(long flightid);
+    Flightdetails getFlightdetailsById(long flightid) throws AirportException;
 
     boolean cancelFlight(User user, FlighttransactionDTO flightnumber) throws AirportException;
-
-    Flightdetails updateFlight(Flightdetails flightdetails) throws AirportException;
 
     Flightdetails bookFlight(User user, FlighttransactionDTO flightdetails) throws AirportException;
 
     void deleteByAirportId(String airport) throws AirportException;
 
     void deleteById(long flightid) throws AirportException;
+
+    FlighttransactionDTO getFlighttransactionDTO(Flightdetails flight);
 }

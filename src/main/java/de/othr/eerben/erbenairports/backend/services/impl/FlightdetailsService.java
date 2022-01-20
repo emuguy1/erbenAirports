@@ -57,7 +57,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     @Value("${trBank.password}")
     private String bankingPassword;
 
-    Logger logger= LoggerFactory.getLogger(FlightdetailsServiceIF.class);
+    Logger logger = LoggerFactory.getLogger(FlightdetailsServiceIF.class);
 
 
     @Override
@@ -111,19 +111,13 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     }
 
     @Override
-    public Collection<Flightdetails> getFlightdetails(String flightnumber) {
-        return flightdetailsRepo.findByFlightnumber(flightnumber).orElseThrow();
-    }
-
-    @Override
-    public Optional<Flightdetails> getFlightdetailsById(long flightid) {
-        return flightdetailsRepo.findByFlightid(flightid);
+    public Flightdetails getFlightdetailsById(long flightid) throws AirportException {
+        return flightdetailsRepo.findByFlightid(flightid).orElseThrow(() -> new AirportException("Flight could not be found!"));
     }
 
     @Transactional
     @Override
     public boolean cancelFlight(User user, FlighttransactionDTO flight) throws AirportException {
-        //TODO:Repo Input has to be Date and not LocalDateTime
         try {
             Flightdetails flightdetails;
             if (user.getAccountType() == AccountType.CUSTOMER) {
@@ -144,29 +138,11 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
             }
 
             if (flight.getDepartureTime().isAfter(LocalDateTime.now()) || flight.getArrivalTime().isBefore(LocalDateTime.now())) {
-                if(flightdetails.getCustomer() != null){
-                    TransaktionDTO bankingTransaction = new TransaktionDTO(bankingSelfIBAN, user.getIban(),
-                            new BigDecimal("4000.00"), "Cancellation of: Usage of airport for " + flightdetails.getFlightnumber()
-                            + " on Airports: " + flightdetails.getDepartureAirport() + " and " + flightdetails.getArrivalAirport()
-                            + " departing at :" + flightdetails.getDepartureTime().getStartTime());//Source, target, amount, purpose
-                    RestDTO bankingDTO = new RestDTO(bankingUsername, bankingPassword, bankingTransaction);
-                    TransaktionDTO response;
-
-                    //UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(bankingURL).queryParam("value", 100.00);
-                    try {
-                        //for null Object insert filled Object of TRBank
-                        response = restClient.postForObject(bankingURL, bankingDTO, TransaktionDTO.class);//String.class has to be class of TRBank response
-                        System.out.println(response);
-                    } catch (Exception e) {
-                        logger.error("Could not perform transaction!");
-                        throw new AirportException("Transaction could not be performed!");
-                    }
-                    if (response == null) {
-                        logger.error("Could not perform transaction!");
-                        throw new AirportException("Transaction could not be performed!");
-                    }
+                if (flightdetails.getCustomer() != null) {
+                    //TODO:
+                    FlighttransactionDTO flightDTO = getFlighttransactionDTO(flightdetails);
+                    performBankingTransaction(user, true, flightDTO);
                 }
-                //TODO:Book back to Customer via TRBank
                 deleteById(flightdetails.getFlightid());
             } else {
                 logger.warn("Flight is currently in the Air! Cannot be canncled!");
@@ -174,7 +150,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
             }
             return true;
         } catch (AirportException e) {
-            logger.error("Flight could'nt be canncled! "+flight);
+            logger.error("Flight could'nt be canncled! " + flight);
             e.setErrortitle("Flight could'nt be canncled! Please check the credentials!");
             throw e;
         }
@@ -182,31 +158,16 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
     @Transactional
     @Override
-    public Flightdetails updateFlight(Flightdetails flightdetails) throws AirportException {
-        try{
-            Flightdetails oldFlightdetailsOptional = flightdetailsRepo.findById(flightdetails.getFlightid()).orElseThrow(() -> new AirportException("Flight not found " + flightdetails.getFlightid()));
-            return flightdetailsRepo.save(flightdetails);
-        }catch(AirportException e){
-            logger.info("Flight not found and not updated " + flightdetails.getFlightid());
-            return null;
-        }catch(Exception b){
-            logger.error("Flight could not be updated! Errormessage: "+b.getMessage());
-            throw new AirportException("Flight could not be updated!",b.getMessage());
-        }
-    }
-
-
-    @Transactional
-    @Override
     public Flightdetails bookFlight(User user, FlighttransactionDTO flightdetails) throws AirportException {
         //In Case of exception we have to check if Transaction with bank was performed. Therefore we have an boolean flag
         boolean moneyTransfered = false;
+        User bankingCustomer = null;
         try {
-
-            User createdForCustomer=null;
             //Check if this user exists this early, so that Exception is thrown early
-            if(flightdetails.getUserenameCreatedFor()!=null){
-                createdForCustomer = userServiceIF.getUserByUsername(flightdetails.getUserenameCreatedFor());
+            if (flightdetails.getUserenameCreatedFor() != null) {
+                bankingCustomer = userServiceIF.getUserByUsername(flightdetails.getUserenameCreatedFor());
+            } else if (user.getAccountType() == AccountType.CUSTOMER) {
+                bankingCustomer = user;
             }
 
             //check necessary inputs
@@ -238,9 +199,9 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
             //check for available timeslot at departureAirport and arrivalAirport and reshedule if necessary max to 60 min after/before wished
 
             //check if the time is not the same and the airports are not the same. Else, the slot would be booked twice which leads to errors
-            if(wishedDeparture==approximatedArrivalTime&&flightdetails.getDepartureAirport().equals(flightdetails.getArrivalAirport())){
+            if (wishedDeparture == approximatedArrivalTime && flightdetails.getDepartureAirport().equals(flightdetails.getArrivalAirport())) {
                 calendar1.add(Calendar.MINUTE, 5);
-                approximatedArrivalTime=calendar1.getTime();
+                approximatedArrivalTime = calendar1.getTime();
             }
 
             boolean departurefree = calendarslotRepository.getBookedCalendarslotByAirportAndStartTime(flightdetails.getDepartureAirport(), wishedDeparture).isEmpty();
@@ -273,36 +234,17 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
             if (!departurefree || !arrivalfree) {
                 throw new AirportException("Found no possible timeslot  in plus/minus 1 hour of wished flightslot");
             }
+            flightdetails.setDepartureTime(LocalDateTime.ofInstant(calendar.toInstant(), ZoneId.of(departureAirport.getTimeZone())));
+            flightdetails.setArrivalTime(LocalDateTime.ofInstant(calendar1.toInstant(), ZoneId.of(arrivalAirport.getTimeZone())));
             //create bookedTimeslot
             BookedCalendarslot calendarslotDeparture = new BookedCalendarslot(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR), 5, calendar.getTime(), airportServiceIF.getAirportByAirportcode(flightdetails.getDepartureAirport()));
             BookedCalendarslot calendarslotArrival = new BookedCalendarslot(calendar1.get(Calendar.DAY_OF_MONTH), calendar1.get(Calendar.MONTH), calendar1.get(Calendar.YEAR), 5, calendar1.getTime(), airportServiceIF.getAirportByAirportcode(flightdetails.getArrivalAirport()));
 
 
             //only transfer money if it was done by a customer or a employee created it for an customer
-            if (user.getAccountType().equals(AccountType.CUSTOMER)||createdForCustomer!=null) {
-                TransaktionDTO bankingTransaction = new TransaktionDTO(user.getIban(), bankingSelfIBAN,
-                        new BigDecimal("4000.00"), "Usage of airport for " + flightdetails.getFlightnumber()
-                        + " on Airports: " + flightdetails.getDepartureAirport() + " and " + flightdetails.getArrivalAirport()
-                        + " starting at :" + calendarslotDeparture.getStartTime());
-                if(createdForCustomer!=null){
-                    //In case that it was booked by an employee for an customer
-                    bankingTransaction.setQuellIban(createdForCustomer.getIban());
-                }
-                RestDTO bankingDTO = new RestDTO(bankingUsername, bankingPassword, bankingTransaction);
-                TransaktionDTO response;
-                try {
-                    response = restClient.postForObject(bankingURL, bankingDTO, TransaktionDTO.class);
-                    moneyTransfered=true;
-                    logger.info("Bankingresponse: "+response);
-                } catch (Exception e) {
-                    logger.error("Bankingtransaction could not be performed!");
-                    throw new AirportException("Bankingtransaction could not be performed!");
-                }
-                System.out.println(response);
-                if (response == null) {
-                    logger.error("Bankingtransaction could not be performed!");
-                    throw new AirportException("Bankingtransaction could not be performed!");
-                }
+            if (bankingCustomer != null) {
+                performBankingTransaction(bankingCustomer, false, flightdetails);
+                moneyTransfered = true;
             }
 
             //Save found Calendarslots
@@ -316,18 +258,16 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
                 flightdetails1.setCustomer(user);
             } else {
                 flightdetails1.setCreatedBy(user);
-                if(createdForCustomer!=null){
-                    flightdetails1.setCustomer(createdForCustomer);
+                if (bankingCustomer != null) {
+                    flightdetails1.setCustomer(bankingCustomer);
                 }
             }
-
             //save flightdetails
             flightdetails1 = flightdetailsRepo.save(flightdetails1);
             return flightdetails1;
-        } catch (AirportException e) {
-            if(moneyTransfered){
-                //TODO:wire the money back to customer
-                moneyTransfered=false;
+        } catch (Exception e) {
+            if (moneyTransfered) {
+                performBankingTransaction(bankingCustomer, true, flightdetails);
             }
             throw new AirportException(e.getMessage());
         }
@@ -347,12 +287,46 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     @Transactional
     public void deleteById(long flightid) throws AirportException {
         Flightdetails flight = flightdetailsRepo.findByFlightid(flightid).orElseThrow(() -> new AirportException("Error, no Departures for airport after now could be found"));
-        if (flight.getArrivalTime().getStartTime().after(Date.from(Instant.now()))&&flight.getDepartureTime().getStartTime().before(Date.from(Instant.now()))) {
+        if (flight.getArrivalTime().getStartTime().after(Date.from(Instant.now())) && flight.getDepartureTime().getStartTime().before(Date.from(Instant.now()))) {
             throw new AirportException("Flight is in the air!");
         } else {
             flightdetailsRepo.deleteById(flightid);
         }
 
+    }
+
+    @Override
+    public FlighttransactionDTO getFlighttransactionDTO(Flightdetails flightdetails) {
+        return new FlighttransactionDTO("", "", flightdetails.getFlightnumber(), flightdetails.getFlightTimeHours(), flightdetails.getMaxCargo(), flightdetails.getPassengerCount(), flightdetails.getDepartureAirport().getAirportcode(), flightdetails.getArrivalAirport().getAirportcode(), LocalDateTime.ofInstant(flightdetails.getDepartureTime().getStartTime().toInstant(), ZoneId.of(flightdetails.getDepartureAirport().getTimeZone())), LocalDateTime.ofInstant(flightdetails.getArrivalTime().getStartTime().toInstant(), ZoneId.of(flightdetails.getArrivalAirport().getTimeZone())));
+    }
+
+    public void performBankingTransaction(User user, boolean bookBack, FlighttransactionDTO flightdetails) throws AirportException {
+
+        TransaktionDTO bankingTransaction = new TransaktionDTO(user.getIban(), bankingSelfIBAN,
+                new BigDecimal("4000.00"), "Usage of airport for " + flightdetails.getFlightnumber()
+                + " on Airports: " + flightdetails.getDepartureAirport() + " and " + flightdetails.getArrivalAirport()
+                + " starting at :" + flightdetails.getDepartureTime());
+        if (bookBack) {
+            //In this case we have to swap own with customer iban
+            bankingTransaction.setZielIban(user.getIban());
+            bankingTransaction.setQuellIban(bankingSelfIBAN);
+            bankingTransaction.setVerwendungszweck("Book money back for:".concat(bankingTransaction.getVerwendungszweck()));
+        } else {
+            bankingTransaction.setVerwendungszweck("Book money for:".concat(bankingTransaction.getVerwendungszweck()));
+        }
+        RestDTO bankingDTO = new RestDTO(bankingUsername, bankingPassword, bankingTransaction);
+        TransaktionDTO response;
+        try {
+            response = restClient.postForObject(bankingURL, bankingDTO, TransaktionDTO.class);
+            logger.info("Bankingresponse: " + response);
+        } catch (Exception e) {
+            logger.error("Bankingtransaction could not be performed!");
+            throw new AirportException("Bankingtransaction could not be performed!");
+        }
+        if (response == null) {
+            logger.error("Bankingtransaction could not be performed!");
+            throw new AirportException("Bankingtransaction could not be performed!");
+        }
     }
 
 

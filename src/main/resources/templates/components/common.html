@@ -53,11 +53,13 @@
                         Employee
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="/customers">Customer Table</a></li>
                         <li><a class="dropdown-item" href="/employee/register">Create new Employee</a></li>
                         <li><a class="dropdown-item" href="/airport/new">Create new Airport</a></li>
                     </ul>
                 </li>
             </ul>
+            <div class="flex-row-reverse">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a class="nav-link" href="/login" sec:authorize="isAnonymous()">Login</a>
@@ -66,6 +68,7 @@
                     <a class="nav-link" href="/logout" sec:authorize="isAuthenticated()">Logout</a>
                 </li>
             </ul>
+            </div>
         </div>
     </nav>
     <div th:replace="components/errorAlert :: errorAlert (${UIerror})"></div>
