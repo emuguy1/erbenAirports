@@ -26,6 +26,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.*;
 
 @Service
@@ -257,6 +258,11 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     @Override
     public Page<Flightdetails> getAllByUsername(String username, Pageable pageable) {
         return flightdetailsRepo.getAllByUsername(username, pageable);
+    }
+
+    @Override
+    public Page<Flightdetails> getConnectionPaginated(String departureAirportcode, String arrivalAirportcode, Pageable pageable, LocalDateTime connectiontime) {
+        return flightdetailsRepo.getAllByArrivalAirport_AirportcodeAndDepartureAirport_AirportcodeAndDepartureTimeIsAfter(arrivalAirportcode, departureAirportcode, Timestamp.from(connectiontime.toInstant(ZoneOffset.UTC)), pageable);
     }
 
     public void performBankingTransaction(User user, boolean bookBack, FlighttransactionDTO flightdetails) throws AirportException {

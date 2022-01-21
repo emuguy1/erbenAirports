@@ -30,6 +30,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/arrivals",
             "/departure",
             "/arrival",
+            "/connection",
             "/error",
             "/flight/*/details",
             "/api/rest/**"

@@ -5,6 +5,7 @@ import de.othr.eerben.erbenairports.backend.data.entities.AccountType;
 import de.othr.eerben.erbenairports.backend.data.entities.Airport;
 import de.othr.eerben.erbenairports.backend.data.entities.Flightdetails;
 import de.othr.eerben.erbenairports.backend.data.entities.User;
+import de.othr.eerben.erbenairports.backend.data.entities.dto.ConnectionDTO;
 import de.othr.eerben.erbenairports.backend.data.entities.dto.FlighttransactionDTO;
 import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
@@ -21,8 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -323,5 +323,46 @@ public class FlightsController {
             model.addAttribute("UIerror", e);
             return "error";
         }
+    }
+
+    @RequestMapping(value = "/connection", method = RequestMethod.GET)
+    public String arrivals(Model model, @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size, @RequestParam("departureAirport") Optional<String> departureAirport, @RequestParam("arrivalAirport") Optional<String> arrivalAirport, @RequestParam("time") Optional<Instant> time) {
+        logger.info("GET /connection");
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(5);
+        String arrival = arrivalAirport.orElse("MUC");
+        String departure = departureAirport.orElse("MUC");
+        Instant searchTime = time.orElse(Instant.now());
+
+
+        ConnectionDTO connectionDTO = new ConnectionDTO(departure, arrival, LocalDateTime.ofInstant(searchTime, ZoneId.of("Etc/UTC")));
+
+        if (page.isEmpty() || size.isEmpty() || arrivalAirport.isEmpty() || departureAirport.isEmpty() || time.isEmpty()) {
+            return "redirect:/connection?size=" + pageSize + "&page=" + currentPage + "&departureAirport=" + departure + "&arrivalAirport=" + arrival + "&time=" + searchTime;
+        }
+
+        Page<Flightdetails> flightPage;
+        List<Airport> airports = airportServiceIF.getAllAirports();
+
+        flightPage = flightdetailsServiceIF.getConnectionPaginated(connectionDTO.getDepartureAirportcode(), connectionDTO.getArrivalAirportcode(), PageRequest.of(currentPage - 1, pageSize), connectionDTO.getConnectionTime());
+
+        model.addAttribute("flightPage", flightPage);
+
+        int totalPages = flightPage.getTotalPages();
+        if (totalPages > 0) {
+            model.addAttribute("pageNumbers", Helper.pageNumbers(currentPage, totalPages));
+        }
+        model.addAttribute("flights", flightPage.toList());
+        model.addAttribute("airports", airports);
+        model.addAttribute("connection", connectionDTO);
+
+        return "unauthenticated/connection";
+    }
+
+    @RequestMapping(value = "/connections", method = RequestMethod.POST)
+    public String connections(Model model, @ModelAttribute(value = "connection") ConnectionDTO connectionDTO, @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(5);
+        return "redirect:/connection?size=" + pageSize + "&page=" + currentPage + "&departureAirport=" + connectionDTO.getDepartureAirportcode() + "&arrivalAirport=" + connectionDTO.getArrivalAirportcode() + "&time=" + connectionDTO.getConnectionTime().toInstant(ZoneOffset.UTC);
     }
 }

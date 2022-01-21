@@ -7,6 +7,8 @@ import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
+
 public interface FlightdetailsServiceIF {
 
     Page<Flightdetails> getDeparturesPaginated(String airportcode, Pageable pageable) throws AirportException;
@@ -26,4 +28,6 @@ public interface FlightdetailsServiceIF {
     Page<Flightdetails> getAllFlights(Pageable pageable);
 
     Page<Flightdetails> getAllByUsername(String username, Pageable pageable);
+
+    Page<Flightdetails> getConnectionPaginated(String departureAirportcode, String arrivalAirportcode, Pageable pageable, LocalDateTime connectiontime);
 }

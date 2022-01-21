@@ -30,6 +30,8 @@ public interface FlightdetailsRepository extends PagingAndSortingRepository<Flig
     @Query("select f from Flightdetails f where f.arrivalAirport.airportcode = ?1 or f.departureAirport.airportcode = ?1")
     List<Flightdetails> getAllByAirport(String airport);
 
+    @Query("select f from Flightdetails f where f.arrivalAirport.airportcode = ?1 and f.departureAirport.airportcode = ?2 and f.departureTime.startTime > ?3")
+    Page<Flightdetails> getAllByArrivalAirport_AirportcodeAndDepartureAirport_AirportcodeAndDepartureTimeIsAfter(String arrivalAirportcode, String departureAirportcode, Timestamp time, Pageable pageable);
 
     @Query("select f from Flightdetails f")
     Page<Flightdetails> findAll(Pageable pageable);
