@@ -120,7 +120,7 @@
         <a class="btn bg-white mx-1"
            th:classappend="${pageNumber==flightPage.number + 1} ? 'text-secondary disabled': 'text-primary'"
            th:each="pageNumber : ${pageNumbers}"
-           th:href="@{/connection(size=${flightPage.size}, page=${pageNumber})}"
+           th:href="@{/connection(size=${flightPage.size}, page=${pageNumber},departureAirport=${connection.getDepartureAirportcode()},arrivalAirport=${connection.getArrivalAirportcode()},time=${connection.getConnectionTimeInstant()})}"
            th:text="${pageNumber}"></a>
     </div>
 </div>

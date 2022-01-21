@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 public class ConnectionDTO {
     @NotNull
@@ -43,6 +45,10 @@ public class ConnectionDTO {
 
     public LocalDateTime getConnectionTime() {
         return connectionTime;
+    }
+
+    public Instant getConnectionTimeInstant() {
+        return connectionTime.toInstant(ZoneOffset.UTC);
     }
 
     public void setConnectionTime(LocalDateTime connectionTime) {
