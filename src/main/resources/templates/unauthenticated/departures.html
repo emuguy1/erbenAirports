@@ -130,37 +130,7 @@
             </select>
         </div>
     </form>
-    <table class="table table-striped table-hover mt-5">
-        <thead>
-        <tr>
-            <th scope="col">Flight Signature</th>
-            <th scope="col">Departure Time</th>
-            <th scope="col">Destination</th>
-            <th scope="col">Arrival Time</th>
-            <th scope="col">&nbsp</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <tr th:if="${!flights.isEmpty()}" th:each="flight : ${flights}">
-            <th scope="row"><label th:text="${flight.getFlightnumber()}"></label></th>
-            <td><label
-                    th:text="${#dates.format(flight.getDepartureTime().getStartTime(), 'dd.MM.yyyy HH:mm')} + ' MEZ'"></label>
-            </td>
-            <td><label th:text="${flight.getArrivalAirport().getCity()}"></label></td>
-            <td><label
-                    th:text="${#dates.format(flight.getArrivalTime().getStartTime(), 'dd.MM.yyyy HH:mm')} + ' MEZ'"></label>
-            </td>
-            <td>
-                <form th:action="@{/flight}">
-                    <a th:href="'/flight/'+${flight.getFlightid()}+'/details'" role="button" class="btn  btn-primary"
-                       style="color: white">More Details</a>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <h3 th:if="${flights.isEmpty()}">There are no flights scheduled at this time</h3>
+    <div th:replace="components/flightTable :: flightTable(${flights})"></div>
     <div th:if="${flightPage.totalPages > 0}" class="pagination d-flex justify-content-center"
     >
         <a th:each="pageNumber : ${pageNumbers}"
