@@ -15,7 +15,7 @@ public interface AirportServiceIF {
     @Transactional
     void deleteAirport(String airport) throws AirportException;
 
-    Airport addAirport(Airport airport);
+    Airport addAirport(Airport airport) throws AirportException;
 
     List<Airport> getAllAirports();
 }

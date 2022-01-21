@@ -19,13 +19,11 @@ import java.util.List;
 @Service
 public class UserService implements UserServiceIF {
 
+    Logger logger = LoggerFactory.getLogger(UserService.class);
     @Autowired
     private UserRepository userRepo;
-
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
-
-    Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Transactional
     @Override

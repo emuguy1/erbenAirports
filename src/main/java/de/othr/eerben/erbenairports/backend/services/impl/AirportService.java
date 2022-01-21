@@ -12,15 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AirportService implements AirportServiceIF {
 
+    Logger logger = LoggerFactory.getLogger(AirportService.class);
     @Autowired
     private AirportRepository airportRepo;
-
-    Logger logger = LoggerFactory.getLogger(AirportService.class);
 
     @Override
     public Airport getAirportByAirportcode(String airportcode) throws AirportException {
@@ -30,9 +28,9 @@ public class AirportService implements AirportServiceIF {
     @Override
     @Transactional
     public Airport updateAirport(Airport airport) throws AirportException {
-        try{
+        try {
             return airportRepo.save(airport);
-        } catch(Exception e) {
+        } catch (Exception e) {
             logger.error("Airport not found " + airport.getAirportcode());
             throw new AirportException(e.getMessage());
         }
@@ -43,7 +41,7 @@ public class AirportService implements AirportServiceIF {
     public void deleteAirport(String airport) throws AirportException {
         try {
             airportRepo.deleteById(airport);
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error("Airport not found " + airport);
             throw new AirportException(e.getMessage());
         }
@@ -51,8 +49,13 @@ public class AirportService implements AirportServiceIF {
 
     @Override
     @Transactional
-    public Airport addAirport(Airport airport) {
-        return airportRepo.save(airport);
+    public Airport addAirport(Airport airport) throws AirportException {
+        try {
+            return airportRepo.save(airport);
+        } catch (Exception e) {
+            logger.error("Airport not found " + airport);
+            throw new AirportException(e.getMessage());
+        }
     }
 
     @Override

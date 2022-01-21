@@ -4,6 +4,8 @@ import de.othr.eerben.erbenairports.backend.data.entities.AccountType;
 import de.othr.eerben.erbenairports.backend.data.entities.User;
 import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 import de.othr.eerben.erbenairports.backend.services.UserServiceIF;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,13 +29,14 @@ public class UserController {
     @Autowired
     UserServiceIF userServiceIF;
 
+    Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @RequestMapping(value = "/user/{id}/details", method = RequestMethod.GET)
     public String showEmployeeUserDetails(Model model, @PathVariable("id") String username) {
+        logger.info("GET /user/" + username + "/details");
         try {
             model.addAttribute("user", userServiceIF.getUserByUsername(username));
-        }
-        //TODO: Error reformati
-        catch (Exception e) {
+        } catch (Exception e) {
             model.addAttribute("UIerror", new AirportException(e.getMessage()));
             return "index";
         }
@@ -42,18 +45,21 @@ public class UserController {
 
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
     public String showUserDetails(Model model, @AuthenticationPrincipal User user) {
+        logger.info("GET /profile");
         model.addAttribute("user", user);
         return "profile";
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.GET) // /login
     public String registerCustomer(Model model) {
+        logger.info("GET /register");
         model.addAttribute("user", new User());
         return "authentication/register";
     }
 
     @RequestMapping(value = "/customers", method = RequestMethod.GET) // /login
     public String getCustomers(Model model) {
+        logger.info("GET /customers");
         model.addAttribute("customers", userServiceIF.getAllCustomers());
         return "employee/customerTable";
     }
@@ -65,8 +71,8 @@ public class UserController {
                                      @ModelAttribute("username") String username,
                                      HttpServletRequest servlet,
                                      Model model) {
+        logger.info("POST /register for Customer");
         try {
-            System.out.println("POST /register");
             user.setID(username);
             if (!confirmationPasswort.equals(user.getPassword())) {
                 result.addError(new ObjectError("globalError", "The two given passwords are not the same!"));
@@ -100,6 +106,7 @@ public class UserController {
 
     @RequestMapping(value = "/employee/register", method = RequestMethod.GET) // /login
     public String registerEmployee(Model model) {
+        logger.info("GET /employee/register");
         model.addAttribute("user", new User());
 
         return "employee/registerEmployee";
@@ -112,8 +119,8 @@ public class UserController {
                                      @ModelAttribute("username") String username,
                                      HttpServletRequest servlet,
                                      Model model) {
+        logger.info("POST /employee/register");
         try {
-            System.out.println("POST /register");
             user.setID(username);
             if (!confirmationPasswort.equals(user.getPassword())) {
                 result.addError(new ObjectError("globalError", "The two given passwords are not the same!"));
@@ -127,6 +134,7 @@ public class UserController {
 
             return "redirect:/user/{" + user.getUsername() + "}/details";
         } catch (AirportException exception) {
+            logger.error("Error at Employeeregistration: " + exception.errormessage);
             model.addAttribute("error", exception);
             return "employee/registerEmployee";
         }

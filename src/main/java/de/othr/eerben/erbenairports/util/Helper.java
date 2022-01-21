@@ -13,18 +13,16 @@ public class Helper {
 
     public static List<Integer> pageNumbers(int currentPage, int totalPages) {
         List<Integer> pageNumbers;
-        if (currentPage <= 3 && totalPages >6) {
+        if (currentPage <= 3 && totalPages > 6) {
             pageNumbers = IntStream.rangeClosed(1, 6)
                     .boxed()
                     .collect(Collectors.toList());
             pageNumbers.add(totalPages);
-        }
-        else if( totalPages <= 6){
+        } else if (totalPages <= 6) {
             pageNumbers = IntStream.rangeClosed(1, totalPages)
                     .boxed()
                     .collect(Collectors.toList());
-        }
-        else {
+        } else {
 
             pageNumbers = IntStream.rangeClosed(1, 1)
                     .boxed()
@@ -34,7 +32,7 @@ public class Helper {
                     pageNumbers.add(i);
                 }
             } else {
-                for (int i = currentPage - 2; (i <= currentPage + 3) && i<totalPages; i++) {
+                for (int i = currentPage - 2; (i <= currentPage + 3) && i < totalPages; i++) {
                     pageNumbers.add(i);
                 }
                 pageNumbers.add(totalPages);
