@@ -39,9 +39,10 @@ public class FlightsRestController {
     @Autowired
     private AirportServiceIF airportServiceIF;
 
-    @Transactional
+
     @RequestMapping(value = "/flight", method = RequestMethod.POST)
     public FlighttransactionDTO addFlightGermanTime(@RequestBody FlighttransactionDTO flighttransactionDTO) throws AirportException {
+        logger.info("REST POST /flight");
         //Handling in this REST Methode has to be in German Time for Partnerprojekt
         //Input in German Time
         //Output in German Time
@@ -71,9 +72,10 @@ public class FlightsRestController {
         return new FlighttransactionDTO(flighttransactionDTO.getUsername(), flighttransactionDTO.getPassword(), flightdetails.getFlightnumber(), flightdetails.getFlightTimeHours(), flightdetails.getMaxCargo(), flightdetails.getPassengerCount(), flightdetails.getDepartureAirport().getAirportcode(), flightdetails.getArrivalAirport().getAirportcode(), departure, arrivalTime);
     }
 
-    @Transactional
+
     @RequestMapping(value = "/flight/cancel", method = RequestMethod.POST)
     public boolean cancelFlightGermanTime(@RequestBody FlighttransactionDTO flighttransactionDTO) throws AirportException {
+        logger.info("REST POST /flight/cancel");
         logger.info("Cancel Fight in German Time of flight: " + flighttransactionDTO);
         User user = userServiceIF.getUserByUsername(flighttransactionDTO.getUsername());
         if (!userServiceIF.checkPassword(flighttransactionDTO.getPassword(), user)) {

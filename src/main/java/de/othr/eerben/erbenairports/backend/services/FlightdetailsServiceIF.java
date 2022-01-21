@@ -23,8 +23,6 @@ public interface FlightdetailsServiceIF {
 
     void deleteById(long flightid) throws AirportException;
 
-    FlighttransactionDTO getFlighttransactionDTO(Flightdetails flight);
-
     Page<Flightdetails> getAllFlights(Pageable pageable);
 
     Page<Flightdetails> getAllByUsername(String username, Pageable pageable);

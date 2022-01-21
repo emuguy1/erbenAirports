@@ -8,6 +8,7 @@ import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
 import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
 import de.othr.eerben.erbenairports.backend.services.UserServiceIF;
+import de.othr.eerben.erbenairports.util.Helper;
 import de.othr.sw.TRBank.entity.dto.RestDTO;
 import de.othr.sw.TRBank.entity.dto.TransaktionDTO;
 import org.slf4j.Logger;
@@ -15,8 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,16 +53,14 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
     @Override
     public Page<Flightdetails> getDeparturesPaginated(String airportcode, Pageable pageable) throws AirportException {
-        //TODO: get departures after a specific time
         Airport airport = airportServiceIF.getAirportByAirportcode(airportcode);
         return flightdetailsRepo.getAllByDepartureAirportAndDepartureTimeIsAfterOrderByDepartureTime(airport, Timestamp.from(Instant.now()), pageable);
     }
 
     @Override
     public Page<Flightdetails> getArrivalsPaginated(String airportcode, Pageable pageable) throws AirportException {
-        //TODO: get arrivals after a specific time
         Airport airport = airportServiceIF.getAirportByAirportcode(airportcode);
-        return flightdetailsRepo.getAllByArrivalAirportAndArrivalTimeIsAfterOrderByArrivalTime(airport, Timestamp.from(Instant.now()),pageable);
+        return flightdetailsRepo.getAllByArrivalAirportAndArrivalTimeIsAfterOrderByArrivalTime(airport, Timestamp.from(Instant.now()), pageable);
     }
 
     @Override
@@ -95,8 +92,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
             if (flight.getDepartureTime().isAfter(LocalDateTime.now()) || flight.getArrivalTime().isBefore(LocalDateTime.now())) {
                 if (flightdetails.getCustomer() != null) {
-                    //TODO:I dont know
-                    FlighttransactionDTO flightDTO = getFlighttransactionDTO(flightdetails);
+                    FlighttransactionDTO flightDTO = Helper.getFlighttransactionDTO(flightdetails);
                     performBankingTransaction(user, true, flightDTO);
                 }
                 deleteById(flightdetails.getFlightid());
@@ -229,6 +225,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
         }
     }
 
+    @Transactional
     @Override
     public void deleteByAirportId(String airport) throws AirportException {
         if (!flightdetailsRepo.getAllByAirportWhereArrivalTimeAfterAndDepartureTimeBefore(Date.from(Instant.now()), airport)) {
@@ -236,6 +233,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
         } else {
             List<Flightdetails> toBeCanceledFlights = flightdetailsRepo.getAllByAirport(airport);
             flightdetailsRepo.deleteAll(toBeCanceledFlights);
+            airportServiceIF.deleteAirport(airport);
         }
     }
 
@@ -249,11 +247,6 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
             flightdetailsRepo.deleteById(flightid);
         }
 
-    }
-
-    @Override
-    public FlighttransactionDTO getFlighttransactionDTO(Flightdetails flightdetails) {
-        return new FlighttransactionDTO("", "", flightdetails.getFlightnumber(), flightdetails.getFlightTimeHours(), flightdetails.getMaxCargo(), flightdetails.getPassengerCount(), flightdetails.getDepartureAirport().getAirportcode(), flightdetails.getArrivalAirport().getAirportcode(), LocalDateTime.ofInstant(flightdetails.getDepartureTime().getStartTime().toInstant(), ZoneId.of(flightdetails.getDepartureAirport().getTimeZone())), LocalDateTime.ofInstant(flightdetails.getArrivalTime().getStartTime().toInstant(), ZoneId.of(flightdetails.getArrivalAirport().getTimeZone())));
     }
 
     @Override

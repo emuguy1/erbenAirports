@@ -5,6 +5,8 @@ import de.othr.eerben.erbenairports.backend.data.entities.Airport;
 import de.othr.eerben.erbenairports.backend.data.repositories.AirportRepository;
 import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,8 +20,9 @@ public class AirportService implements AirportServiceIF {
     @Autowired
     private AirportRepository airportRepo;
 
+    Logger logger = LoggerFactory.getLogger(AirportService.class);
+
     @Override
-    @Transactional
     public Airport getAirportByAirportcode(String airportcode) throws AirportException {
         return airportRepo.findByAirportcode(airportcode).orElseThrow(() -> new AirportException("ERROR: Airport with airportcode not found: " + airportcode));
     }
@@ -27,25 +30,22 @@ public class AirportService implements AirportServiceIF {
     @Override
     @Transactional
     public Airport updateAirport(Airport airport) throws AirportException {
-        Optional<Airport> oldAirportOptional = airportRepo.findByAirportcode(airport.getAirportcode());
-        if (oldAirportOptional.isPresent()) {
-            Airport oldAirport = oldAirportOptional.get();
+        try{
             return airportRepo.save(airport);
-        } else {
-            System.out.println("Airport not found " + airport.getAirportcode());
-            return null;
+        } catch(Exception e) {
+            logger.error("Airport not found " + airport.getAirportcode());
+            throw new AirportException(e.getMessage());
         }
     }
 
     @Override
     @Transactional
     public void deleteAirport(String airport) throws AirportException {
-        Optional<Airport> oldAirportOptional = airportRepo.findByAirportcode(airport);
-
-        if (oldAirportOptional.isPresent()) {
+        try {
             airportRepo.deleteById(airport);
-        } else {
-            System.out.println("Airport not found " + airport);
+        } catch (Exception e){
+            logger.error("Airport not found " + airport);
+            throw new AirportException(e.getMessage());
         }
     }
 
@@ -56,7 +56,6 @@ public class AirportService implements AirportServiceIF {
     }
 
     @Override
-    @Transactional
     public List<Airport> getAllAirports() {
         return airportRepo.findDistinctByAirportcodeIsNotNull();
     }

@@ -5,6 +5,8 @@ import de.othr.eerben.erbenairports.backend.data.repositories.UserRepository;
 import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 import de.othr.eerben.erbenairports.backend.services.UserServiceIF;
 import org.hibernate.service.spi.ServiceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,18 +25,20 @@ public class UserService implements UserServiceIF {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    Logger logger = LoggerFactory.getLogger(UserService.class);
+
     @Transactional
     @Override
     public User registerUser(User user) throws AirportException {
-        //TODO: rewrite statment to something like exists
-        //TODO: validation after Role Employee or Customer
         if (userRepo.findByUsername(user.getUsername()).isPresent()) {
+            logger.error("Error: User already exists! " + user);
             throw new AirportException("Error: This User already exists!");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         try {
             return userRepo.save(user);
         } catch (Exception e) {
+            logger.error("Error creating user. Exception " + e);
             throw new AirportException(e.getMessage());
         }
     }
@@ -52,11 +56,6 @@ public class UserService implements UserServiceIF {
     @Override
     public List<User> getAllCustomers() {
         return userRepo.getAllCustomers();
-    }
-
-    @Transactional
-    public User saveUser(User user) {
-        return userRepo.save(user);
     }
 
     @Override

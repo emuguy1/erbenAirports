@@ -16,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -87,7 +86,6 @@ public class FlightsController {
     @RequestMapping(value = "/arrivals", method = RequestMethod.GET)
     public String arrivals(Model model, @RequestParam(value = "airport", required = false) String airportcode, @RequestParam("page") Optional<Integer> page,
                            @RequestParam("size") Optional<Integer> size) {
-        //TODO: maybe rewrite for timeselect
         try {
             int currentPage = page.orElse(1);
             int pageSize = size.orElse(5);
@@ -98,7 +96,7 @@ public class FlightsController {
                 if (page.isEmpty() || size.isEmpty()) {
                     return "redirect:/arrivals?airport=" + airportcode + "&size=" + pageSize + "&page=" + currentPage;
                 } else if (airportServiceIF.getAirportByAirportcode(airportcode) == null) {
-                    model.addAttribute("UIerror", new AirportException("Wrong Airportnumber specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
+                    model.addAttribute("UIerror", new AirportException("Wrong Airportnumber specified", "Try clicking on arrivals and then select your wanted airport from the dropdown list."));
                     return "unauthenticated/error-page";
                 }
                 flightPage = flightdetailsServiceIF.getArrivalsPaginated(airportcode, PageRequest.of(currentPage - 1, pageSize));
@@ -121,7 +119,7 @@ public class FlightsController {
             model.addAttribute("selectedAirport", new Airport());
             return "unauthenticated/arrivals";
         } catch (AirportException e) {
-            model.addAttribute("UIerror", new AirportException("Wrong Airportcode specified", "Try clicking on departures and then select your wanted airport from the dropdown list."));
+            model.addAttribute("UIerror", new AirportException("Wrong Airportcode specified", "Try clicking on arrivals and then select your wanted airport from the dropdown list."));
             return "unauthenticated/error-page";
         }
     }
@@ -139,7 +137,6 @@ public class FlightsController {
         return "flight/new";
     }
 
-    @Transactional
     @RequestMapping(value = "/flight/new", method = RequestMethod.POST)
     public String addFlight(Model model, @AuthenticationPrincipal User user, @ModelAttribute("flightdetails") FlighttransactionDTO flightdetailsdto) {
         try {
@@ -191,12 +188,11 @@ public class FlightsController {
         }
     }
 
-    @Transactional
     @RequestMapping(value = "/flight/{id}/delete", method = RequestMethod.GET)
     public String deleteFlightdetails(Model model, @AuthenticationPrincipal User user, @PathVariable("id") long flightid) {
         try {
             Flightdetails flight = flightdetailsServiceIF.getFlightdetailsById(flightid);
-            flightdetailsServiceIF.cancelFlight(user, flightdetailsServiceIF.getFlighttransactionDTO(flight));
+            flightdetailsServiceIF.cancelFlight(user, Helper.getFlighttransactionDTO(flight));
             return "redirect:/";
         } catch (AirportException a) {
             model.addAttribute("UIerror", a);
@@ -217,7 +213,6 @@ public class FlightsController {
         return "redirect:/airport/" + savedAirport.getAirportcode() + "/details";
     }
 
-    @Transactional
     @RequestMapping(value = "/airport/{id}/details", method = RequestMethod.GET)
     public String getAirportdetails(Model model, @PathVariable("id") String airportcode) {
         try {
@@ -230,7 +225,6 @@ public class FlightsController {
 
     }
 
-    @Transactional
     @RequestMapping(value = "/airport/{id}/edit", method = RequestMethod.GET)
     public String editAirport(Model model, @PathVariable("id") String airportcode) {
         try {
@@ -244,7 +238,6 @@ public class FlightsController {
         }
     }
 
-    @Transactional
     @RequestMapping(value = "/airport/edit", method = RequestMethod.POST)
     public String saveeditedAirport(Model model, @ModelAttribute("airport") Airport airport) {
         try {
@@ -256,12 +249,10 @@ public class FlightsController {
         }
     }
 
-    @Transactional
     @RequestMapping(value = "/airport/{id}/delete", method = RequestMethod.GET)
     public String delete(Model model, @PathVariable("id") String airport) {
         try {
             flightdetailsServiceIF.deleteByAirportId(airport);
-            airportServiceIF.deleteAirport(airport);
             return "redirect:/";
         } catch (AirportException a) {
             model.addAttribute("UIerror", a);
@@ -269,7 +260,6 @@ public class FlightsController {
         }
     }
 
-    @Transactional
     @RequestMapping(value = "/myFlights", method = RequestMethod.GET)
     public String getAuthenticatedFlightlistPageable(Model model, @AuthenticationPrincipal User user, @RequestParam("page") Optional<Integer> page,
                                                      @RequestParam("size") Optional<Integer> size) {

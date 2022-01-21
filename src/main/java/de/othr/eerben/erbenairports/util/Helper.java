@@ -1,5 +1,10 @@
 package de.othr.eerben.erbenairports.util;
 
+import de.othr.eerben.erbenairports.backend.data.entities.Flightdetails;
+import de.othr.eerben.erbenairports.backend.data.entities.dto.FlighttransactionDTO;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -30,5 +35,9 @@ public class Helper {
             }
         }
         return pageNumbers;
+    }
+
+    public static FlighttransactionDTO getFlighttransactionDTO(Flightdetails flightdetails) {
+        return new FlighttransactionDTO("", "", flightdetails.getFlightnumber(), flightdetails.getFlightTimeHours(), flightdetails.getMaxCargo(), flightdetails.getPassengerCount(), flightdetails.getDepartureAirport().getAirportcode(), flightdetails.getArrivalAirport().getAirportcode(), LocalDateTime.ofInstant(flightdetails.getDepartureTime().getStartTime().toInstant(), ZoneId.of(flightdetails.getDepartureAirport().getTimeZone())), LocalDateTime.ofInstant(flightdetails.getArrivalTime().getStartTime().toInstant(), ZoneId.of(flightdetails.getArrivalAirport().getTimeZone())));
     }
 }

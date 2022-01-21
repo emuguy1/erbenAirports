@@ -3,6 +3,8 @@ package de.othr.eerben.erbenairports.frontend.controller;
 import de.othr.eerben.erbenairports.backend.data.entities.User;
 import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 import de.othr.eerben.erbenairports.backend.services.UserServiceIF;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -17,18 +19,19 @@ import java.util.Optional;
 @Scope("singleton")
 public class HomeController {
 
-    @Autowired
-    private UserServiceIF userService;
+    Logger logger = LoggerFactory.getLogger(HomeController.class);
 
     @RequestMapping("/")
     public String start() {
+        logger.info("GET /");
         return "index";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET) // /login
     public String login(Model model, @RequestParam("error") Optional<Boolean> error) {
+        logger.info("GET /login");
         if (error.isPresent() && error.get()) {
-            //TODO: Logger mit Error
+            logger.error("Password or Username were wrong!");
             model.addAttribute("UIerror", new AirportException("Password or Username were wrong!"));
         }
         model.addAttribute("user", new User());
@@ -37,6 +40,7 @@ public class HomeController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST) // th:action="@{/login}"
     public String doLogin() {
+        logger.info("POST /login");
         return "index";
     }
 
