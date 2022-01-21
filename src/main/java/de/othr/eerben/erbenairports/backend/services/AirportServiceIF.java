@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface AirportServiceIF {
-    Airport getAirportByAirportcode(String airportcode)throws AirportException;
+    Airport getAirportByAirportcode(String airportcode) throws AirportException;
 
     @Transactional
     Airport updateAirport(Airport airport) throws AirportException;
@@ -16,5 +16,6 @@ public interface AirportServiceIF {
     void deleteAirport(String airport) throws AirportException;
 
     Airport addAirport(Airport airport);
+
     List<Airport> getAllAirports();
 }

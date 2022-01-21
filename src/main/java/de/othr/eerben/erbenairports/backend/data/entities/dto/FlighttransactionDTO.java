@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 public class FlighttransactionDTO {
 
 
-    private  String username;
+    private String username;
 
 
-    private  String password;
+    private String password;
 
     @NotNull
     private String flightnumber;
@@ -33,18 +33,19 @@ public class FlighttransactionDTO {
     private String arrivalAirport;
 
     @NotNull
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime departureTime;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime arrivalTime;
 
     private String userenameCreatedFor;
 
 
-    public FlighttransactionDTO() {}
+    public FlighttransactionDTO() {
+    }
 
     public FlighttransactionDTO(String username, String password, String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, String departureAirport, String arrivalAirport, LocalDateTime departureTime, LocalDateTime arrivalTime, String userenameCreatedFor) {
         this.username = username;

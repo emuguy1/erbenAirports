@@ -11,8 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends CrudRepository<User,String> {
+public interface UserRepository extends CrudRepository<User, String> {
     Optional<User> findByUsername(String username);
+
     @Query("select u from User u where u.accountType = 0")
     List<User> getAllCustomers();
 }

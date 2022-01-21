@@ -8,26 +8,27 @@ import java.util.Objects;
 import java.util.TimeZone;
 
 @Entity
-public class  Airport {
+public class Airport {
 
     @Id
-    @NotBlank(message="Housenumber cannot be empty!")
+    @NotBlank(message = "Housenumber cannot be empty!")
     private String airportcode;
 
-    @NotBlank(message="Housenumber cannot be empty!")
+    @NotBlank(message = "Housenumber cannot be empty!")
     private String airportname;
 
-    @NotBlank(message="Housenumber cannot be empty!")
+    @NotBlank(message = "Housenumber cannot be empty!")
     private String timeZone;
 
-    @NotBlank(message="Housenumber cannot be empty!")
+    @NotBlank(message = "Housenumber cannot be empty!")
     private String country;
 
-    @NotBlank(message="Housenumber cannot be empty!")
+    @NotBlank(message = "Housenumber cannot be empty!")
     private String city;
 
 
-    public Airport(){}
+    public Airport() {
+    }
 
     public Airport(String airportcode, String timeZone, String country, String city, String airportname) {
         this.airportcode = airportcode;

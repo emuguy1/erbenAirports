@@ -28,12 +28,12 @@ public class UserController {
     UserServiceIF userServiceIF;
 
     @RequestMapping(value = "/user/{id}/details", method = RequestMethod.GET)
-    public String showEmployeeUserDetails(Model model, @PathVariable("id")String username) {
-        try{
+    public String showEmployeeUserDetails(Model model, @PathVariable("id") String username) {
+        try {
             model.addAttribute("user", userServiceIF.getUserByUsername(username));
         }
         //TODO: Error reformati
-        catch(Exception e){
+        catch (Exception e) {
             model.addAttribute("UIerror", new AirportException(e.getMessage()));
             return "index";
         }
@@ -59,22 +59,22 @@ public class UserController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST) // /login
-    public String doRegisterCustomer( @Valid @ModelAttribute("user") User user,
-                                      BindingResult result,
-                                      @ModelAttribute("passwordRepeat") String confirmationPasswort,
-                                      @ModelAttribute("username") String username,
-                                      HttpServletRequest servlet,
-                                      Model model) {
+    public String doRegisterCustomer(@Valid @ModelAttribute("user") User user,
+                                     BindingResult result,
+                                     @ModelAttribute("passwordRepeat") String confirmationPasswort,
+                                     @ModelAttribute("username") String username,
+                                     HttpServletRequest servlet,
+                                     Model model) {
         try {
             System.out.println("POST /register");
             user.setID(username);
             if (!confirmationPasswort.equals(user.getPassword())) {
                 result.addError(new ObjectError("globalError", "The two given passwords are not the same!"));
             }
-            if (user.getIban()==null || user.getIban().isBlank()) {
+            if (user.getIban() == null || user.getIban().isBlank()) {
                 result.rejectValue("iban", "error.user", "IBAN field can´t be empty");
             }
-            if (user.getCompany_name()==null || user.getCompany_name().isBlank()) {
+            if (user.getCompany_name() == null || user.getCompany_name().isBlank()) {
                 result.rejectValue("company_name", "error.user", "Company Name can´t be empty");
             }
             if (result.hasErrors()) {
@@ -88,10 +88,10 @@ public class UserController {
             servlet.login(user.getUsername(), confirmationPasswort);
 
             return "redirect:/";
-        }catch (AirportException exception) {
+        } catch (AirportException exception) {
             model.addAttribute("error", exception);
             return "authentication/register";
-        }catch (ServletException e) {
+        } catch (ServletException e) {
             model.addAttribute("error", new AirportException("Fehler bei der Anmeldung des neuen Benutzers.", e.getMessage()));
             return "redirect:/authentication/login";
         }
@@ -106,12 +106,12 @@ public class UserController {
     }
 
     @RequestMapping(value = "/employee/register", method = RequestMethod.POST) // /login
-    public String doRegisterEmployee( @Valid @ModelAttribute("user") User user,
-                                      BindingResult result,
-                                      @ModelAttribute("passwordRepeat") String confirmationPasswort,
-                                      @ModelAttribute("username") String username,
-                                      HttpServletRequest servlet,
-                                      Model model) {
+    public String doRegisterEmployee(@Valid @ModelAttribute("user") User user,
+                                     BindingResult result,
+                                     @ModelAttribute("passwordRepeat") String confirmationPasswort,
+                                     @ModelAttribute("username") String username,
+                                     HttpServletRequest servlet,
+                                     Model model) {
         try {
             System.out.println("POST /register");
             user.setID(username);
@@ -125,8 +125,8 @@ public class UserController {
             user.setAccountType(AccountType.EMPLOYEE);
             userServiceIF.registerUser(user);
 
-            return "redirect:/user/{"+user.getUsername()+"}/details";
-        }catch (AirportException exception) {
+            return "redirect:/user/{" + user.getUsername() + "}/details";
+        } catch (AirportException exception) {
             model.addAttribute("error", exception);
             return "employee/registerEmployee";
         }

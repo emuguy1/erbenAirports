@@ -27,6 +27,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private BCryptPasswordEncoder passwordEncoder() {
         return securityUtilities.passwordEncoder();
     }
+
     private static final String[] ALLOW_ACCESS_WITHOUT_AUTHENTICATION = {
             "/css/**",
             "/js/**",
@@ -80,6 +81,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         // Cross-Site Request Forgery ausschalten
         http.csrf().disable();
     }
+
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService)

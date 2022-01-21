@@ -40,13 +40,14 @@ public class Flightdetails {
     @ManyToOne
     private User createdBy;
 
-    @OneToOne (orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL)
     private BookedCalendarslot departureTime;
 
-    @OneToOne (orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL)
     private BookedCalendarslot arrivalTime;
 
-    public Flightdetails(){}
+    public Flightdetails() {
+    }
 
     public Flightdetails(String flightnumber, double flightTimeHours, double maxCargo, int passengerCount, Airport departureAirport, Airport arrivalAirport) {
         this.flightnumber = flightnumber;
@@ -148,7 +149,9 @@ public class Flightdetails {
         this.arrivalTime = arrivalTime;
     }
 
-    public long getFlightid() {return flightid;}
+    public long getFlightid() {
+        return flightid;
+    }
 
     @Override
     public boolean equals(Object o) {

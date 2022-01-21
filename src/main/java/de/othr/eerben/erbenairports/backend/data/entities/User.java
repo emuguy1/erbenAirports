@@ -20,28 +20,28 @@ public class User extends SingleIdEntity<String> implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @NotBlank(message="Name cannot be empty!")
+    @NotBlank(message = "Name cannot be empty!")
     private String name;
 
-    @NotBlank(message="Surname cannot be empty!")
+    @NotBlank(message = "Surname cannot be empty!")
     private String surname;
 
     @Nullable
     private String iban;
 
-    @NotBlank(message="Country cannot be empty!")
+    @NotBlank(message = "Country cannot be empty!")
     private String country;
 
-    @NotBlank(message="ZIP-Code cannot be empty!")
+    @NotBlank(message = "ZIP-Code cannot be empty!")
     private String zipCode;
 
-    @NotBlank(message="City cannot be empty!")
+    @NotBlank(message = "City cannot be empty!")
     private String town;
 
-    @NotBlank(message="Street cannot be empty!")
+    @NotBlank(message = "Street cannot be empty!")
     private String street;
 
-    @NotBlank(message="Housenumber cannot be empty!")
+    @NotBlank(message = "Housenumber cannot be empty!")
     private String housenumber;
 
     @Nullable
@@ -50,7 +50,8 @@ public class User extends SingleIdEntity<String> implements UserDetails {
     @Enumerated(EnumType.ORDINAL)
     private AccountType accountType;
 
-    public User(){}
+    public User() {
+    }
 
     public User(String username, String password) {
         this.username = username;
@@ -218,11 +219,11 @@ public class User extends SingleIdEntity<String> implements UserDetails {
         this.accountType = accountType;
     }
 
-    public boolean isCustomer(){
+    public boolean isCustomer() {
         return this.accountType.equals(AccountType.CUSTOMER);
     }
 
-    public boolean isEmployee(){
+    public boolean isEmployee() {
         return this.accountType.equals(AccountType.EMPLOYEE);
     }
 
@@ -231,7 +232,9 @@ public class User extends SingleIdEntity<String> implements UserDetails {
         return this.username;
     }
 
-    public void setID(String username){ this.username=username;}
+    public void setID(String username) {
+        this.username = username;
+    }
 
     @Override
     public String toString() {

@@ -8,8 +8,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 public class ErbenairportsApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ErbenairportsApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ErbenairportsApplication.class, args);
+    }
 
 }

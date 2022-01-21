@@ -11,7 +11,7 @@ import java.util.Date;
 /*
  * Since the web-interface returns the date from the picker as a String we need to convert it to a date whenever needed.
  * */
-public class DateConverter  implements Converter<String, Date> {
+public class DateConverter implements Converter<String, Date> {
 
     Logger logger = LoggerFactory.getLogger(DateConverter.class);
 

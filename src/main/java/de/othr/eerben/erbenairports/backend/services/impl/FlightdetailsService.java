@@ -60,8 +60,6 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     Logger logger = LoggerFactory.getLogger(FlightdetailsServiceIF.class);
 
 
-
-
     @Override
     public Page<Flightdetails> getDeparturesPaginated(String airportcode, Pageable pageable) throws AirportException {
         int pageSize = pageable.getPageSize();

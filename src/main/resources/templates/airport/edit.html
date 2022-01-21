@@ -18,7 +18,9 @@
                 <div class="d-flex justify-content-end">
                     <a th:href="'/airport/'+${airport.getAirportcode()}+'/delete'" class="btn btn-danger m-2 me-5">Delete</a>
                     <button type="submit" class="btn btn-primary m-2 me-5">Update</button>
-                    <button th:href="':redirect /airport/'+${airport.getAirportcode()}+'/details'" class="btn btn-secondary m-2 me-5">Cancel</button>
+                    <button th:href="':redirect /airport/'+${airport.getAirportcode()}+'/details'"
+                            class="btn btn-secondary m-2 me-5">Cancel
+                    </button>
                 </div>
             </form>
         </div>

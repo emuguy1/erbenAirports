@@ -2,7 +2,7 @@ package de.othr.eerben.erbenairports.backend.exceptions;
 
 /**
  * Exception class with specifications for UI.
- * With the help of suggestions or message and title, the user can get a better understanding of the Problem 
+ * With the help of suggestions or message and title, the user can get a better understanding of the Problem
  * and maybe fix it.
  */
 public class AirportException extends Exception {

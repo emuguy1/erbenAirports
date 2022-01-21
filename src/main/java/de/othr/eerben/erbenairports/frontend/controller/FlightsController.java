@@ -64,7 +64,7 @@ public class FlightsController {
             }
             int totalPages = flightPage.getTotalPages();
             if (totalPages > 0) {
-                model.addAttribute("pageNumbers", Helper.pageNumbers(currentPage,totalPages));
+                model.addAttribute("pageNumbers", Helper.pageNumbers(currentPage, totalPages));
             }
             model.addAttribute("flights", flightPage.toList());
             model.addAttribute("airports", airports);
@@ -113,7 +113,7 @@ public class FlightsController {
             }
             int totalPages = flightPage.getTotalPages();
             if (totalPages > 0) {
-                model.addAttribute("pageNumbers", Helper.pageNumbers(currentPage,totalPages));
+                model.addAttribute("pageNumbers", Helper.pageNumbers(currentPage, totalPages));
             }
             model.addAttribute("flights", flightPage.toList());
             model.addAttribute("airports", airports);
@@ -282,22 +282,20 @@ public class FlightsController {
                 return "redirect:/myFlights?size=" + pageSize + "&page=" + currentPage;
             }
 
-            if(user.getAccountType().equals(AccountType.EMPLOYEE)){
-                flightPage=flightdetailsServiceIF.getAllFlights(PageRequest.of(currentPage - 1, pageSize));
-            }
-            else{
-                flightPage=flightdetailsServiceIF.getAllByUsername(user.getUsername(),PageRequest.of(currentPage - 1, pageSize));
+            if (user.getAccountType().equals(AccountType.EMPLOYEE)) {
+                flightPage = flightdetailsServiceIF.getAllFlights(PageRequest.of(currentPage - 1, pageSize));
+            } else {
+                flightPage = flightdetailsServiceIF.getAllByUsername(user.getUsername(), PageRequest.of(currentPage - 1, pageSize));
             }
             model.addAttribute("flightPage", flightPage);
 
             int totalPages = flightPage.getTotalPages();
             if (totalPages > 0) {
-                model.addAttribute("pageNumbers", Helper.pageNumbers(currentPage,totalPages));
+                model.addAttribute("pageNumbers", Helper.pageNumbers(currentPage, totalPages));
             }
 
 
-
-            model.addAttribute("flights",flightPage.toList());
+            model.addAttribute("flights", flightPage.toList());
             return "authenticated/myFlights";
         } catch (Exception e) {
             model.addAttribute("UIerror", e);

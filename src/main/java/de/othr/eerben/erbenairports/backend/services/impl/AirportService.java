@@ -20,13 +20,13 @@ public class AirportService implements AirportServiceIF {
 
     @Override
     @Transactional
-    public Airport getAirportByAirportcode(String airportcode) throws AirportException{
-        return airportRepo.findByAirportcode(airportcode).orElseThrow(()-> new AirportException("ERROR: Airport with airportcode not found: "+airportcode));
+    public Airport getAirportByAirportcode(String airportcode) throws AirportException {
+        return airportRepo.findByAirportcode(airportcode).orElseThrow(() -> new AirportException("ERROR: Airport with airportcode not found: " + airportcode));
     }
 
     @Override
     @Transactional
-    public Airport updateAirport(Airport airport) throws AirportException{
+    public Airport updateAirport(Airport airport) throws AirportException {
         Optional<Airport> oldAirportOptional = airportRepo.findByAirportcode(airport.getAirportcode());
         if (oldAirportOptional.isPresent()) {
             Airport oldAirport = oldAirportOptional.get();
@@ -39,7 +39,7 @@ public class AirportService implements AirportServiceIF {
 
     @Override
     @Transactional
-    public void deleteAirport(String airport) throws AirportException{
+    public void deleteAirport(String airport) throws AirportException {
         Optional<Airport> oldAirportOptional = airportRepo.findByAirportcode(airport);
 
         if (oldAirportOptional.isPresent()) {
@@ -57,7 +57,7 @@ public class AirportService implements AirportServiceIF {
 
     @Override
     @Transactional
-    public List<Airport> getAllAirports(){
+    public List<Airport> getAllAirports() {
         return airportRepo.findDistinctByAirportcodeIsNotNull();
     }
 

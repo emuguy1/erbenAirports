@@ -16,7 +16,9 @@
             </h5>
             <form th:object="${airport}" method="post" th:action="@{/airport/new}">
                 <div class="my-2" th:replace="components/airportForm :: airportForm"></div>
-                <div class="d-flex justify-content-end"><button type="submit" class="btn btn-primary m-2 me-5">Create</button></div>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary m-2 me-5">Create</button>
+                </div>
             </form>
         </div>
     </div>

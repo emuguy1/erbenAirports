@@ -25,5 +25,7 @@ public abstract class SingleIdEntity<K extends Comparable> implements Serializab
     }
 
     @Override
-    public int compareTo(SingleIdEntity other) { return this.getID().compareTo(other.getID()); }
+    public int compareTo(SingleIdEntity other) {
+        return this.getID().compareTo(other.getID());
+    }
 }

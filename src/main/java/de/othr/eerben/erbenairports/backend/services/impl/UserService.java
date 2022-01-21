@@ -15,7 +15,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
-public class UserService implements UserServiceIF{
+public class UserService implements UserServiceIF {
 
     @Autowired
     private UserRepository userRepo;
@@ -28,21 +28,20 @@ public class UserService implements UserServiceIF{
     public User registerUser(User user) throws AirportException {
         //TODO: rewrite statment to something like exists
         //TODO: validation after Role Employee or Customer
-        if(userRepo.findByUsername(user.getUsername()).isPresent()){
+        if (userRepo.findByUsername(user.getUsername()).isPresent()) {
             throw new AirportException("Error: This User already exists!");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         try {
             return userRepo.save(user);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new AirportException(e.getMessage());
         }
     }
 
     @Override
-    public boolean userExists(String username){
-        return  userRepo.existsById(username);
+    public boolean userExists(String username) {
+        return userRepo.existsById(username);
     }
 
     @Override
@@ -56,7 +55,7 @@ public class UserService implements UserServiceIF{
     }
 
     @Transactional
-    public User saveUser(User user){
+    public User saveUser(User user) {
         return userRepo.save(user);
     }
 

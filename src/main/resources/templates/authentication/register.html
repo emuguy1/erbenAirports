@@ -16,7 +16,9 @@
                 <h2 class="fw-bold mb-4">Register for ErbenAirports</h2>
                 <form th:action="@{/register}" th:object="${user}" method="post" class=" form-outline  text-start">
                     <div class="my-2" th:replace="components/userForm :: userForm"></div>
-                    <p class="mb-0 text-center">Youre already a registered user? <a href="/login" class="text-center text-blue fw-bold">Log in</a></p>
+                    <p class="mb-0 text-center">Youre already a registered user? <a href="/login"
+                                                                                    class="text-center text-blue fw-bold">Log
+                        in</a></p>
                 </form>
             </div>
         </div>

@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface AirportRepository extends CrudRepository<Airport,String> {
-        Optional<Airport> findByAirportcode(String airportcode);
-        List<Airport> findDistinctByAirportcodeIsNotNull();
-        boolean existsAirportByAirportcode(String airportcode);
+public interface AirportRepository extends CrudRepository<Airport, String> {
+    Optional<Airport> findByAirportcode(String airportcode);
+
+    List<Airport> findDistinctByAirportcodeIsNotNull();
+
+    boolean existsAirportByAirportcode(String airportcode);
 }

@@ -42,9 +42,12 @@ public class BookedCalendarslot {
     private Airport airport;
 
 
-    public BookedCalendarslot(){};
+    public BookedCalendarslot() {
+    }
 
-    public BookedCalendarslot(int day, int month, int year, int durationInMinutes, Date startTime,Airport airport) {
+    ;
+
+    public BookedCalendarslot(int day, int month, int year, int durationInMinutes, Date startTime, Airport airport) {
         this.day = day;
         this.month = month;
         this.year = year;
@@ -97,7 +100,9 @@ public class BookedCalendarslot {
         this.startTime = startTime;
     }
 
-    public Airport getAirport(){ return airport; }
+    public Airport getAirport() {
+        return airport;
+    }
 
     public void setAirport(Airport airport) {
         this.airport = airport;

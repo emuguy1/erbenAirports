@@ -1,17 +1,18 @@
 .gradientHeader {
     font-size: 52px;
-    background: -webkit-linear-gradient(#052c67,#055160 , #ffc107);
+    background: -webkit-linear-gradient(#052c67, #055160, #ffc107);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
-body{
+
+body {
     background-color: lightgray;
 }
 
-.fixed-notification{
-    position:fixed;
+.fixed-notification {
+    position: fixed;
     right: 3%;
     bottom: 3%;
     max-width: 40%;
-    z-index:9999;
+    z-index: 9999;
 }
