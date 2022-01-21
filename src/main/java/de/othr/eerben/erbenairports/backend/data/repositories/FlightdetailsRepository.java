@@ -18,10 +18,10 @@ import java.util.Optional;
 @Repository
 public interface FlightdetailsRepository extends PagingAndSortingRepository<Flightdetails, Long> {
     @Query("select f from Flightdetails f where f.departureAirport = ?1 and f.departureTime.startTime > ?2 order by f.departureTime.startTime ASC")
-    List<Flightdetails> getAllByDepartureAirportAndDepartureTimeIsAfterOrderByDepartureTime(Airport departureAirport, Timestamp departureTime);
+    Page<Flightdetails> getAllByDepartureAirportAndDepartureTimeIsAfterOrderByDepartureTime(Airport departureAirport, Timestamp departureTime, Pageable pageable);
 
     @Query("select f from Flightdetails f where f.arrivalAirport = ?1 and f.arrivalTime.startTime > ?2 order by f.arrivalTime.startTime")
-    List<Flightdetails> getAllByArrivalAirportAndArrivalTimeIsAfterOrderByArrivalTime(Airport departureAirport, Timestamp arrivalTime);
+    Page<Flightdetails> getAllByArrivalAirportAndArrivalTimeIsAfterOrderByArrivalTime(Airport departureAirport, Timestamp arrivalTime, Pageable pageable);
 
     Optional<Flightdetails> findByFlightid(long flightid);
 

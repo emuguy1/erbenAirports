@@ -54,51 +54,16 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
     @Override
     public Page<Flightdetails> getDeparturesPaginated(String airportcode, Pageable pageable) throws AirportException {
-        int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        int startItem = currentPage * pageSize;
-
         //TODO: get departures after a specific time
         Airport airport = airportServiceIF.getAirportByAirportcode(airportcode);
-        List<Flightdetails> flights = flightdetailsRepo.getAllByDepartureAirportAndDepartureTimeIsAfterOrderByDepartureTime(airport, Timestamp.from(Instant.now()));
-        System.out.println(flights);
-        List<Flightdetails> list;
-
-        if (flights.size() < startItem) {
-            list = Collections.emptyList();
-        } else {
-            int toIndex = Math.min(startItem + pageSize, flights.size());
-            list = flights.subList(startItem, toIndex);
-        }
-
-        Page<Flightdetails> flightsPage
-                = new PageImpl<Flightdetails>(list, PageRequest.of(currentPage, pageSize), flights.size());
-
-        return flightsPage;
+        return flightdetailsRepo.getAllByDepartureAirportAndDepartureTimeIsAfterOrderByDepartureTime(airport, Timestamp.from(Instant.now()), pageable);
     }
 
     @Override
     public Page<Flightdetails> getArrivalsPaginated(String airportcode, Pageable pageable) throws AirportException {
-        int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        int startItem = currentPage * pageSize;
-
         //TODO: get arrivals after a specific time
         Airport airport = airportServiceIF.getAirportByAirportcode(airportcode);
-        List<Flightdetails> flights = flightdetailsRepo.getAllByArrivalAirportAndArrivalTimeIsAfterOrderByArrivalTime(airport, Timestamp.from(Instant.now()));
-        List<Flightdetails> list;
-
-        if (flights.size() < startItem) {
-            list = Collections.emptyList();
-        } else {
-            int toIndex = Math.min(startItem + pageSize, flights.size());
-            list = flights.subList(startItem, toIndex);
-        }
-
-        Page<Flightdetails> flightsPage
-                = new PageImpl<Flightdetails>(list, PageRequest.of(currentPage, pageSize), flights.size());
-
-        return flightsPage;
+        return flightdetailsRepo.getAllByArrivalAirportAndArrivalTimeIsAfterOrderByArrivalTime(airport, Timestamp.from(Instant.now()),pageable);
     }
 
     @Override
@@ -130,7 +95,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
             if (flight.getDepartureTime().isAfter(LocalDateTime.now()) || flight.getArrivalTime().isBefore(LocalDateTime.now())) {
                 if (flightdetails.getCustomer() != null) {
-                    //TODO:
+                    //TODO:I dont know
                     FlighttransactionDTO flightDTO = getFlighttransactionDTO(flightdetails);
                     performBankingTransaction(user, true, flightDTO);
                 }

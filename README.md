@@ -14,4 +14,17 @@ But if you log in as employee you can creat one, without using the transaction s
 
 It was decided to not use embeddable, as there was no reason to use it somewhere.
 
+As Dokumentation and tutorial for the project, <a>https://www.baeldung.com/</a> was used.
+
+For testing purpose you can use for an employee:
+username: root
+password: 123passwort123
+
+For testing purpose you can use for an customer:
+username: root2
+password: 123passwort123
+
+or you can create one, but you have to take care, that the IBAN you insert is one, that is available at TR-Bank:
+here is one you can use: DE12345678901234500006
+
 
