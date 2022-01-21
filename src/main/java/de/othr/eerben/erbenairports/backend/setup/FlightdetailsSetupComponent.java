@@ -1,4 +1,4 @@
-package de.othr.eerben.erbenairports.backend.services.setup;
+package de.othr.eerben.erbenairports.backend.setup;
 
 
 import de.othr.eerben.erbenairports.backend.data.entities.Airport;
@@ -9,14 +9,11 @@ import de.othr.eerben.erbenairports.backend.data.repositories.UserRepository;
 import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
 import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.TemporalField;
 import java.util.List;
 
 public class FlightdetailsSetupComponent extends AbstractSetupComponent {

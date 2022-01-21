@@ -1,4 +1,4 @@
-package de.othr.eerben.erbenairports.backend.services.setup;
+package de.othr.eerben.erbenairports.backend.setup;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;

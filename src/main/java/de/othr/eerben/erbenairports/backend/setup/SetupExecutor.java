@@ -1,4 +1,4 @@
-package de.othr.eerben.erbenairports.backend.services.setup;
+package de.othr.eerben.erbenairports.backend.setup;
 
 import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 import org.slf4j.Logger;

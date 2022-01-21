@@ -1,4 +1,4 @@
-package de.othr.eerben.erbenairports.backend.services.setup;
+package de.othr.eerben.erbenairports.backend.setup;
 
 import de.othr.eerben.erbenairports.backend.data.entities.AccountType;
 import de.othr.eerben.erbenairports.backend.data.entities.User;

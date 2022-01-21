@@ -1,4 +1,4 @@
-package de.othr.eerben.erbenairports.backend.services.REST;
+package de.othr.eerben.erbenairports.backend.REST;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;

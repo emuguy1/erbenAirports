@@ -1,10 +1,8 @@
-package de.othr.eerben.erbenairports.backend.services.setup;
+package de.othr.eerben.erbenairports.backend.setup;
 
 import de.othr.eerben.erbenairports.backend.data.entities.Airport;
 import de.othr.eerben.erbenairports.backend.data.repositories.AirportRepository;
 import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 

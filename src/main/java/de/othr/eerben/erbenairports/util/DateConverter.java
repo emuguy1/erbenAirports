@@ -1,4 +1,4 @@
-package de.othr.eerben.erbenairports.backend.data;
+package de.othr.eerben.erbenairports.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

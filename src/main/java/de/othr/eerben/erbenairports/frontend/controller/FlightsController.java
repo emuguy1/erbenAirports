@@ -9,6 +9,7 @@ import de.othr.eerben.erbenairports.backend.data.entities.dto.FlighttransactionD
 import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 import de.othr.eerben.erbenairports.backend.services.AirportServiceIF;
 import de.othr.eerben.erbenairports.backend.services.FlightdetailsServiceIF;
+import de.othr.eerben.erbenairports.util.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
@@ -63,10 +64,7 @@ public class FlightsController {
             }
             int totalPages = flightPage.getTotalPages();
             if (totalPages > 0) {
-                List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                        .boxed()
-                        .collect(Collectors.toList());
-                model.addAttribute("pageNumbers", pageNumbers);
+                model.addAttribute("pageNumbers", Helper.pageNumbers(currentPage,totalPages));
             }
             model.addAttribute("flights", flightPage.toList());
             model.addAttribute("airports", airports);
@@ -115,10 +113,7 @@ public class FlightsController {
             }
             int totalPages = flightPage.getTotalPages();
             if (totalPages > 0) {
-                List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                        .boxed()
-                        .collect(Collectors.toList());
-                model.addAttribute("pageNumbers", pageNumbers);
+                model.addAttribute("pageNumbers", Helper.pageNumbers(currentPage,totalPages));
             }
             model.addAttribute("flights", flightPage.toList());
             model.addAttribute("airports", airports);
@@ -280,7 +275,7 @@ public class FlightsController {
                                                      @RequestParam("size") Optional<Integer> size) {
         try {
             int currentPage = page.orElse(1);
-            int pageSize = size.orElse(35);
+            int pageSize = size.orElse(25);
             Page<Flightdetails> flightPage;
 
             if (page.isEmpty() || size.isEmpty()) {
@@ -297,10 +292,7 @@ public class FlightsController {
 
             int totalPages = flightPage.getTotalPages();
             if (totalPages > 0) {
-                List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                        .boxed()
-                        .collect(Collectors.toList());
-                model.addAttribute("pageNumbers", pageNumbers);
+                model.addAttribute("pageNumbers", Helper.pageNumbers(currentPage,totalPages));
             }
 
 
