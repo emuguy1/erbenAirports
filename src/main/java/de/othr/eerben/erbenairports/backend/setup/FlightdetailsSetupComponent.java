@@ -49,7 +49,7 @@ public class FlightdetailsSetupComponent extends AbstractSetupComponent {
             for (Airport airport : airportList) {
                 if (!airport.getAirportcode().equals("MUC"))
                     for (int i = 0; i < 40; i++) {
-                        LocalDateTime time = LocalDateTime.ofInstant(Instant.now().plusSeconds((int) (Math.random() * 999999)), ZoneId.systemDefault());
+                        LocalDateTime time = LocalDateTime.ofInstant(Instant.now().plusSeconds((int) (Math.random() * 9999999)), ZoneId.systemDefault());
                         FlighttransactionDTO flightDTO = new FlighttransactionDTO("LH" + (int) (Math.random() * 9999), Math.random() * 100, 25.6, 250, airport.getAirportcode(), airportList.get((int) (Math.random() * airportList.size())).getAirportcode(), time);
                         flightdetailsService.bookFlight(user, flightDTO);
                     }
