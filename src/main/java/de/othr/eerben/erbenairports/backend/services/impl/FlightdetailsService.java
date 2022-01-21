@@ -94,7 +94,6 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
         //TODO: get arrivals after a specific time
         Airport airport = airportServiceIF.getAirportByAirportcode(airportcode);
         List<Flightdetails> flights = flightdetailsRepo.getAllByArrivalAirportAndArrivalTimeIsAfterOrderByArrivalTime(airport, Timestamp.from(Instant.now())).orElseThrow(() -> new AirportException("Error, no Arrivals for airport after now could be found"));
-        System.out.println(flights);
         List<Flightdetails> list;
 
         if (flights.size() < startItem) {
@@ -298,6 +297,16 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     @Override
     public FlighttransactionDTO getFlighttransactionDTO(Flightdetails flightdetails) {
         return new FlighttransactionDTO("", "", flightdetails.getFlightnumber(), flightdetails.getFlightTimeHours(), flightdetails.getMaxCargo(), flightdetails.getPassengerCount(), flightdetails.getDepartureAirport().getAirportcode(), flightdetails.getArrivalAirport().getAirportcode(), LocalDateTime.ofInstant(flightdetails.getDepartureTime().getStartTime().toInstant(), ZoneId.of(flightdetails.getDepartureAirport().getTimeZone())), LocalDateTime.ofInstant(flightdetails.getArrivalTime().getStartTime().toInstant(), ZoneId.of(flightdetails.getArrivalAirport().getTimeZone())));
+    }
+
+    @Override
+    public List<Flightdetails> getAllFlights() {
+        return flightdetailsRepo.getAll();
+    }
+
+    @Override
+    public List<Flightdetails> getAllByUsername(String username) {
+        return flightdetailsRepo.getAllByUsername(username);
     }
 
     public void performBankingTransaction(User user, boolean bookBack, FlighttransactionDTO flightdetails) throws AirportException {

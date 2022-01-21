@@ -63,7 +63,17 @@
                 <p class="col-8" th:text="${arrivalTimeArrivalAirport}">text</p>
             </div>
         </div>
+        <!--Didnt work in one so had to be split-->
+        <div sec:authorize="hasAuthority('EMPLOYEE')">
+            <a th:href="'/flight/'+${flightdetails.getFlightid()}+'/delete'"
+               class="btn btn-danger m-2 me-5">Delete</a>
+        </div>
+        <div th:if="${flightdetails.getCustomer() != null and flightdetails.getCustomer().getUsername().equals(#authentication.getName())}">
+            <a th:href="'/flight/'+${flightdetails.getFlightid()}+'/delete'"
+               class="btn btn-danger m-2 me-5">Delete</a>
+        </div>
     </div>
+
 </div>
 
 </body>

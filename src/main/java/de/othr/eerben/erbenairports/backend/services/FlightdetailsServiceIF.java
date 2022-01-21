@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface FlightdetailsServiceIF {
 
@@ -26,4 +27,8 @@ public interface FlightdetailsServiceIF {
     void deleteById(long flightid) throws AirportException;
 
     FlighttransactionDTO getFlighttransactionDTO(Flightdetails flight);
+
+    List<Flightdetails> getAllFlights();
+
+    List<Flightdetails> getAllByUsername(String username);
 }

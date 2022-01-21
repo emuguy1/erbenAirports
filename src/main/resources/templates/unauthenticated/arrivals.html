@@ -118,7 +118,8 @@
     <h1 class="text-center gradientHeader">Arrivals</h1>
     <form class="d-flex justify-content-center row" th:action="@{/arrival}" th:object="${selectedAirport}">
         <div class="col-6">
-            <select id="selectAirportArrivals" name="airportcode" th:class="form-select" th:type="submit" th:onchange="setArrivalAirport()">
+            <select id="selectAirportArrivals" name="airportcode" th:class="form-select" th:type="submit"
+                    th:onchange="setArrivalAirport()">
                 <option disabled th:value="null">Please select an airport...</option>
                 <option th:each="airport : ${airports}"
                         th:value="${airport.getAirportcode()}"
@@ -143,13 +144,16 @@
         <tbody>
         <tr th:if="${!flights.isEmpty()}" th:each="flight : ${flights}">
             <th scope="row"><label th:text="${flight.getFlightnumber()}"></label></th>
-            <td><label th:text="${#dates.format(flight.getDepartureTime().getStartTime(), 'dd.MM.yyyy HH:mm')} + ' MEZ'"></label></td>
+            <td><label
+                    th:text="${#dates.format(flight.getDepartureTime().getStartTime(), 'dd.MM.yyyy HH:mm')} + ' MEZ'"></label>
+            </td>
             <td><label th:text="${flight.getDepartureAirport().getCity()}"></label></td>
-            <td><label th:text="${#dates.format(flight.getArrivalTime().getStartTime(), 'dd.MM.yyyy HH:mm')} + ' MEZ'"></label></td>
+            <td><label
+                    th:text="${#dates.format(flight.getArrivalTime().getStartTime(), 'dd.MM.yyyy HH:mm')} + ' MEZ'"></label>
+            </td>
             <td>
-                <form th:action="@{/flight}">
-                    <a th:href="'/flight/'+${flight.getFlightid()}+'/details'" role="button" class="btn  btn-primary" style="color: white">More Details</a>
-                </form>
+                <a th:href="'/flight/'+${flight.getFlightid()}+'/details'" role="button" class="btn  btn-primary"
+                   style="color: white">More Details</a>
             </td>
         </tr>
         </tbody>
@@ -160,7 +164,8 @@
         <a th:each="pageNumber : ${pageNumbers}"
            th:href="@{/arrivals(airport=${currentAirport.getAirportcode()},size=${flightPage.size}, page=${pageNumber})}"
            th:text="${pageNumber}"
-           th:classappend="${pageNumber==flightPage.number + 1} ? 'text-secondary disabled': 'text-primary'" class="btn bg-white mx-1"></a>
+           th:classappend="${pageNumber==flightPage.number + 1} ? 'text-secondary disabled': 'text-primary'"
+           class="btn bg-white mx-1"></a>
     </div>
 </div>
 </body>

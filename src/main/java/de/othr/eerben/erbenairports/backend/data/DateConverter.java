@@ -1,5 +1,7 @@
 package de.othr.eerben.erbenairports.backend.data;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.converter.Converter;
 
 import java.text.ParseException;
@@ -11,13 +13,15 @@ import java.util.Date;
  * */
 public class DateConverter  implements Converter<String, Date> {
 
+    Logger logger = LoggerFactory.getLogger(DateConverter.class);
+
     @Override
     public Date convert(String s) {
         Date time;
         try {
             time = new SimpleDateFormat("yyyy-MM-dd").parse(s);
         } catch (ParseException e) {
-            System.out.println("Date could not be parsed");
+            logger.error("Date could not be parsed");
             time = null;
         }
 
