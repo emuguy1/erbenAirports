@@ -43,6 +43,15 @@
         </tbody>
     </table>
     <h3 th:if="${flights.isEmpty()}">There are no flights scheduled at this time</h3>
+
+    <div th:if="${flightPage.totalPages > 0}" class="pagination d-flex justify-content-center"
+    >
+        <a th:each="pageNumber : ${pageNumbers}"
+           th:href="@{/myFlights(size=${flightPage.size}, page=${pageNumber})}"
+           th:text="${pageNumber}"
+           th:classappend="${pageNumber==flightPage.number + 1} ? 'text-secondary disabled': 'text-primary'"
+           class="btn bg-white mx-1"></a>
+    </div>
 </div>
 </body>
 </html>

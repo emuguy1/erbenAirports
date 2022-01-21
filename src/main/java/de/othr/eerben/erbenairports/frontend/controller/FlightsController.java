@@ -276,16 +276,36 @@ public class FlightsController {
 
     @Transactional
     @RequestMapping(value = "/myFlights", method = RequestMethod.GET)
-    public String getAuthenticatedFlightlist(Model model, @AuthenticationPrincipal User user) {
+    public String getAuthenticatedFlightlistPageable(Model model, @AuthenticationPrincipal User user, @RequestParam("page") Optional<Integer> page,
+                                                     @RequestParam("size") Optional<Integer> size) {
         try {
-            List<Flightdetails> flights;
+            int currentPage = page.orElse(1);
+            int pageSize = size.orElse(35);
+            Page<Flightdetails> flightPage;
+
+            if (page.isEmpty() || size.isEmpty()) {
+                return "redirect:/myFlights?size=" + pageSize + "&page=" + currentPage;
+            }
+
             if(user.getAccountType().equals(AccountType.EMPLOYEE)){
-                flights=flightdetailsServiceIF.getAllFlights();
+                flightPage=flightdetailsServiceIF.getAllFlights(PageRequest.of(currentPage - 1, pageSize));
             }
             else{
-                flights=flightdetailsServiceIF.getAllByUsername(user.getUsername());
+                flightPage=flightdetailsServiceIF.getAllByUsername(user.getUsername(),PageRequest.of(currentPage - 1, pageSize));
             }
-            model.addAttribute("flights",flights);
+            model.addAttribute("flightPage", flightPage);
+
+            int totalPages = flightPage.getTotalPages();
+            if (totalPages > 0) {
+                List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                        .boxed()
+                        .collect(Collectors.toList());
+                model.addAttribute("pageNumbers", pageNumbers);
+            }
+
+
+
+            model.addAttribute("flights",flightPage.toList());
             return "authenticated/myFlights";
         } catch (Exception e) {
             model.addAttribute("UIerror", e);

@@ -28,7 +28,7 @@ public interface FlightdetailsServiceIF {
 
     FlighttransactionDTO getFlighttransactionDTO(Flightdetails flight);
 
-    List<Flightdetails> getAllFlights();
+    Page<Flightdetails> getAllFlights(Pageable pageable);
 
-    List<Flightdetails> getAllByUsername(String username);
+    Page<Flightdetails> getAllByUsername(String username, Pageable pageable);
 }

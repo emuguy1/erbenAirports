@@ -60,6 +60,8 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     Logger logger = LoggerFactory.getLogger(FlightdetailsServiceIF.class);
 
 
+
+
     @Override
     public Page<Flightdetails> getDeparturesPaginated(String airportcode, Pageable pageable) throws AirportException {
         int pageSize = pageable.getPageSize();
@@ -93,7 +95,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
 
         //TODO: get arrivals after a specific time
         Airport airport = airportServiceIF.getAirportByAirportcode(airportcode);
-        List<Flightdetails> flights = flightdetailsRepo.getAllByArrivalAirportAndArrivalTimeIsAfterOrderByArrivalTime(airport, Timestamp.from(Instant.now())).orElseThrow(() -> new AirportException("Error, no Arrivals for airport after now could be found"));
+        List<Flightdetails> flights = flightdetailsRepo.getAllByArrivalAirportAndArrivalTimeIsAfterOrderByArrivalTime(airport, Timestamp.from(Instant.now()));
         List<Flightdetails> list;
 
         if (flights.size() < startItem) {
@@ -277,7 +279,7 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
         if (!flightdetailsRepo.getAllByAirportWhereArrivalTimeAfterAndDepartureTimeBefore(Date.from(Instant.now()), airport)) {
             throw new AirportException("At least one Flight exists with Arrivaltime after now");
         } else {
-            List<Flightdetails> toBeCanceledFlights = flightdetailsRepo.getAllByAirport(airport).orElseThrow(() -> new AirportException("Error, no Departures for airport after now could be found"));
+            List<Flightdetails> toBeCanceledFlights = flightdetailsRepo.getAllByAirport(airport);
             flightdetailsRepo.deleteAll(toBeCanceledFlights);
         }
     }
@@ -300,13 +302,13 @@ public class FlightdetailsService implements FlightdetailsServiceIF {
     }
 
     @Override
-    public List<Flightdetails> getAllFlights() {
-        return flightdetailsRepo.getAll();
+    public Page<Flightdetails> getAllFlights(Pageable pageable) {
+        return flightdetailsRepo.findAll(pageable);
     }
 
     @Override
-    public List<Flightdetails> getAllByUsername(String username) {
-        return flightdetailsRepo.getAllByUsername(username);
+    public Page<Flightdetails> getAllByUsername(String username, Pageable pageable) {
+        return flightdetailsRepo.getAllByUsername(username, pageable);
     }
 
     public void performBankingTransaction(User user, boolean bookBack, FlighttransactionDTO flightdetails) throws AirportException {

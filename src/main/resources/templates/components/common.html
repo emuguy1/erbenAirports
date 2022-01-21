@@ -56,6 +56,18 @@
                         <li><a class="dropdown-item" href="/customers">Customer Table</a></li>
                         <li><a class="dropdown-item" href="/employee/register">Create new Employee</a></li>
                         <li><a class="dropdown-item" href="/airport/new">Create new Airport</a></li>
+                        <li><a class="dropdown-item" href="/flight/new">Create new Flight</a></li>
+                        <li><a class="dropdown-item" href="/myFlights">All Flights</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown" sec:authorize="hasAuthority('CUSTOMER')">
+                    <a class="nav-link dropdown-toggle" href="#" id="customerNavbarDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Customer
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="customerNavbarDropdown">
+                        <li><a class="dropdown-item" href="/flight/new">Book Flight</a></li>
+                        <li><a class="dropdown-item" href="/myFlights">My Flights</a></li>
                     </ul>
                 </li>
             </ul>
