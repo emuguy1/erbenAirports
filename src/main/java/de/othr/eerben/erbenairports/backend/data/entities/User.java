@@ -94,11 +94,6 @@ public class User extends SingleIdEntity<String> implements UserDetails {
         this.accountType = accountType;
     }
 
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getName() {
         return name;
     }
@@ -184,6 +179,10 @@ public class User extends SingleIdEntity<String> implements UserDetails {
     @Override
     public String getPassword() {
         return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

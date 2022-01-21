@@ -1,11 +1,9 @@
 package de.othr.eerben.erbenairports.backend.data.entities;
 
 import com.sun.istack.NotNull;
-import org.hibernate.annotations.Cascade;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
@@ -44,8 +42,6 @@ public class BookedCalendarslot {
 
     public BookedCalendarslot() {
     }
-
-    ;
 
     public BookedCalendarslot(int day, int month, int year, int durationInMinutes, Date startTime, Airport airport) {
         this.day = day;

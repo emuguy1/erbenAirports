@@ -28,28 +28,28 @@ public class AirportException extends Exception {
         this.suggestions = suggestions;
     }
 
-    public void setErrortitle(String errortitle) {
-        this.errortitle = errortitle;
+    public String getErrormessage() {
+        return errormessage;
     }
 
     public void setErrormessage(String errormessage) {
         this.errormessage = errormessage;
     }
 
-    public void setSuggestions(String suggestions) {
-        this.suggestions = suggestions;
-    }
-
-    public String getErrormessage() {
-        return errormessage;
-    }
-
     public String getSuggestions() {
         return suggestions;
     }
 
+    public void setSuggestions(String suggestions) {
+        this.suggestions = suggestions;
+    }
+
     public String getErrortitle() {
         return errortitle;
+    }
+
+    public void setErrortitle(String errortitle) {
+        this.errortitle = errortitle;
     }
 
     @Override

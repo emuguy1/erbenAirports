@@ -7,9 +7,6 @@ import de.othr.eerben.erbenairports.backend.exceptions.AirportException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Collection;
-import java.util.List;
-
 public interface FlightdetailsServiceIF {
 
     Page<Flightdetails> getDeparturesPaginated(String airportcode, Pageable pageable) throws AirportException;

@@ -9,8 +9,6 @@ import java.util.List;
 public interface UserServiceIF extends UserDetailsService {
     User registerUser(User user) throws AirportException;
 
-    ;
-
     User getUserByUsername(String username);
 
     boolean userExists(String username);

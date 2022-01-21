@@ -14,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -29,16 +31,13 @@ import java.util.TimeZone;
 @Validated
 @RequestMapping(value = "/api/rest")
 public class FlightsRestController {
+    Logger logger = LoggerFactory.getLogger(FlightsRestController.class);
     @Autowired
     private FlightdetailsServiceIF flightdetailsServiceIF;
-
     @Autowired
     private UserServiceIF userServiceIF;
-
     @Autowired
     private AirportServiceIF airportServiceIF;
-
-    Logger logger = LoggerFactory.getLogger(FlightsRestController.class);
 
     @Transactional
     @RequestMapping(value = "/flight", method = RequestMethod.POST)

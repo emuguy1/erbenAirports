@@ -1,11 +1,8 @@
 package de.othr.eerben.erbenairports.backend.data.entities;
 
-import com.sun.istack.NotNull;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
-import java.util.Objects;
-import java.util.TimeZone;
 
 @Entity
 public class Airport {

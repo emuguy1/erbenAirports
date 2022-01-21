@@ -1,6 +1,5 @@
 package de.othr.eerben.erbenairports.backend.security;
 
-import de.othr.eerben.erbenairports.backend.security.AirportSecurityUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -17,16 +16,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Autowired
-    private AirportSecurityUtilities securityUtilities;
-
-    private BCryptPasswordEncoder passwordEncoder() {
-        return securityUtilities.passwordEncoder();
-    }
 
     private static final String[] ALLOW_ACCESS_WITHOUT_AUTHENTICATION = {
             "/css/**",
@@ -45,16 +34,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/flight/*/details",
             "/api/rest/**"
     };
-
     private static final String[] ALLOW_ACCESS_AS_CUSTOMER = {
             "/customer/**"
     };
-
     private static final String[] ALLOW_ACCESS_AS_EMPLOYEE = {
             "/airport/new",
             "/employee/new",
             "/customers"
     };
+    @Autowired
+    private UserDetailsService userDetailsService;
+    @Autowired
+    private AirportSecurityUtilities securityUtilities;
+
+    private BCryptPasswordEncoder passwordEncoder() {
+        return securityUtilities.passwordEncoder();
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

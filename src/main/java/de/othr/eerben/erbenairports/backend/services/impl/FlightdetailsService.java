@@ -24,41 +24,33 @@ import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
 public class FlightdetailsService implements FlightdetailsServiceIF {
 
     @Autowired
+    RestTemplate restClient;
+    Logger logger = LoggerFactory.getLogger(FlightdetailsServiceIF.class);
+    @Autowired
     private AirportServiceIF airportServiceIF;
-
     @Autowired
     private UserServiceIF userServiceIF;
-
     @Autowired
     private FlightdetailsRepository flightdetailsRepo;
-
     @Autowired
     private BookedCalendarslotRepository calendarslotRepository;
-
-    @Autowired
-    RestTemplate restClient;
-
     @Value("${trBank.url}")
     private String bankingURL;
-
     @Value("${trBank.iban}")
     private String bankingSelfIBAN;
-
     @Value("${trBank.username}")
     private String bankingUsername;
-
     @Value("${trBank.password}")
     private String bankingPassword;
-
-    Logger logger = LoggerFactory.getLogger(FlightdetailsServiceIF.class);
-
 
     @Override
     public Page<Flightdetails> getDeparturesPaginated(String airportcode, Pageable pageable) throws AirportException {
